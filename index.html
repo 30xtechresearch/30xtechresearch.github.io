@@ -136,7 +136,7 @@ h1 .c{color:var(--cyan);display:block;}
 
 /* ANALYST */
 #jobs .job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.job-card{border:1px solid var(--border);padding:36px 28px;position:relative;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,background 0.3s;}
+.job-card{border:1px solid var(--border);padding:36px 28px;position:relative;opacity:1;transform:none;transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,background 0.3s;}
 .job-card.vis{opacity:1;transform:translateY(0);}
 .job-card:hover{border-color:var(--gold);background:var(--card);}
 .job-badge{display:inline-block;margin-bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:6px 12px;}
@@ -173,7 +173,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 .foot-bot span{color:var(--gold);}
 
 /* REVEAL */
-.rev{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.rev{opacity:1;transform:none;transition:opacity 0.6s ease,transform 0.6s ease;}
 .rev.vis{opacity:1;transform:none;}
 
 /* ── RESPONSIVE ── */
@@ -261,7 +261,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
       <a href="#services" class="btn-gold">View Pricing</a>
       <a href="#jobs" class="btn-ghost">Book an Analyst</a>
     </div>
-    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="mailto:Thirtyxtradingbot&#64;gmail.com" style="color:var(--gold);">Thirtyxtradingbot&#64;gmail.com</a></div>
+    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="/cdn-cgi/l/email-protection#13477b7a61676a6b676172777a7d74717c673530252728747e727a7f3d707c7e" style="color:var(--gold);">Thirtyxtradingbot&#64;gmail.com</a></div>
     <div class="hero-badges">
       <div><div class="badge-val">8<span class="u">+</span></div><div class="badge-lbl">Asset Classes</div></div>
       <div><div class="badge-val">24<span class="u">/7</span></div><div class="badge-lbl">Live Coverage</div></div>
@@ -314,9 +314,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   <h2 class="sec-h2 rev">CHOOSE YOUR <span>PLAN</span></h2>
   <p class="sec-sub rev">Pay securely via PayPal. After payment, email your <strong style="color:var(--gold)">invoice + Telegram username</strong> to <strong style="color:var(--gold)">Thirtyxtradingbot&#64;gmail.com</strong> and you will be added to the private Telegram group.</p>
 
-  <div class="cards rev">
+  <div class="cards">
     <!-- Market Data -->
-    <div class="svc-card">
+    <div class="svc-card rev">
       <div class="svc-tag">Market Data</div>
       <div class="svc-icon">&#128202;</div>
       <div class="svc-name">Market Data Feed</div>
@@ -340,7 +340,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
     </div>
 
     <!-- Market Signals -->
-    <div class="svc-card featured">
+    <div class="svc-card featured rev">
       <div class="svc-tag hot">&#11088; Most Popular</div>
       <div class="svc-icon">&#9889;</div>
       <div class="svc-name">Market Signals</div>
@@ -521,7 +521,5 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{threshold:0.08});
-document.querySelectorAll('.rev').forEach(el=>io.observe(el));
-const jobObs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.tar
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{
