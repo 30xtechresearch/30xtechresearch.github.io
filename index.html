@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30×Tech Research - Market Signals, Data and Analyst Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04070d; --surface:#080f1a; --card:#0c1522;
+  --border:#132030; --border2:#1e3248;
+  --gold:#f0c040; --gold2:#ffd700;
+  --cyan:#00d4ff; --green:#00e87a; --red:#ff4560;
+  --white:#eef2f7; --grey:#4a6680; --text:#a8c0d0;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;overflow-x:hidden;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+  background:rgba(4,7,13,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:1px;color:var(--white);}
+.logo em{color:var(--gold);font-style:normal;}
+.nav-links{display:flex;gap:24px;}
+.nav-links a{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-email{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--gold);text-decoration:none;border:1px solid rgba(240,192,64,0.3);padding:8px 14px;transition:all 0.2s;white-space:nowrap;}
+.nav-email:hover{background:rgba(240,192,64,0.08);}
+
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:120px 24px 70px;overflow:hidden;z-index:1;}
+.hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 50% at 62% 44%,rgba(240,192,64,0.07) 0%,transparent 65%),radial-gradient(ellipse 35% 35% at 18% 72%,rgba(0,212,255,0.05) 0%,transparent 60%);}
+.hero-left{position:relative;z-index:2;max-width:680px;width:100%;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:7px 14px;margin-bottom:28px;animation:up 0.7s ease both;}
+.dot-live{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 1.4s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(42px,9vw,110px);line-height:0.92;color:var(--white);letter-spacing:-1px;animation:up 0.7s 0.08s ease both;}
+h1 .g{color:var(--gold);}
+h1 .c{color:var(--cyan);display:block;}
+.hero-desc{font-size:16px;line-height:1.75;color:var(--grey);margin:24px 0 36px;max-width:500px;animation:up 0.7s 0.16s ease both;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;animation:up 0.7s 0.24s ease both;}
+.btn-gold{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:#000;font-weight:600;padding:13px 28px;text-decoration:none;transition:all 0.2s;}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-1px);}
+.btn-ghost{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border2);color:var(--text);padding:13px 28px;text-decoration:none;transition:all 0.2s;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.hero-badges{display:flex;gap:24px;flex-wrap:wrap;margin-top:48px;padding-top:32px;border-top:1px solid var(--border);animation:up 0.7s 0.32s ease both;}
+.badge-val{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:var(--white);line-height:1;}
+.badge-val .u{color:var(--gold);font-size:20px;}
+.badge-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-top:4px;}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* TICKER */
+.ticker-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;overflow:hidden;position:relative;z-index:1;}
+.ticker-track{display:flex;gap:40px;width:max-content;animation:scroll 28s linear infinite;}
+.t-item{font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap;display:flex;gap:8px;align-items:center;}
+.t-sym{color:var(--white);font-weight:600;}
+.t-up{color:var(--green);}
+.t-dn{color:var(--red);}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.section{padding:80px 24px;position:relative;z-index:1;}
+.section-alt{background:var(--surface);}
+.sec-eye{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.sec-h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(30px,5vw,58px);color:var(--white);letter-spacing:-0.5px;line-height:1.05;margin-bottom:12px;}
+.sec-h2 span{color:var(--gold);}
+.sec-sub{font-size:15px;color:var(--grey);max-width:560px;line-height:1.7;margin-bottom:48px;}
+
+/* PRICING */
+#services .cards{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);max-width:860px;}
+.svc-card{background:var(--bg);padding:40px 32px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background 0.3s;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border);transition:background 0.3s;}
+.svc-card.featured{background:var(--card);}
+.svc-card.featured::before{background:var(--gold);}
+.svc-card:hover{background:var(--card);}
+.svc-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:16px;}
+.svc-tag.hot{color:var(--gold);}
+.svc-icon{font-size:34px;margin-bottom:16px;}
+.svc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:26px;color:var(--white);margin-bottom:8px;}
+.svc-price{font-family:'Syne',sans-serif;font-weight:800;font-size:52px;color:var(--gold);line-height:1;margin-bottom:4px;}
+.svc-price sup{font-size:24px;vertical-align:super;color:var(--grey);}
+.svc-period{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--grey);margin-bottom:24px;letter-spacing:1px;}
+.svc-list{list-style:none;flex:1;margin-bottom:28px;}
+.svc-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);display:flex;gap:10px;align-items:flex-start;}
+.svc-list li::before{content:'→';color:var(--gold);font-family:'IBM Plex Mono',monospace;flex-shrink:0;}
+.svc-list li.dim{color:var(--grey);}
+.svc-list li.dim::before{content:'—';color:var(--border2);}
+.pay-btn{display:block;text-align:center;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:14px;font-weight:600;transition:all 0.2s;margin-bottom:14px;}
+.pay-btn-gold{background:var(--gold);color:#000;}
+.pay-btn-gold:hover{background:var(--gold2);transform:translateY(-1px);}
+.pay-btn-outline{border:1px solid var(--border2);color:var(--text);}
+.pay-btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.after-note{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);line-height:1.9;text-align:center;letter-spacing:0.5px;padding:12px;background:rgba(240,192,64,0.04);border:1px solid rgba(240,192,64,0.12);}
+.after-note strong{color:var(--gold);display:block;margin-bottom:2px;}
+
+/* SIGNAL CARD */
+#signal-sample .sample-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.sample-text p{font-size:14px;color:var(--grey);line-height:1.8;margin-bottom:14px;}
+.msg-card{background:var(--card);border:1px solid var(--border);padding:28px;position:relative;font-family:'IBM Plex Mono',monospace;}
+.msg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));}
+.msg-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.msg-sym{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--white);}
+.msg-tf{font-size:10px;color:var(--grey);letter-spacing:2px;margin-top:4px;}
+.sig-buy{font-size:11px;font-weight:600;color:var(--green);padding:6px 12px;background:rgba(0,232,122,0.1);border:1px solid rgba(0,232,122,0.3);}
+.msg-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(19,32,48,0.9);font-size:11px;}
+.msg-row:last-child{border:none;}
+.mk{color:var(--grey);letter-spacing:1px;}
+.mv{color:var(--white);}
+.mv.g{color:var(--green);}
+.mv.r{color:var(--red);}
+.mv.y{color:var(--gold);}
+.msg-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--grey);letter-spacing:1px;display:flex;gap:8px;align-items:center;}
+.msg-foot::before{content:'●';color:var(--green);animation:blink 1.4s infinite;}
+
+/* HOW IT WORKS */
+#how .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);}
+.step-box{background:var(--bg);padding:36px 24px;transition:background 0.3s;}
+.step-box:hover{background:var(--card);}
+.step-n{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;color:var(--border2);line-height:1;margin-bottom:16px;transition:color 0.3s;}
+.step-box:hover .step-n{color:var(--gold);}
+.step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--white);margin-bottom:8px;}
+.step-desc{font-size:13px;color:var(--grey);line-height:1.7;}
+
+/* ANALYST */
+#jobs .job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.job-card{border:1px solid var(--border);padding:36px 28px;position:relative;opacity:1;transform:none;transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,background 0.3s;}
+.job-card.vis{opacity:1;transform:translateY(0);}
+.job-card:hover{border-color:var(--gold);background:var(--card);}
+.job-badge{display:inline-block;margin-bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:6px 12px;}
+.job-badge.wd{background:rgba(0,232,122,0.1);color:var(--green);border:1px solid rgba(0,232,122,0.3);}
+.job-badge.we{background:rgba(0,212,255,0.1);color:var(--cyan);border:1px solid rgba(0,212,255,0.3);}
+.job-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--white);margin-bottom:8px;}
+.job-rate{font-family:'Syne',sans-serif;font-weight:800;font-size:44px;color:var(--gold);line-height:1;margin-bottom:6px;}
+.job-rate sup{font-size:20px;color:var(--grey);vertical-align:super;}
+.job-schedule{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--grey);margin-bottom:20px;letter-spacing:1px;}
+.job-perks{list-style:none;margin-bottom:24px;}
+.job-perks li{font-size:13px;color:var(--text);padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;}
+.job-perks li::before{content:'✓';color:var(--green);font-family:'IBM Plex Mono',monospace;flex-shrink:0;}
+.book-btn{display:block;text-align:center;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:13px;font-weight:600;background:var(--gold);color:#000;transition:all 0.2s;margin-bottom:14px;}
+.book-btn:hover{background:var(--gold2);transform:translateY(-1px);}
+
+/* DISCLAIMER */
+.disc{border:1px solid rgba(255,69,96,0.2);background:rgba(255,69,96,0.04);padding:20px 24px;margin-top:40px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--grey);line-height:1.9;}
+.disc strong{color:var(--red);}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:56px 24px 32px;}
+.foot-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px;}
+.foot-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--white);margin-bottom:12px;display:block;}
+.foot-logo em{color:var(--gold);font-style:normal;}
+.foot-desc{font-size:13px;color:var(--grey);line-height:1.7;max-width:280px;margin-bottom:10px;}
+.foot-tagline{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:1px;}
+.foot-h{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.foot-links{list-style:none;}
+.foot-links li{margin-bottom:10px;}
+.foot-links a{font-size:13px;color:var(--grey);text-decoration:none;transition:color 0.2s;}
+.foot-links a:hover{color:var(--white);}
+.foot-bot{padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.foot-bot p{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--grey);}
+.foot-bot span{color:var(--gold);}
+
+/* REVEAL */
+.rev{opacity:1;transform:none;transition:opacity 0.6s ease,transform 0.6s ease;}
+.rev.vis{opacity:1;transform:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .nav-email{font-size:9px;padding:6px 10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;}
+  #services .cards{grid-template-columns:1fr;background:none;gap:16px;max-width:100%;}
+  #how .steps{grid-template-columns:1fr 1fr;}
+  #signal-sample .sample-inner{grid-template-columns:1fr;gap:32px;}
+  .foot-top{grid-template-columns:1fr 1fr;gap:32px;}
+  #jobs .job-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  nav{padding:10px 14px;gap:8px;}
+  .logo{font-size:16px;letter-spacing:0;}
+  .nav-email{display:none;}
+  #hero{padding:90px 16px 50px;}
+  h1{font-size:clamp(34px,10vw,52px) !important;line-height:0.95;}
+  .eyebrow{font-size:8px;letter-spacing:1px;padding:6px 10px;margin-bottom:18px;flex-wrap:wrap;}
+  .hero-desc{font-size:13px;margin:16px 0 24px;}
+  .btn-gold,.btn-ghost{font-size:10px;padding:11px 20px;}
+  .hero-badges{gap:14px;margin-top:28px;padding-top:20px;}
+  .badge-val{font-size:24px;}
+  .badge-val .u{font-size:15px;}
+  .badge-lbl{font-size:8px;letter-spacing:1px;}
+  .section{padding:52px 16px;}
+  .sec-h2{font-size:clamp(24px,7.5vw,38px) !important;}
+  .sec-sub{font-size:13px;margin-bottom:28px;}
+  .svc-card{padding:24px 18px;}
+  .svc-price{font-size:40px;}
+  .svc-price sup{font-size:18px;}
+  .svc-name{font-size:20px;}
+  .svc-list li{font-size:12px;}
+  .pay-btn{font-size:10px;padding:12px;}
+  .after-note{font-size:9px;}
+  .job-card{padding:24px 18px;}
+  .job-rate{font-size:34px;}
+  .job-rate sup{font-size:16px;}
+  .job-title{font-size:17px;}
+  .job-perks li{font-size:12px;}
+  .book-btn{font-size:10px;padding:12px;}
+  #how .steps{grid-template-columns:1fr;}
+  .step-n{font-size:34px;}
+  .step-title{font-size:14px;}
+  .step-desc{font-size:12px;}
+  .msg-card{padding:18px;}
+  .msg-sym{font-size:18px;}
+  .msg-row{font-size:10px;}
+  .mk{font-size:9px;}
+  .foot-top{grid-template-columns:1fr;gap:24px;}
+  .foot-bot{flex-direction:column;text-align:center;gap:6px;}
+  .foot-bot p{font-size:10px;}
+  footer{padding:36px 16px 24px;}
+  .disc{padding:14px;font-size:10px;}
+  .sec-eye{font-size:9px;}
+  /* Show email in hero instead of nav on mobile */
+  .mobile-email{display:block !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><em>30×</em>TECH RESEARCH</div>
+  <div class="nav-links">
+    <a href="#services">Pricing</a>
+    <a href="#signal-sample">Signals</a>
+    <a href="#jobs">Book Analyst</a>
+    <a href="#how">How It Works</a>
+  </div>
+  <a href="/cdn-cgi/l/email-protection#37635f5e45434e4f434556535e5950555843111401030c505a565e5b1954585a" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-left">
+    <div class="eyebrow"><span class="dot-live"></span>Live Algorithmic Signals &middot; 24/7 Market Data</div>
+    <h1>MARKET<br><span class="g">SIGNALS</span><br><span class="c">THAT WORK</span></h1>
+    <p class="hero-desc">
+      Algorithmic trading signals, real-time market data, and professional remote market analysis &mdash; powered by the <strong style="color:var(--gold)">30&times; Bot Dashboard</strong>. 30&times; smarter research &amp; trading decisions.
+    </p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-gold">View Pricing</a>
+      <a href="#jobs" class="btn-ghost">Book an Analyst</a>
+    </div>
+    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="/cdn-cgi/l/email-protection#13477b7a61676a6b676172777a7d74717c673530252728747e727a7f3d707c7e" style="color:var(--gold);">Thirtyxtechresearch&#64;gmail.com</a></div>
+    <div class="hero-badges">
+      <div><div class="badge-val">8<span class="u">+</span></div><div class="badge-lbl">Asset Classes</div></div>
+      <div><div class="badge-val">24<span class="u">/7</span></div><div class="badge-lbl">Live Coverage</div></div>
+      <div><div class="badge-val">69<span class="u">%</span></div><div class="badge-lbl">Backtest Return*</div></div>
+      <div><div class="badge-val">3.3<span class="u">x</span></div><div class="badge-lbl">Avg RR Ratio</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">AMZN</span><span class="t-dn">&#9660; -1.05%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div>
+    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">AMZN</span><span class="t-dn">&#9660; -1.05%</span></div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="section" id="services">
+  <p class="sec-eye rev">// Services &amp; Pricing</p>
+  <h2 class="sec-h2 rev">CHOOSE YOUR <span>PLAN</span></h2>
+  <p class="sec-sub rev">Pay securely via PayPal. After payment, email your <strong style="color:var(--gold)">invoice + Telegram username</strong> to <strong style="color:var(--gold)">Thirtyxtechresearch&#64;gmail.com</strong> and you will be added to the private Telegram group.</p>
+
+  <div class="cards">
+    <!-- Market Data -->
+    <div class="svc-card rev">
+      <div class="svc-tag">Market Data</div>
+      <div class="svc-icon">&#128202;</div>
+      <div class="svc-name">Market Data Feed</div>
+      <div class="svc-price"><sup>&pound;</sup>450</div>
+      <div class="svc-period">One-time payment</div>
+      <ul class="svc-list">
+        <li>Real-time price data across all markets</li>
+        <li>Crypto, Forex, Stocks &amp; Metals</li>
+        <li>Index macro dashboard (SPX, DXY, CMC20)</li>
+        <li>Daily market summary reports</li>
+        <li>Private Telegram group access</li>
+        <li>Powered by 30&times; Bot Dashboard</li>
+        <li class="dim">Trade signals not included</li>
+      </ul>
+      <a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;450 via PayPal</a>
+      <div class="after-note">
+        <strong>&#9993; After Payment:</strong>
+        Send invoice + Telegram username to<br>
+        Thirtyxtechresearch&#64;gmail.com
+      </div>
+    </div>
+
+    <!-- Market Signals -->
+    <div class="svc-card featured rev">
+      <div class="svc-tag hot">&#11088; Most Popular</div>
+      <div class="svc-icon">&#9889;</div>
+      <div class="svc-name">Market Signals</div>
+      <div class="svc-price"><sup>&pound;</sup>1,420</div>
+      <div class="svc-period">One-time payment</div>
+      <ul class="svc-list">
+        <li>Full algorithmic BUY/SELL signals</li>
+        <li>Entry price, Stop Loss &amp; Take Profit</li>
+        <li>7-tier signal engine (T1&ndash;T7)</li>
+        <li>Index confluence gate included</li>
+        <li>All 8 timeframes (3m &rarr; 1d)</li>
+        <li>Crypto, Forex, Stocks &amp; Metals</li>
+        <li>AI confirmation on T1 signals</li>
+      </ul>
+      <a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;1,420 via PayPal</a>
+      <div class="after-note">
+        <strong>&#9993; After Payment:</strong>
+        Send invoice + Telegram username to<br>
+        Thirtyxtechresearch&#64;gmail.com
+      </div>
+    </div>
+  </div>
+
+  <div class="disc rev">
+    <strong>&#9888; Risk Disclaimer:</strong> 30×Tech Research provides algorithmic trading signals and market data for <strong>informational and educational purposes only</strong>. This is NOT financial advice. All signals are generated by automated software. Trading involves significant risk of loss. Past performance and backtested results do not guarantee future returns. <strong>Trade at your own risk.</strong>
+  </div>
+</section>
+
+<!-- SIGNAL SAMPLE -->
+<section class="section section-alt" id="signal-sample">
+  <div class="sample-inner">
+    <div class="sample-text">
+      <p class="sec-eye rev">// Live Signal Example</p>
+      <h2 class="sec-h2 rev">WHAT YOU <span>RECEIVE</span></h2>
+      <p class="rev">Every signal delivered to your private Telegram instantly &mdash; full details, no guesswork.</p>
+      <p class="rev">Each alert includes tier, entry, stop loss, take profit, RR ratio and full index confluence breakdown.</p>
+      <p class="rev" style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:12px;">Powered by 30&times; Bot Dashboard<br>30&times; smarter research &amp; trading decisions.</p>
+    </div>
+    <div class="rev">
+      <div class="msg-card">
+        <div class="msg-header">
+          <div><div class="msg-sym">BTCUSDT</div><div class="msg-tf">1H &middot; TIER 1 &middot; HIGH CONVICTION</div></div>
+          <div class="sig-buy">&#9650; BUY</div>
+        </div>
+        <div class="msg-row"><span class="mk">ENTRY</span><span class="mv y">$67,240.00</span></div>
+        <div class="msg-row"><span class="mk">STOP LOSS</span><span class="mv r">$66,180.00</span></div>
+        <div class="msg-row"><span class="mk">TAKE PROFIT</span><span class="mv g">$71,480.00</span></div>
+        <div class="msg-row"><span class="mk">RR RATIO</span><span class="mv g">1 : 3.33</span></div>
+        <div class="msg-row"><span class="mk">EMA SIGNAL</span><span class="mv g">BULL &#8599;</span></div>
+        <div class="msg-row"><span class="mk">STOCH RSI</span><span class="mv g">K 72.4 &uarr; D 65.1</span></div>
+        <div class="msg-row"><span class="mk">INDEX GATE</span><span class="mv g">&#10003; CMC20 BULL &middot; SPX BULL</span></div>
+        <div class="msg-row"><span class="mk">CONFLUENCE</span><span class="mv g">Agree: 2 &middot; Disagree: 0</span></div>
+        <div class="msg-foot">Signal confirmed &middot; Macro aligned &middot; Proceed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <p class="sec-eye rev">// Process</p>
+  <h2 class="sec-h2 rev" style="margin-bottom:40px">HOW IT <span>WORKS</span></h2>
+  <div class="steps">
+    <div class="step-box">
+      <div class="step-n">01</div>
+      <div class="step-title">Algorithm Scans</div>
+      <p class="step-desc">30&times; Bot monitors Crypto, FX, Stocks &amp; Metals 24/7 using EMA, RSI, StochRSI and 7-tier signal logic.</p>
+    </div>
+    <div class="step-box">
+      <div class="step-n">02</div>
+      <div class="step-title">Macro Gate Check</div>
+      <p class="step-desc">Every signal passes through 8 macro indexes (SPX, DXY, CMC20 &amp; more) before being approved.</p>
+    </div>
+    <div class="step-box">
+      <div class="step-n">03</div>
+      <div class="step-title">AI Confirmation</div>
+      <p class="step-desc">T1 high-conviction signals go through AI review for final qualitative market context before firing.</p>
+    </div>
+    <div class="step-box">
+      <div class="step-n">04</div>
+      <div class="step-title">Telegram Alert</div>
+      <p class="step-desc">Approved signal delivered instantly to your private Telegram group with full entry, SL, TP and confluence data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYST BOOKING -->
+<section class="section section-alt" id="jobs">
+  <p class="sec-eye rev">// Professional Analysis</p>
+  <h2 class="sec-h2 rev">BOOK A REMOTE <span>ANALYST</span></h2>
+  <p class="sec-sub rev">I can analyse, visualise and report on any Crypto, Stock, FX or Metal of your choice &mdash; remotely, on demand. Book a session via PayPal then email your invoice to discuss the job.</p>
+
+  <div class="job-grid">
+    <div class="job-card">
+      <div class="job-badge wd">Business Days</div>
+      <div class="job-title">Remote Market Data Analyst</div>
+      <div class="job-rate"><sup>&pound;</sup>90</div>
+      <div class="job-schedule">&#128197; Monday &ndash; Friday &middot; Business Days</div>
+      <ul class="job-perks">
+        <li>Custom market analysis &mdash; any asset of your choice</li>
+        <li>Data visualisation &amp; professional charting</li>
+        <li>Crypto, Stock, Forex &amp; Metals coverage</li>
+        <li>Written report delivered to you</li>
+        <li>Powered by 30&times; Bot Dashboard data</li>
+        <li>100% remote &middot; Discuss via email</li>
+      </ul>
+      <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank" class="book-btn">Book &middot; Pay &pound;90 via PayPal</a>
+      <div class="after-note">
+        <strong>&#9993; After Payment:</strong>
+        Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.
+      </div>
+    </div>
+
+    <div class="job-card">
+      <div class="job-badge we">Weekend Sessions</div>
+      <div class="job-title">Remote Market Data Analyst</div>
+      <div class="job-rate"><sup>&pound;</sup>50</div>
+      <div class="job-schedule">&#128197; Saturday &ndash; Sunday &middot; Weekends</div>
+      <ul class="job-perks">
+        <li>Custom market analysis &mdash; any asset of your choice</li>
+        <li>Data visualisation &amp; professional charting</li>
+        <li>Crypto, Stock, Forex &amp; Metals coverage</li>
+        <li>Written report delivered to you</li>
+        <li>Powered by 30&times; Bot Dashboard data</li>
+        <li>100% remote &middot; Discuss via email</li>
+      </ul>
+      <a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank" class="book-btn">Book &middot; Pay &pound;50 via PayPal</a>
+      <div class="after-note">
+        <strong>&#9993; After Payment:</strong>
+        Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;border:1px solid var(--border);padding:28px;background:var(--card);" class="rev">
+    <p class="sec-eye" style="margin-bottom:14px">// I Can Analyse Any Of These For You</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Any Cryptocurrency (BTC, ETH, SOL, altcoins&hellip;)</div>
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Any Forex pair (EUR/USD, GBP/USD, exotic pairs&hellip;)</div>
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Any Stock or Index (AMZN, TSLA, SPX, NASDAQ&hellip;)</div>
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Metals &amp; Commodities (Gold, Silver, Oil&hellip;)</div>
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Technical analysis &amp; chart visualisation</div>
+      <div style="font-size:13px;color:var(--text);display:flex;gap:10px;"><span style="color:var(--gold)">&#8594;</span>Market structure, trend &amp; confluence reports</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <span class="foot-logo"><em>30×</em>TECH RESEARCH</span>
+      <p class="foot-desc">Algorithmic trading signal software and professional market analysis. Powered by 30&times; Bot Dashboard.</p>
+      <p class="foot-tagline">30&times; smarter research &amp; trading decisions.</p>
+    </div>
+    <div>
+      <div class="foot-h">Pricing</div>
+      <ul class="foot-links">
+        <li><a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank">Market Signals &mdash; &pound;1,420</a></li>
+        <li><a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank">Market Data &mdash; &pound;450</a></li>
+        <li><a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank">Analyst Mon&ndash;Fri &mdash; &pound;90</a></li>
+        <li><a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank">Analyst Sat&ndash;Sun &mdash; &pound;50</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="foot-h">Contact &amp; Follow</div>
+      <ul class="foot-links">
+        <li><a href="mailto:Thirtyxtechresearch&#64;gmail.com">Thirtyxtechresearch&#64;gmail.com</a></li>
+        <li><a href="https://x.com/utecryptoedu" target="_blank">&#120143; @utecryptoedu</a></li>
+        <li><a href="https://x.com/utestockedu" target="_blank">&#120143; @utestockedu</a></li>
+        <li><a href="#signal-sample">Signal Examples</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#jobs">Book an Analyst</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <p>&copy; 2025 <span>30×Tech Research</span> &middot; All rights reserved &middot; Not financial advice</p>
+    <p>Powered by <span>30&times; Bot Dashboard</span> &middot; Payments via <span>PayPal</span></p>
+  </div>
+</footer>
+
+<script>
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vis');});},{
