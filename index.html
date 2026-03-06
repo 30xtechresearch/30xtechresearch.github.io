@@ -259,71 +259,51 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 ═══════════════════════════════════════════════ */
 #dash-lock{position:fixed;inset:0;z-index:9999;background:#04070d;
   display:none;align-items:center;justify-content:center;flex-direction:column;}
-/* Lock screen */
 .lock-box{background:var(--card);border:1px solid var(--border2);
-  padding:40px 28px;max-width:360px;width:92%;position:relative;text-align:center;
-  box-sizing:border-box;}
+  padding:48px 40px;max-width:380px;width:90%;position:relative;text-align:center;}
 .lock-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--gold),var(--cyan));}
-.lock-eye{font-size:11px;letter-spacing:3px;font-family:'IBM Plex Mono',monospace;
-  color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
-.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;
-  font-size:clamp(22px,7vw,32px);color:var(--white);margin-bottom:8px;
-  line-height:1.1;word-break:keep-all;}
-.lock-sub{font-size:11px;color:var(--grey);margin-bottom:24px;line-height:1.6;}
+.lock-eye{font-size:12px;letter-spacing:4px;font-family:'IBM Plex Mono',monospace;
+  color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;
+  color:var(--white);margin-bottom:8px;}
+.lock-sub{font-size:12px;color:var(--grey);margin-bottom:28px;line-height:1.6;}
 .lock-input{width:100%;background:var(--bg);border:1px solid var(--border2);
-  color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:16px;
-  letter-spacing:5px;text-align:center;padding:13px 12px;outline:none;
-  margin-bottom:10px;transition:border-color 0.2s;box-sizing:border-box;}
+  color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:18px;
+  letter-spacing:6px;text-align:center;padding:14px 16px;outline:none;
+  margin-bottom:12px;transition:border-color 0.2s;}
 .lock-input:focus{border-color:var(--gold);}
 .lock-input.err{border-color:var(--red);animation:shake 0.3s ease;}
-@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .lock-btn{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;
   text-transform:uppercase;background:var(--gold);color:#000;font-weight:600;
-  padding:13px;border:none;cursor:pointer;transition:all 0.2s;}
+  padding:14px;border:none;cursor:pointer;transition:all 0.2s;}
 .lock-btn:hover{background:var(--gold2);}
 .lock-err{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);
   margin-top:10px;display:none;letter-spacing:1px;}
-
-/* Dashboard page */
-#dash-page{display:none;min-height:100vh;background:var(--bg);
-  padding:70px 16px 60px;box-sizing:border-box;}
-.dash-header{display:flex;align-items:flex-start;justify-content:space-between;
-  margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);
-  flex-wrap:wrap;gap:10px;}
-.dash-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;
-  font-size:clamp(16px,5vw,26px);color:var(--white);line-height:1.1;white-space:nowrap;}
+#dash-page{display:none;min-height:100vh;background:var(--bg);padding:80px 24px 60px;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
+.dash-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;color:var(--white);}
 .dash-title em{color:var(--gold);font-style:normal;}
-.dash-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.dash-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;
-  text-transform:uppercase;display:flex;align-items:center;gap:6px;
-  color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:5px 10px;
-  white-space:nowrap;}
-.dash-logout{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;
+.dash-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;display:flex;align-items:center;gap:8px;
+  color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:6px 14px;}
+.dash-logout{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;
   text-transform:uppercase;background:none;border:1px solid var(--border2);
-  color:var(--grey);cursor:pointer;padding:6px 10px;transition:all 0.2s;white-space:nowrap;}
+  color:var(--grey);cursor:pointer;padding:8px 14px;transition:all 0.2s;}
 .dash-logout:hover{border-color:var(--red);color:var(--red);}
-#dash-lastupdate{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--grey);
-  letter-spacing:0.5px;white-space:nowrap;}
-
-/* Stats grid */
-.dash-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:2px;background:var(--border);margin-bottom:20px;}
-.stat-box{background:var(--surface);padding:16px 14px;}
-.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--grey);margin-bottom:5px;}
-.stat-val{font-family:'Syne','Arial Black',sans-serif;font-weight:800;
-  font-size:clamp(16px,4vw,22px);color:var(--white);}
+.dash-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:2px;background:var(--border);margin-bottom:28px;}
+.stat-box{background:var(--surface);padding:20px 18px;}
+.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.stat-val{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:22px;color:var(--white);}
 .stat-val.g{color:var(--green);}
 .stat-val.y{color:var(--gold);}
 .stat-val.r{color:var(--red);}
-
-/* Main grid */
-.dash-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
-@media(max-width:860px){
-  .dash-grid{grid-template-columns:1fr;}
-  #dash-page{padding-top:64px;}
-}
+.dash-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start;}
+@media(max-width:900px){.dash-grid{grid-template-columns:1fr;}}
 .feed-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
   text-transform:uppercase;color:var(--gold);margin-bottom:14px;
   display:flex;align-items:center;gap:8px;}
@@ -766,9 +746,9 @@ if('IntersectionObserver' in window){
 <div id="dash-page">
   <div class="dash-header">
     <div class="dash-title"><em>30&times;</em> BOT DASHBOARD</div>
-    <div class="dash-controls">
-      <div class="dash-badge"><span class="dot-live"></span>Live</div>
-      <span id="dash-lastupdate">Connecting...</span>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div class="dash-badge"><span class="dot-live"></span>Live Bot Feed</div>
+      <span id="dash-lastupdate" style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--grey);">Connecting...</span>
       <button class="dash-logout" id="dash-logout-btn">&#128274; LOCK</button>
     </div>
   </div>
@@ -818,12 +798,12 @@ if('IntersectionObserver' in window){
         <div class="setup-note">
           <strong>1.</strong> Go to console.firebase.google.com &rarr; create project<br>
           <strong>2.</strong> Realtime Database &rarr; create &rarr; test mode<br>
-          <strong>3.</strong> Copy your database URL https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app/, add to bot .env:<br>
+          <strong>3.</strong> Copy your database URL, add to bot .env:<br>
           <code>FIREBASE_URL=https://your-project-default-rtdb.firebaseio.com
 FIREBASE_SECRET=your_secret</code>
           <strong>4.</strong> Add the bot snippet to your bot.py<br>
-          <strong>5.</strong> ✅ Firebase URL already configured in this file<br><br>
-          ✅ Firebase connected. Once you add the bot snippet, signals will appear here automatically.
+          <strong>5.</strong> Replace <code>YOUR_FIREBASE_DB_URL</code> in the JS config at bottom of this file<br><br>
+          Once done, all signals push here automatically.
         </div>
       </div>
     </div>
@@ -837,9 +817,8 @@ FIREBASE_SECRET=your_secret</code>
    ══════════════════════════════════════════════════════
    ⚠️ CONFIGURE THESE TWO VALUES BEFORE DEPLOYING:      */
 
-var DASH_PIN     = 'UTE30X2024';
-var FIREBASE_URL = 'https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app';
-var FIREBASE_SECRET = 'HtSaOvwz7W9HzLzbnFcufeBZECKoez995SehKNKP';
+var DASH_PIN     = 'Bami$2264';            // ← Change your PIN
+var FIREBASE_URL = 'https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app/';  // ← Your Firebase Realtime DB URL e.g. https://yourproject-default-rtdb.firebaseio.com
 /* ══════════════════════════════════════════════════════ */
 
 var _unlocked = false;
@@ -894,9 +873,12 @@ document.addEventListener('DOMContentLoaded',function(){
 
 // ── Firebase polling ─────────────────────────────────────────
 function startDashboard(){
-  if(!FIREBASE_URL || FIREBASE_URL === 'YOUR_FIREBASE_DB_URL'){
+  var url = (FIREBASE_URL||'').trim().replace(/\/$/,'');
+  if(!url || url === 'YOUR_FIREBASE_DB_URL' || url.indexOf('http') !== 0){
     document.getElementById('signal-feed').innerHTML =
-      '<div class="feed-empty">&#9881; Firebase not configured yet.<br><br>Follow setup steps &rarr;</div>';
+      '<div class="feed-empty">&#9881; Firebase not configured yet.<br><br>'
+      +'Open this HTML file, find <strong>FIREBASE_URL</strong> in the &lt;script&gt; and replace '
+      +'<code>YOUR_FIREBASE_DB_URL</code> with your Realtime Database URL, then redeploy.</div>';
     document.getElementById('stat-status').textContent='SETUP NEEDED';
     document.getElementById('stat-status').style.color='var(--gold)';
     document.getElementById('dash-lastupdate').textContent='Not connected';
@@ -907,11 +889,22 @@ function startDashboard(){
 }
 
 function fetchData(){
-  // Fetch last 50 signals ordered by timestamp
-  fetch(FIREBASE_URL + '/signals.json?orderBy=\"ts\"&limitToLast=50&auth=' + FIREBASE_SECRET)
-    .then(function(r){ return r.json(); })
+  var base = FIREBASE_URL.replace(/\/$/, '');
+
+  // Fetch last 100 signals — sort client-side to avoid needing Firebase index rules
+  fetch(base + '/signals.json?limitToLast=100')
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data){
-      _cachedSignals = data ? Object.values(data).sort(function(a,b){return (b.ts||0)-(a.ts||0);}) : [];
+      if(data && typeof data === 'object' && !Array.isArray(data)){
+        _cachedSignals = Object.values(data)
+          .filter(function(s){ return s && typeof s === 'object'; })
+          .sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+      } else {
+        _cachedSignals = [];
+      }
       renderFeed(_cachedSignals);
       updateStats(_cachedSignals, _cachedPositions);
       document.getElementById('dash-lastupdate').textContent =
@@ -919,20 +912,26 @@ function fetchData(){
       document.getElementById('stat-status').textContent='ONLINE';
       document.getElementById('stat-status').style.color='var(--green)';
     })
-    .catch(function(){
+    .catch(function(err){
+      console.error('[Dashboard] signals fetch error:', err);
       document.getElementById('stat-status').textContent='OFFLINE';
       document.getElementById('stat-status').style.color='var(--red)';
     });
 
   // Fetch active positions
-  fetch(FIREBASE_URL + '/positions.json?auth=' + FIREBASE_SECRET)
-    .then(function(r){ return r.json(); })
+  fetch(base + '/positions.json')
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(function(data){
-      _cachedPositions = data || {};
+      _cachedPositions = (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
       renderPositions(_cachedPositions);
       updateStats(_cachedSignals, _cachedPositions);
     })
-    .catch(function(){});
+    .catch(function(err){
+      console.error('[Dashboard] positions fetch error:', err);
+    });
 }
 
 // ── Render signal feed ────────────────────────────────────────
@@ -994,7 +993,7 @@ function renderPositions(data){
     var isLong = (p.direction||'').toUpperCase()==='BUY'||(p.direction||'').toUpperCase()==='LONG';
     var pnl = p.unrealised_pnl!==undefined
       ? '<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '
-        +(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'"">'
+        +(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'
         +(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>' : '';
     return '<div class="pos-card '+(isLong?'long':'short')+'">'
       +'<div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div>'
