@@ -178,12 +178,13 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 
 /* REVEAL */
 .rev{opacity:1;transform:none;transition:opacity 0.6s ease,transform 0.6s ease;}
+#hamburger{display:none;background:none;border:1px solid #1e3248;outline:none;color:#f0c040;font-size:22px;padding:10px 16px;cursor:pointer;line-height:1;flex-shrink:0;}
+@media(max-width:900px){#hamburger{display:block !important;}.nav-email{display:none !important;}}
 .rev.vis{opacity:1;transform:none;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   .nav-links{display:none;}
-  #hamburger{display:flex !important;}
   .nav-email{font-size:9px;padding:6px 10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;}
   #services .cards{grid-template-columns:1fr;background:none;gap:16px;max-width:100%;}
   #how .steps{grid-template-columns:1fr 1fr;}
@@ -192,10 +193,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   #jobs .job-grid{grid-template-columns:1fr;}
 }
 @media(max-width:600px){
-  #hamburger{display:flex;align-items:center;justify-content:center;}
   nav{padding:10px 14px;gap:8px;}
   .logo{font-size:15px;letter-spacing:0;flex:1;}
-  .nav-email{display:none;}
   #hero{padding:90px 16px 50px;}
   h1{font-size:clamp(34px,10vw,52px) !important;line-height:0.95;}
   .eyebrow{font-size:8px;letter-spacing:1px;padding:6px 10px;margin-bottom:18px;flex-wrap:wrap;}
@@ -269,7 +268,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
     <a href="#how">How It Works</a>
   </div>
   <a href="mailto:Thirtyxtechresearch&#64;gmail.com" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
-  <button id="hamburger" aria-label="Menu" style="background:none;border:1px solid var(--border2);outline:none;color:var(--gold);font-size:20px;padding:10px 14px;cursor:pointer;line-height:1;flex-shrink:0;position:relative;z-index:1000;">&#9776;</button>
+  <button id="hamburger" aria-label="Menu">&#9776;</button>
 </nav>
 <div id="mobile-menu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#04070d;flex-direction:column;padding:80px 24px 40px;gap:0;overflow-y:auto;">
   <a href="#hero" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Home</a>
@@ -575,20 +574,28 @@ function openMenu(){
   document.getElementById('hamburger').innerHTML='&#10005;';
   document.body.style.overflow='hidden';
 }
-document.addEventListener('DOMContentLoaded', function(){
-  var btn = document.getElementById('hamburger');
-  var menu = document.getElementById('mobile-menu');
-  if(btn && menu){
-    btn.onclick = function(){
-      if(menu.style.display === 'flex'){ closeMenu(); } else { openMenu(); }
-    };
-  }
-  window.addEventListener('resize', function(){
-    if(window.innerWidth > 900){ closeMenu(); }
+// Hamburger menu toggle
+var _open = false;
+var _btn = document.getElementById('hamburger');
+var _menu = document.getElementById('mobile-menu');
+if(_btn && _menu){
+  _btn.addEventListener('click', function(){
+    _open = !_open;
+    _menu.style.display = _open ? 'flex' : 'none';
+    _btn.innerHTML = _open ? '&#10005;' : '&#9776;';
+    document.body.style.overflow = _open ? 'hidden' : '';
   });
+}
+window.addEventListener('resize', function(){
+  if(window.innerWidth > 900 && _open){
+    _open = false;
+    _menu.style.display = 'none';
+    _btn.innerHTML = '&#9776;';
+    document.body.style.overflow = '';
+  }
 });
 
-// Lightweight intersection observer for scroll reveals
+// Scroll reveals
 if('IntersectionObserver' in window){
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
@@ -596,4 +603,7 @@ if('IntersectionObserver' in window){
     });
   },{threshold:0.08});
   document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
-  document.querySelectorAll
+}
+</script>
+</body>
+  </html>
