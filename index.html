@@ -229,20 +229,28 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 #hero{content-visibility:visible;}
 
 /* DASHBOARD */
-#dash-lock{position:fixed;inset:0;z-index:9999;background:#04070d;display:none;align-items:center;justify-content:center;flex-direction:column;}
-.lock-box{background:var(--card);border:1px solid var(--border2);padding:48px 40px;max-width:380px;width:90%;position:relative;text-align:center;}
+#dash-lock{position:fixed;inset:0;z-index:9999;background:#04070d;display:none;align-items:center;justify-content:center;flex-direction:column;padding:16px;overflow-y:auto;}
+.lock-box{background:var(--card);border:1px solid var(--border2);padding:40px 32px;max-width:420px;width:100%;position:relative;text-align:center;box-sizing:border-box;}
 .lock-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan));}
-.lock-eye{font-size:12px;letter-spacing:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
-.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;color:var(--white);margin-bottom:8px;}
+.lock-eye{font-size:11px;letter-spacing:3px;font-family:'IBM Plex Mono',monospace;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:clamp(22px,7vw,36px);color:var(--white);margin-bottom:8px;line-height:1.05;word-break:break-word;}
 .lock-sub{font-size:12px;color:var(--grey);margin-bottom:28px;line-height:1.6;}
-.lock-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:6px;text-align:center;padding:14px 16px;outline:none;margin-bottom:12px;transition:border-color 0.2s;}
+.lock-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:6px;text-align:center;padding:14px 16px;outline:none;margin-bottom:12px;transition:border-color 0.2s;box-sizing:border-box;}
 .lock-input:focus{border-color:var(--gold);}
 .lock-input.err{border-color:var(--red);animation:shake 0.3s ease;}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .lock-btn{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:#000;font-weight:600;padding:14px;border:none;cursor:pointer;transition:all 0.2s;}
 .lock-btn:hover{background:var(--gold2);}
 .lock-err{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);margin-top:10px;display:none;letter-spacing:1px;}
-#dash-page{display:none;min-height:100vh;background:var(--bg);padding:80px 24px 60px;}
+@media(max-width:480px){
+  .lock-box{padding:28px 20px;}
+  .lock-eye{font-size:9px;letter-spacing:2px;}
+  .lock-input{font-size:15px;letter-spacing:4px;padding:12px 12px;}
+  .lock-btn{font-size:10px;padding:13px;}
+  .lock-sub{font-size:11px;margin-bottom:22px;}
+}
+#dash-page{display:none;min-height:100vh;background:var(--bg);padding:80px 16px 60px;}
+@media(max-width:480px){#dash-page{padding:72px 12px 48px;}}
 .dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
 .dash-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;color:var(--white);}
 .dash-title em{color:var(--gold);font-style:normal;}
@@ -322,7 +330,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
     <a href="#how">How It Works</a>
     <a href="#" onclick="showDashLock();return false;" style="color:var(--cyan);">⚡ Dashboard</a>
   </div>
-  <a href="mailto:Thirtyxtechresearch@gmail.com" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
+  <a href="/cdn-cgi/l/email-protection#4e1a26273c3a37363a2b2d263c2b3d2b2f3c2d260e29232f2722602d2123" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
   <button id="hamburger" aria-label="Menu">&#9776;</button>
 </nav>
 
@@ -334,7 +342,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <a href="#how" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">How It Works</a>
   <a href="#" onclick="closeMenu();showDashLock();return false;" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">⚡ Dashboard</a>
   <div style="padding:16px 0 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);">Contact &amp; Follow</div>
-  <a href="mailto:Thirtyxtechresearch@gmail.com" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#9993; Thirtyxtechresearch&#64;gmail.com</a>
+  <a href="/cdn-cgi/l/email-protection#6f3b07061d1b16171b0a0c071d0a1c0a0e1d0c072f08020e0603410c0002" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#9993; Thirtyxtechresearch&#64;gmail.com</a>
   <a href="https://x.com/utecryptoedu" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#120143; @utecryptoedu</a>
   <a href="https://x.com/utestockedu" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#120143; @utestockedu</a>
   <a href="https://youtube.com/@thirtyxtechresearch" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;display:flex;align-items:center;gap:10px;">&#9654; @thirtyxtechresearch</a>
@@ -351,7 +359,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
       <a href="#services" class="btn-gold">View Pricing</a>
       <a href="#jobs" class="btn-ghost">Book an Analyst</a>
     </div>
-    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="mailto:Thirtyxtechresearch@gmail.com" style="color:var(--gold);">Thirtyxtechresearch&#64;gmail.com</a></div>
+    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="/cdn-cgi/l/email-protection#ce9aa6a7bcbab7b6baabada6bcabbdabafbcada68ea9a3afa7a2e0ada1a3" style="color:var(--gold);">Thirtyxtechresearch&#64;gmail.com</a></div>
     <div class="hero-badges">
       <div><div class="badge-val">8<span class="u">+</span></div><div class="badge-lbl">Asset Classes</div></div>
       <div><div class="badge-val">24<span class="u">/7</span></div><div class="badge-lbl">Live Coverage</div></div>
@@ -620,7 +628,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
     <div>
       <div class="foot-h">Contact &amp; Follow</div>
       <ul class="foot-links">
-        <li><a href="mailto:Thirtyxtechresearch@gmail.com">Thirtyxtechresearch&#64;gmail.com</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#a9fdc1c0dbddd0d1ddcccac1dbccdaccc8dbcac1e9cec4c8c0c587cac6c4">Thirtyxtechresearch&#64;gmail.com</a></li>
         <li><a href="https://x.com/utecryptoedu" target="_blank">&#120143; @utecryptoedu</a></li>
         <li><a href="https://x.com/utestockedu" target="_blank">&#120143; @utestockedu</a></li>
         <li><a href="https://youtube.com/@thirtyxtechresearch?si=s1D3pIu55sR7XiP1" target="_blank">&#9654; @thirtyxtechresearch</a></li>
@@ -636,7 +644,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function closeMenu(){document.getElementById('mobile-menu').style.display='none';document.getElementById('hamburger').innerHTML='&#9776;';document.body.style.overflow='';}
 var _open=false,_btn=document.getElementById('hamburger'),_menu=document.getElementById('mobile-menu');
 if(_btn&&_menu){_btn.addEventListener('click',function(){_open=!_open;_menu.style.display=_open?'flex':'none';_btn.innerHTML=_open?'&#10005;':'&#9776;';document.body.style.overflow=_open?'hidden':'';});}
@@ -721,8 +729,4 @@ function fetchData(){
 function renderFeed(signals){var feed=document.getElementById('signal-feed');if(!signals||signals.length===0){feed.innerHTML='<div class="feed-empty">No signals yet — bot will push here automatically.</div>';return;}feed.innerHTML=signals.map(buildCard).join('');}
 function buildCard(s){var dir=(s.direction||'').toUpperCase();var isBuy=dir==='BUY'||dir==='LONG';var isClosed=s.status==='CLOSED'||s.status==='closed';var cardCls='feed-card '+(isClosed?'closed-card':(isBuy?'buy-card':'sell-card'));var dirCls='fc-dir '+(isClosed?'closed':(isBuy?'buy':'sell'));var dirLbl=isClosed?'&#9632; CLOSED':(isBuy?'&#9650; BUY':'&#9660; SELL');var ts=s.ts?new Date(s.ts*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'--';var date=s.ts?new Date(s.ts*1000).toLocaleDateString([],{month:'short',day:'numeric'}):'';var sym=(s.symbol||'???').replace('USDT','');var pnl=(s.pnl!==undefined&&isClosed)?'<span class="fc-pnl '+(parseFloat(s.pnl)>=0?'pos':'neg')+'">'+(parseFloat(s.pnl)>=0?'+':'')+parseFloat(s.pnl).toFixed(2)+'%</span>':'';var ai=s.ai_confirm?'<span style="color:var(--cyan);font-size:9px;">&#11041; AI: '+s.ai_confirm+'</span>':'';return '<div class="'+cardCls+'"><div class="fc-top"><div><div class="fc-sym">'+sym+'</div><div class="fc-meta">'+(s.tf||'--')+' &middot; T'+(s.tier||'?')+' &middot; '+date+' '+ts+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div class="'+dirCls+'">'+dirLbl+'</div>'+pnl+'</div></div><div class="fc-rows"><div class="fc-row"><span class="fk">ENTRY</span><span class="fv y">'+fp(s.entry)+'</span></div><div class="fc-row"><span class="fk">STOP</span><span class="fv r">'+fp(s.sl)+'</span></div><div class="fc-row"><span class="fk">TP</span><span class="fv g">'+fp(s.tp)+'</span></div><div class="fc-row"><span class="fk">RR</span><span class="fv g">'+(s.rr?'1:'+parseFloat(s.rr).toFixed(2):'--')+'</span></div>'+(s.ema_signal?'<div class="fc-row"><span class="fk">EMA</span><span class="fv g">'+s.ema_signal+'</span></div>':'')+(s.index_gate?'<div class="fc-row"><span class="fk">INDEX</span><span class="fv g">'+s.index_gate+'</span></div>':'')+'</div><div class="fc-foot"><span>'+(s.status?s.status.toUpperCase():'ACTIVE')+'</span>'+ai+'</div></div>';}
 function renderPositions(data){var list=document.getElementById('positions-list');var count=document.getElementById('pos-count');var keys=Object.keys(data||{});count.textContent=keys.length;if(keys.length===0){list.innerHTML='<div class="feed-empty" style="font-size:10px;">No open positions</div>';return;}list.innerHTML=keys.map(function(k){var p=data[k];var isLong=(p.direction||'').toUpperCase()==='BUY'||(p.direction||'').toUpperCase()==='LONG';var pnl=p.unrealised_pnl!==undefined?'<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '+(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'+(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>':'';return '<div class="pos-card '+(isLong?'long':'short')+'"><div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div><div class="pc-row"><span class="pc-k">Entry</span><span class="pc-v y">'+fp(p.entry)+'</span></div><div class="pc-row"><span class="pc-k">SL</span><span class="pc-v r">'+fp(p.sl)+'</span></div><div class="pc-row"><span class="pc-k">TP</span><span class="pc-v g">'+fp(p.tp)+'</span></div>'+pnl+'<div class="pc-row"><span class="pc-k">Tier</span><span class="pc-v">T'+(p.tier||'?')+' &middot; '+(p.tf||'--')+'</span></div></div>';}).join('');}
-function updateStats(signals,positions){var posCount=Object.keys(positions||{}).length;document.getElementById('stat-active').textContent=posCount;var now=Math.floor(Date.now()/1000);var dayStart=now-(now%86400);document.getElementById('stat-today').textContent=(signals||[]).filter(function(s){return s.ts&&s.ts>=dayStart;}).length;if(signals&&signals.length>0){var last=signals[0];document.getElementById('stat-lastsig').textContent=(last.symbol||'?').replace('USDT','')+'T'+(last.tier||'?');}var pnls=Object.values(positions||{}).map(function(p){return parseFloat(p.unrealised_pnl||0);}).filter(function(v){return!isNaN(v);});if(pnls.length>0){var total=pnls.reduce(function(a,b){return a+b;},0);var el=document.getElementById('stat-pnl');el.textContent=(total>=0?'+':'')+total.toFixed(2)+'%';el.className='stat-val '+(total>=0?'g':'r');}}
-function fp(v){if(v===undefined||v===null||v==='')return'--';var n=parseFloat(v);if(isNaN(n))return String(v);if(n>=1000)return'$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});if(n>=1)return'$'+n.toFixed(4);return'$'+n.toFixed(6);}
-</script>
-</body>
-</html>
+function updateStats(signals,positions){var posCount=Object.keys(positions||{}).length;document.getElementById('stat-active').textContent=posCount;var now=Math.floor(Date.now()/1000);var dayStart=now-(now%86400);document.getElementById('stat-today').textContent=(signals||[]).filter(function(s){return s.ts&&s.ts>=dayStart;}).length;if(signals&&signals.length>0){var last=signals[0];document.getElementById('stat-lastsig').textContent=(last.symbol||'?').replace('USDT','')+'T'+(last.tier||'?');}var pnls=Object.values(positions||{}).map(function(p){return parseFloat(p.unrealised_pnl||0);}).filter(function(v){return!isNaN(v);});if(pnls.length>0){var total=pnls.reduce(function(a,b){return a+b;},0);var el=document.getElementById('stat-pnl');el.textContent=(total>=0?'+':'')+total.toFixed(2)+'%';el.className='stat-val
