@@ -638,6 +638,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
 <!-- PRIVATE DASHBOARD -->
 <div id="dash-lock">
   <div class="lock-box">
+    <button onclick="lockDash()" aria-label="Go back" style="position:absolute;top:14px;left:14px;background:none;border:none;color:var(--grey);font-size:18px;cursor:pointer;padding:6px 10px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;transition:color 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--grey)'">&#8592; <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;">Back</span></button>
     <div class="lock-eye">// Private Access</div>
     <div class="lock-title">30× DASHBOARD</div>
     <p class="lock-sub">Bot signals &middot; Active positions &middot; Live feed<br>Owner access only.</p>
@@ -699,6 +700,8 @@ function showDashLock(){
   document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='none';});
   document.getElementById('dash-page').style.display='none';
   document.getElementById('dash-lock').style.display='flex';
+  // Push history state so the browser back button can dismiss the lock
+  history.pushState({dashLock:true}, '', window.location.href);
   setTimeout(function(){var p=document.getElementById('lock-pin');if(p)p.focus();},150);
 }
 
@@ -722,10 +725,19 @@ function checkPin(){
 function lockDash(){
   _unlocked=false;
   if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}
+  document.getElementById('dash-lock').style.display='none';
   document.getElementById('dash-page').style.display='none';
   document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='';});
   window.scrollTo(0,0);
 }
+
+// Browser back button dismisses the lock screen
+window.addEventListener('popstate', function(e){
+  var lock = document.getElementById('dash-lock');
+  if(lock && lock.style.display === 'flex'){
+    lockDash();
+  }
+});
 
 document.addEventListener('DOMContentLoaded',function(){
   var pinEl=document.getElementById('lock-pin');
