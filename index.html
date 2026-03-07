@@ -126,7 +126,7 @@ h1 .c{color:var(--cyan);display:block;}
 .step-box:hover .step-n{color:var(--gold);}
 .step-title{font-family:'Syne','Arial Black',Impact,sans-serif;font-weight:700;font-size:17px;color:var(--white);margin-bottom:8px;}
 .step-desc{font-size:13px;color:var(--grey);line-height:1.7;}
-#jobs .job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+#jobs .job-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
 .job-card{border:1px solid var(--border);padding:36px 28px;position:relative;transition:border-color 0.3s,background 0.3s;}
 .job-card:hover{border-color:var(--gold);background:var(--card);}
 .job-badge{display:inline-block;margin-bottom:16px;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:6px 12px;}
@@ -571,6 +571,22 @@ h1{opacity:1 !important;}
       <a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank" class="book-btn">Book &middot; Pay &pound;50 via PayPal</a>
       <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.</div>
     </div>
+    <div class="job-card" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.04);">
+      <div class="job-badge we" style="background:rgba(0,212,255,0.12);color:var(--cyan);border:1px solid rgba(0,212,255,0.35);">3-Month Programme</div>
+      <div class="job-title">Visual Training on Zoom</div>
+      <div class="job-rate"><sup>&pound;</sup>799</div>
+      <div class="job-schedule">&#127909; Live Zoom Sessions &middot; 1 Quarter</div>
+      <ul class="job-perks">
+        <li>Full walkthrough of the 30&times; Bot trading system</li>
+        <li>7-tier entry system explained live on charts</li>
+        <li>Price action, order blocks &amp; market structure</li>
+        <li>Order flow engine &amp; signal reading</li>
+        <li>Risk management &amp; position sizing in practice</li>
+        <li>Student training manual included</li>
+      </ul>
+      <a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank" class="book-btn" style="background:var(--cyan);color:#000;">Book &middot; Pay &pound;799 via PayPal</a>
+      <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to arrange your first Zoom session.</div>
+    </div>
   </div>
   <div style="margin-top:28px;border:1px solid var(--border);padding:28px;background:var(--card);" class="rev">
     <p class="sec-eye" style="margin-bottom:14px">// I Can Analyse Any Of These For You</p>
@@ -605,6 +621,8 @@ h1{opacity:1 !important;}
         <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
           <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank">Analyst Mon&ndash;Fri &mdash; &pound;90</a></li>
         <li><a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank">Analyst Sat&ndash;Sun &mdash; &pound;50</a></li>
+        <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
+          <a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank">Visual Training (3 months) &mdash; &pound;799</a></li>
       </ul>
     </div>
     <div>
@@ -643,7 +661,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
     <div class="lock-title">30× DASHBOARD</div>
     <p class="lock-sub">Bot signals &middot; Active positions &middot; Live feed<br>Owner access only.</p>
     <input class="lock-input" id="lock-pin" type="password" maxlength="20" placeholder="Enter PIN" autocomplete="off">
-    <button class="lock-btn" id="lock-btn-el">UNLOCK</button>
+    <button class="lock-btn" id="lock-btn-el" onclick="checkPin()">UNLOCK</button>
     <div class="lock-err" id="lock-err">&#9940; Incorrect PIN</div>
   </div>
 </div>
@@ -706,8 +724,8 @@ function showDashLock(){
 }
 
 function checkPin(){
-  var pin=document.getElementById('lock-pin').value.trim();
-  if(pin===DASH_PIN){
+  var pin=document.getElementById('lock-pin').value.trim().toUpperCase();
+  if(pin===DASH_PIN.toUpperCase()){
     document.getElementById('dash-lock').style.display='none';
     document.getElementById('dash-page').style.display='block';
     _unlocked=true;
