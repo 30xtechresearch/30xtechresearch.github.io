@@ -311,6 +311,71 @@ h1{opacity:1 !important;}
 .setup-note{padding:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);line-height:1.9;border:1px dashed var(--border2);background:rgba(240,192,64,0.02);}
 .setup-note strong{color:var(--gold);}
 .setup-note code{display:block;background:var(--bg);border:1px solid var(--border);padding:10px;margin:8px 0;font-size:9px;color:var(--cyan);letter-spacing:0.5px;line-height:1.7;white-space:pre-wrap;word-break:break-all;}
+
+/* ── Social Feeds ── */
+
+/* ── Social Swipe Nav ── */
+.social-carousel-wrap{position:relative;}
+.social-nav{display:flex;align-items:center;justify-content:space-between;margin-top:16px;}
+.social-nav-dots{display:flex;gap:8px;align-items:center;}
+.social-nav-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);border:none;padding:0;cursor:pointer;transition:background 0.2s,transform 0.2s;}
+.social-nav-dot.active{background:var(--gold);transform:scale(1.3);}
+.social-nav-arrows{display:flex;gap:8px;}
+.social-nav-arrow{width:38px;height:38px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;font-family:monospace;}
+.social-nav-arrow:hover{border-color:var(--gold);color:var(--gold);}
+.social-nav-arrow:disabled{opacity:0.3;cursor:not-allowed;}
+.social-swipe-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);display:flex;align-items:center;gap:6px;}
+
+.social-feed-grid{display:flex;gap:20px;margin-top:40px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:16px;cursor:grab;}
+.social-feed-grid:active{cursor:grabbing;}
+.social-feed-grid::-webkit-scrollbar{height:4px;}
+.social-feed-grid::-webkit-scrollbar-track{background:var(--bg);}
+.social-feed-grid::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.social-feed-card{flex:0 0 340px;min-width:340px;scroll-snap-align:start;border:1px solid var(--border);padding:20px;background:var(--card);transition:border-color 0.3s;}
+.social-feed-card:hover{border-color:var(--gold);}
+@media(max-width:600px){.social-feed-card{flex:0 0 88vw;min-width:88vw;}}
+.social-feed-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.social-feed-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:14px;}
+.social-follow-btn{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);color:var(--grey);text-decoration:none;background:rgba(255,255,255,0.04);transition:all 0.2s;}
+.social-follow-btn:hover{border-color:var(--gold);color:var(--gold);}
+.twitter-timeline{max-height:360px;overflow:hidden;display:block;}
+
+/* ── AI Chat Widget ── */
+#ai-chat-btn{position:fixed;bottom:28px;right:28px;z-index:9000;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8a000);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(255,176,0,0.4);transition:transform 0.2s,box-shadow 0.2s;}
+#ai-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(255,176,0,0.55);}
+#ai-chat-btn svg{pointer-events:none;}
+#ai-chat-box{position:fixed;bottom:96px;right:28px;z-index:9001;width:360px;max-width:calc(100vw - 40px);max-height:calc(100vh - 120px);background:var(--card);border:1px solid var(--border2);display:none;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.6);overflow:hidden;}
+#ai-chat-box.open{display:flex;}
+.ai-chat-header{background:linear-gradient(90deg,#1a0f00,#2a1800);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.ai-chat-header-left{display:flex;align-items:center;gap:10px;}
+.ai-chat-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.ai-chat-sub{font-size:10px;color:var(--grey);margin-top:1px;}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.ai-close-btn{background:none;border:none;color:var(--grey);font-size:18px;cursor:pointer;padding:2px 6px;line-height:1;transition:color 0.2s;}
+.ai-close-btn:hover{color:var(--text);}
+.ai-messages{flex:1;min-height:0;max-height:380px;overflow-y:auto;overflow-x:hidden;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;word-wrap:break-word;}
+.ai-messages::-webkit-scrollbar{width:4px;}
+.ai-messages::-webkit-scrollbar-thumb{background:var(--border2);}
+.ai-msg{max-width:85%;font-size:13px;line-height:1.55;padding:10px 14px;border-radius:2px;word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;}
+.ai-msg.bot{background:var(--bg);border:1px solid var(--border);color:var(--text);align-self:flex-start;}
+.ai-msg.user{background:rgba(255,176,0,0.12);border:1px solid rgba(255,176,0,0.25);color:var(--text);align-self:flex-end;}
+.ai-msg.typing{color:var(--grey);font-size:13px;}
+.ai-dots span{animation:dot-blink 1.4s infinite both;}
+.ai-dots span:nth-child(2){animation-delay:.2s;}
+.ai-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dot-blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
+.ai-quick-btns{padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid var(--border);}
+.ai-quick-btn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);background:var(--bg);color:var(--grey);cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+.ai-quick-btn:hover{border-color:var(--gold);color:var(--gold);}
+.ai-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:6px;background:var(--bg);box-sizing:border-box;width:100%;overflow:hidden;}
+.ai-menu-btn{background:var(--bg);border:1px solid var(--border);color:var(--grey);font-size:16px;width:36px;min-width:36px;flex-shrink:0;cursor:pointer;transition:border-color 0.2s,color 0.2s;display:flex;align-items:center;justify-content:center;}
+.ai-menu-btn:hover{border-color:var(--gold);color:var(--gold);}
+.ai-input{flex:1;min-width:0;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;padding:9px 10px;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.ai-input:focus{border-color:var(--gold);}
+.ai-send-btn{background:var(--gold);color:#000;border:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;font-weight:700;padding:0 14px;flex-shrink:0;cursor:pointer;transition:opacity 0.2s;}
+.ai-send-btn:hover{opacity:0.85;}
+.ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -322,6 +387,7 @@ h1{opacity:1 !important;}
     <a href="#hero">Home</a>
     <a href="#services">Pricing</a>
     <a href="#signal-sample">Signals</a>
+    <a href="#social">Follow Us</a>
     <a href="#jobs">Book Analyst</a>
     <a href="#how">How It Works</a>
     <a href="#" onclick="showDashLock();return false;" style="color:var(--cyan);">⚡ Dashboard</a>
@@ -334,6 +400,7 @@ h1{opacity:1 !important;}
   <a href="#hero" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Home</a>
   <a href="#services" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Pricing</a>
   <a href="#signal-sample" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Signals</a>
+  <a href="#social" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Follow Us</a>
   <a href="#jobs" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Book Analyst</a>
   <a href="#how" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">How It Works</a>
   <a href="#" onclick="closeMenu();showDashLock();return false;" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">⚡ Dashboard</a>
@@ -572,7 +639,7 @@ h1{opacity:1 !important;}
       <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.</div>
     </div>
     <div class="job-card" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.04);">
-      <div class="job-badge we" style="background:rgba(0,212,255,0.12);color:var(--cyan);border:1px solid rgba(0,212,255,0.35);">3-Month Programme</div>
+      <div class="job-badge we" style="background:rgba(0,212,255,0.12);color:var(--cyan);border:1px solid rgba(0,212,255,0.3);">3-Month Programme</div>
       <div class="job-title">Visual Training on Zoom</div>
       <div class="job-rate"><sup>&pound;</sup>799</div>
       <div class="job-schedule">&#127909; Live Zoom Sessions &middot; 1 Quarter</div>
@@ -585,7 +652,7 @@ h1{opacity:1 !important;}
         <li>Student training manual included</li>
       </ul>
       <a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank" class="book-btn" style="background:var(--cyan);color:#000;">Book &middot; Pay &pound;799 via PayPal</a>
-      <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to arrange your first Zoom session.</div>
+      <div class="after-note"><strong>&#9993; After Payment:</strong> Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to arrange your first Zoom session.</div>
     </div>
   </div>
   <div style="margin-top:28px;border:1px solid var(--border);padding:28px;background:var(--card);" class="rev">
@@ -600,6 +667,70 @@ h1{opacity:1 !important;}
     </div>
   </div>
 </section>
+
+<!-- SOCIAL FEEDS -->
+<section class="section" id="social">
+  <p class="sec-eye rev">// Stay Connected</p>
+  <h2 class="sec-h2 rev">FOLLOW OUR <span>CHANNELS</span></h2>
+  <p class="sec-sub rev">Live market commentary, trade ideas and educational content across our platforms.</p>
+  <div class="social-carousel-wrap">
+  <div class="social-feed-grid rev" id="social-grid">
+
+    <div class="social-feed-card">
+      <div class="social-feed-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text);flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.213 5.567L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;">@utecryptoedu</span>
+        <a href="https://x.com/utecryptoedu" target="_blank" rel="noopener" class="social-follow-btn">Follow</a>
+      </div>
+      <p class="social-feed-label">Crypto Signals &amp; Analysis</p>
+      <a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter noborders transparent" data-tweet-limit="3" href="https://twitter.com/utecryptoedu">Tweets by @utecryptoedu</a>
+    </div>
+
+    <div class="social-feed-card">
+      <div class="social-feed-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:var(--text);flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.213 5.567L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;">@utestockedu</span>
+        <a href="https://x.com/utestockedu" target="_blank" rel="noopener" class="social-follow-btn">Follow</a>
+      </div>
+      <p class="social-feed-label">Stock &amp; Market Education</p>
+      <a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter noborders transparent" data-tweet-limit="3" href="https://twitter.com/utestockedu">Tweets by @utestockedu</a>
+    </div>
+
+    <div class="social-feed-card">
+      <div class="social-feed-head">
+        <svg width="18" height="13" viewBox="0 0 20 14" fill="#FF0000"><path d="M19.582 2.186A2.506 2.506 0 0 0 17.824.418C16.254 0 10 0 10 0S3.746 0 2.176.418A2.506 2.506 0 0 0 .418 2.186C0 3.763 0 7 0 7s0 3.237.418 4.814a2.506 2.506 0 0 0 1.758 1.768C3.746 14 10 14 10 14s6.254 0 7.824-.418a2.506 2.506 0 0 0 1.758-1.768C20 10.237 20 7 20 7s0-3.237-.418-4.814zM8 10V4l5.196 3L8 10z"/></svg>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;">@thirtyxtechresearch</span>
+        <a href="https://youtube.com/@thirtyxtechresearch" target="_blank" rel="noopener" class="social-follow-btn" style="background:rgba(255,0,0,0.12);color:#ff4444;border-color:rgba(255,0,0,0.28);">Subscribe</a>
+      </div>
+      <p class="social-feed-label">Trading Education &amp; Bot Analysis</p>
+      <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=thirtyxtechresearch" title="30xTech YouTube" frameborder="0" allowfullscreen style="width:100%;height:210px;border:none;display:block;margin-bottom:10px;"></iframe>
+      <a href="https://youtube.com/@thirtyxtechresearch" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--bg);border:1px solid var(--border);text-decoration:none;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+        <svg width="14" height="10" viewBox="0 0 20 14" fill="#FF0000"><path d="M19.582 2.186A2.506 2.506 0 0 0 17.824.418C16.254 0 10 0 10 0S3.746 0 2.176.418A2.506 2.506 0 0 0 .418 2.186C0 3.763 0 7 0 7s0 3.237.418 4.814a2.506 2.506 0 0 0 1.758 1.768C3.746 14 10 14 10 14s6.254 0 7.824-.418a2.506 2.506 0 0 0 1.758-1.768C20 10.237 20 7 20 7s0-3.237-.418-4.814zM8 10V4l5.196 3L8 10z"/></svg>
+        <span style="font-size:12px;color:var(--text);">View all videos on YouTube &rarr;</span>
+      </a>
+    </div>
+
+  </div><!-- /social-feed-grid -->
+
+  <div class="social-nav">
+    <div class="social-swipe-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8l-4 4 4 4"/></svg>
+      Swipe to explore
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 8l4 4-4 4"/></svg>
+    </div>
+    <div class="social-nav-dots" id="social-dots">
+      <button class="social-nav-dot active" onclick="socialScrollTo(0)"></button>
+      <button class="social-nav-dot" onclick="socialScrollTo(1)"></button>
+      <button class="social-nav-dot" onclick="socialScrollTo(2)"></button>
+    </div>
+    <div class="social-nav-arrows">
+      <button class="social-nav-arrow" id="social-prev" onclick="socialScroll(-1)" title="Previous">&#8592;</button>
+      <button class="social-nav-arrow" id="social-next" onclick="socialScroll(1)" title="Next">&#8594;</button>
+    </div>
+  </div>
+</div><!-- /social-carousel-wrap -->
+</section>
+
 
 <!-- FOOTER -->
 <footer>
@@ -621,8 +752,7 @@ h1{opacity:1 !important;}
         <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
           <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank">Analyst Mon&ndash;Fri &mdash; &pound;90</a></li>
         <li><a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank">Analyst Sat&ndash;Sun &mdash; &pound;50</a></li>
-        <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
-          <a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank">Visual Training (3 months) &mdash; &pound;799</a></li>
+        <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);"><a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank">Visual Training (3 months) &mdash; &pound;799</a></li>
       </ul>
     </div>
     <div>
@@ -661,7 +791,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
     <div class="lock-title">30× DASHBOARD</div>
     <p class="lock-sub">Bot signals &middot; Active positions &middot; Live feed<br>Owner access only.</p>
     <input class="lock-input" id="lock-pin" type="password" maxlength="20" placeholder="Enter PIN" autocomplete="off">
-    <button class="lock-btn" id="lock-btn-el" onclick="checkPin()">UNLOCK</button>
+    <button class="lock-btn" id="lock-btn-el">UNLOCK</button>
     <div class="lock-err" id="lock-err">&#9940; Incorrect PIN</div>
   </div>
 </div>
@@ -724,8 +854,8 @@ function showDashLock(){
 }
 
 function checkPin(){
-  var pin=document.getElementById('lock-pin').value.trim().toUpperCase();
-  if(pin===DASH_PIN.toUpperCase()){
+  var pin=document.getElementById('lock-pin').value.trim();
+  if(pin===DASH_PIN){
     document.getElementById('dash-lock').style.display='none';
     document.getElementById('dash-page').style.display='block';
     _unlocked=true;
@@ -1065,5 +1195,189 @@ function fp(v){
   }
 })();
 </script>
+
+<!-- Twitter/X Widget Script -->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<!-- AI CHAT WIDGET -->
+<button id="ai-chat-btn" onclick="toggleChat()" aria-label="Open AI Assistant" title="Ask 30X AI Assistant">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<div id="ai-chat-box" style="display:none;">
+  <div class="ai-chat-header">
+    <div class="ai-chat-header-left">
+      <div class="ai-dot"></div>
+      <div>
+        <div class="ai-chat-title">30X AI Assistant</div>
+        <div class="ai-chat-sub">Ask about signals, products &amp; trading</div>
+      </div>
+    </div>
+    <button class="ai-close-btn" onclick="toggleChat()">&#10005;</button>
+  </div>
+  <div class="ai-messages" id="ai-messages"></div>
+  <div class="ai-quick-btns" id="ai-quick-btns">
+    <button class="ai-quick-btn" onclick="quickAsk('What products do you offer?')">Products</button>
+    <button class="ai-quick-btn" onclick="quickAsk('How does the signal system work?')">How it works</button>
+    <button class="ai-quick-btn" onclick="quickAsk('What is the pricing?')">Pricing</button>
+    <button class="ai-quick-btn" onclick="quickAsk('How do I join the Telegram group?')">Telegram</button>
+  </div>
+  <div class="ai-input-row">
+    <button class="ai-menu-btn" id="ai-menu-btn" onclick="resetChatMenu()" title="Back to menu">&#8592;</button>
+    <input class="ai-input" id="ai-input" placeholder="Ask anything..." maxlength="400" onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="ai-send-btn" id="ai-send-btn" onclick="sendChat()">SEND</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var _open=false, _busy=false, _history=[];
+
+  var SYSTEM="You are the 30X Tech Research AI Assistant. Be professional, helpful and concise. "+
+    "PRODUCTS: Market Data Feed £450 one-time | Market Signals £1420 one-time | Market Data £49/mo | Market Signals £149/mo | Pro Plan £299/mo (signals + 1 analyst session) | Remote Analyst Mon-Fri £90 | Remote Analyst Sat-Sun £50 | Visual Training on Zoom £799 (3-month programme). "+
+    "HOW IT WORKS: 30X Bot monitors 14 instruments across 9 timeframes using a 7-tier entry system. Signals delivered via Telegram private group. "+
+    "TIERS: T1 High Conviction (full stack+AI, 1% risk) T2 Momentum (1%) T3 Structure BOS/CHoCH (0.5%) T4 Chart Pattern (0.25%) T5 Order Flow (0.3%) T6 EMA+StochRSI (0.2%) T7 News/Event (0.15%). "+
+    "CONTACT: Email Thirtyxtechresearch@gmail.com | Website 30xtech.github.io/homepage | X @utecryptoedu @utestockedu | YouTube @thirtyxtechresearch. "+
+    "RULES: Never give financial advice. Direct purchases to PayPal or email. Keep responses under 150 words.";
+
+  function md(t){
+    return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n- /g,'<br>&bull; ').replace(/\n/g,'<br>');
+  }
+
+  function addMsg(text,cls){
+    var m=document.getElementById('ai-messages');
+    var d=document.createElement('div');
+    d.className='ai-msg '+cls;
+    if(cls==='bot'){d.innerHTML=md(text);}else{d.textContent=text;}
+    m.appendChild(d);
+    m.scrollTop=m.scrollHeight;
+  }
+
+  function setTyping(on){
+    var t=document.getElementById('ai-typing');
+    if(on&&!t){
+      var m=document.getElementById('ai-messages');
+      var d=document.createElement('div');
+      d.className='ai-msg bot typing';d.id='ai-typing';
+      d.innerHTML='<span class="ai-dots"><span>.</span><span>.</span><span>.</span></span>';
+      m.appendChild(d);m.scrollTop=m.scrollHeight;
+    }else if(!on&&t){t.remove();}
+  }
+
+  function greet(){
+    addMsg("Hi! I'm the 30X AI Assistant. Ask me about our products, pricing, how the signals work, or anything about the 30X Bot.",'bot');
+  }
+
+  window.resetChatMenu=function(){
+    _history=[];
+    document.getElementById('ai-messages').innerHTML='';
+    document.getElementById('ai-quick-btns').style.display='flex';
+    greet();
+  };
+
+  window.toggleChat=function(){
+    _open=!_open;
+    var box=document.getElementById('ai-chat-box');
+    if(_open){box.style.display='flex';}else{box.style.display='none';}
+    if(_open&&_history.length===0){greet();}
+    if(_open){setTimeout(function(){var el=document.getElementById('ai-input');if(el)el.focus();},200);}
+  };
+
+  window.quickAsk=function(q){
+    document.getElementById('ai-input').value=q;
+    window.sendChat();
+  };
+
+  window.sendChat=async function(){
+    if(_busy)return;
+    var input=document.getElementById('ai-input');
+    var msg=input.value.trim();
+    if(!msg)return;
+    input.value='';
+    addMsg(msg,'user');
+    document.getElementById('ai-quick-btns').style.display='none';
+    _busy=true;
+    document.getElementById('ai-send-btn').disabled=true;
+    setTyping(true);
+    _history.push({role:'user',content:msg});
+    try{
+      var res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:SYSTEM,messages:_history})
+      });
+      setTyping(false);
+      var data=await res.json();
+      var reply=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Sorry, I had trouble responding. Please email Thirtyxtechresearch@gmail.com for help.';
+      _history.push({role:'assistant',content:reply});
+      addMsg(reply,'bot');
+    }catch(e){
+      setTyping(false);
+      addMsg('Connection error. Please email Thirtyxtechresearch@gmail.com for assistance.','bot');
+      _history.pop();
+    }
+    _busy=false;
+    document.getElementById('ai-send-btn').disabled=false;
+    var inp=document.getElementById('ai-input');if(inp)inp.focus();
+  };
+
+})();
+</script>
+
+
+
+<script>
+// Social carousel nav
+(function(){
+  var grid = document.getElementById('social-grid');
+  if(!grid) return;
+  var dots = document.querySelectorAll('.social-nav-dot');
+  var prev = document.getElementById('social-prev');
+  var next = document.getElementById('social-next');
+  var current = 0;
+  var total = 3;
+
+  function getCardWidth(){
+    var card = grid.querySelector('.social-feed-card');
+    if(!card) return 360;
+    return card.offsetWidth + 20;
+  }
+
+  function updateDots(){
+    dots.forEach(function(d,i){ d.classList.toggle('active', i===current); });
+    if(prev) prev.disabled = current === 0;
+    if(next) next.disabled = current === total - 1;
+  }
+
+  function goTo(idx){
+    current = Math.max(0, Math.min(total-1, idx));
+    grid.scrollTo({ left: current * getCardWidth(), behavior: 'smooth' });
+    updateDots();
+  }
+
+  window.socialScroll = function(dir){ goTo(current + dir); };
+  window.socialScrollTo = function(idx){ goTo(idx); };
+
+  grid.addEventListener('scroll', function(){
+    var w = getCardWidth();
+    var idx = Math.round(grid.scrollLeft / w);
+    if(idx !== current){ current = idx; updateDots(); }
+  });
+
+  updateDots();
+})();
+
+// Drag-to-scroll for social feed
+(function(){
+  var el = document.getElementById('social-grid');
+  if(!el) return;
+  var isDown=false, startX, scrollLeft;
+  el.addEventListener('mousedown',function(e){isDown=true;el.classList.add('active');startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
+  el.addEventListener('mouseleave',function(){isDown=false;});
+  el.addEventListener('mouseup',function(){isDown=false;});
+  el.addEventListener('mousemove',function(e){if(!isDown)return;e.preventDefault();var x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX)*1.2;});
+})();
+</script>
+
 </body>
 </html>
