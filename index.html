@@ -19,23 +19,8 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Instrument Sans','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),
-             linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);
-  background-size:48px 48px;
-}
-
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:1001;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px;
-  background:rgba(4,7,13,0.95);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  min-height:54px;
-}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:48px 48px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1001;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(4,7,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);min-height:54px;}
 .logo{font-family:'Syne','Arial Black',Impact,sans-serif;font-weight:800;font-size:16px;letter-spacing:1px;color:var(--white);}
 .logo em{color:var(--gold);font-style:normal;}
 .nav-links{display:flex;gap:24px;}
@@ -43,8 +28,6 @@ nav{
 .nav-links a:hover{color:var(--gold);}
 .nav-email{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:1px;color:var(--gold);text-decoration:none;border:1px solid rgba(240,192,64,0.3);padding:8px 14px;transition:all 0.2s;white-space:nowrap;}
 .nav-email:hover{background:rgba(240,192,64,0.08);}
-
-/* HERO */
 #hero{min-height:100vh;position:relative;display:flex;align-items:center;padding:120px 24px 70px;overflow:hidden;z-index:1;isolation:isolate;}
 .hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 50% at 62% 44%,rgba(240,192,64,0.07) 0%,transparent 65%),radial-gradient(ellipse 35% 35% at 18% 72%,rgba(0,212,255,0.05) 0%,transparent 60%);}
 .hero-left{position:relative;z-index:2;max-width:680px;width:100%;}
@@ -65,17 +48,13 @@ h1 .c{color:var(--cyan);display:block;}
 .badge-val .u{color:var(--gold);font-size:20px;}
 .badge-lbl{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-top:4px;}
 @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-
-/* TICKER */
 .ticker-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;overflow:hidden;position:relative;z-index:1;}
-.ticker-track{display:flex;gap:40px;width:max-content;animation:scroll 28s linear infinite;}
+.ticker-track{display:flex;gap:40px;width:max-content;animation:scroll 28s linear infinite;will-change:transform;}
 .t-item{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;white-space:nowrap;display:flex;gap:8px;align-items:center;}
 .t-sym{color:var(--white);font-weight:600;}
 .t-up{color:var(--green);}
 .t-dn{color:var(--red);}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* SECTIONS */
 .section{padding:80px 24px;position:relative;z-index:1;}
 .section-alt{background:var(--surface);}
 .sec-eye{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
@@ -83,8 +62,18 @@ h1 .c{color:var(--cyan);display:block;}
 .sec-h2 span{color:var(--gold);}
 .sec-sub{font-size:15px;color:var(--grey);max-width:560px;line-height:1.7;margin-bottom:48px;}
 
-/* PRICING */
+/* PRICING TABS */
+.plan-toggle{display:flex;gap:2px;background:var(--border);margin-bottom:32px;max-width:400px;}
+.plan-tab{flex:1;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:center;cursor:pointer;border:none;background:var(--bg);color:var(--grey);transition:all 0.2s;}
+.plan-tab.active{background:var(--gold);color:#000;font-weight:600;}
+.plan-tab:hover:not(.active){background:var(--card);color:var(--text);}
+.plan-panel{display:none;}
+.plan-panel.active{display:block;}
+
+/* PRICING CARDS */
 #services .cards{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);max-width:860px;}
+#services .cards-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border);max-width:1100px;}
+@media(max-width:900px){#services .cards-3{grid-template-columns:1fr;background:none;gap:16px;max-width:100%;}}
 .svc-card{background:var(--bg);padding:40px 32px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background 0.3s;}
 .svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border);transition:background 0.3s;}
 .svc-card.featured{background:var(--card);}
@@ -107,6 +96,8 @@ h1 .c{color:var(--cyan);display:block;}
 .pay-btn-gold:hover{background:var(--gold2);transform:translateY(-1px);}
 .pay-btn-outline{border:1px solid var(--border2);color:var(--text);}
 .pay-btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.pay-btn-cyan{background:var(--cyan);color:#000;}
+.pay-btn-cyan:hover{opacity:0.9;transform:translateY(-1px);}
 .after-note{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;color:var(--grey);line-height:1.9;text-align:center;letter-spacing:0.5px;padding:12px;background:rgba(240,192,64,0.04);border:1px solid rgba(240,192,64,0.12);}
 .after-note strong{color:var(--gold);display:block;margin-bottom:2px;}
 
@@ -128,8 +119,6 @@ h1 .c{color:var(--cyan);display:block;}
 .mv.y{color:var(--gold);}
 .msg-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--grey);letter-spacing:1px;display:flex;gap:8px;align-items:center;}
 .msg-foot::before{content:'●';color:var(--green);animation:blink 1.4s infinite;}
-
-/* HOW IT WORKS */
 #how .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);}
 .step-box{background:var(--bg);padding:36px 24px;transition:background 0.3s;}
 .step-box:hover{background:var(--card);}
@@ -137,11 +126,8 @@ h1 .c{color:var(--cyan);display:block;}
 .step-box:hover .step-n{color:var(--gold);}
 .step-title{font-family:'Syne','Arial Black',Impact,sans-serif;font-weight:700;font-size:17px;color:var(--white);margin-bottom:8px;}
 .step-desc{font-size:13px;color:var(--grey);line-height:1.7;}
-
-/* ANALYST */
 #jobs .job-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.job-card{border:1px solid var(--border);padding:36px 28px;position:relative;opacity:1;transform:none;transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.3s,background 0.3s;}
-.job-card.vis{opacity:1;transform:translateY(0);}
+.job-card{border:1px solid var(--border);padding:36px 28px;position:relative;transition:border-color 0.3s,background 0.3s;}
 .job-card:hover{border-color:var(--gold);background:var(--card);}
 .job-badge{display:inline-block;margin-bottom:16px;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:6px 12px;}
 .job-badge.wd{background:rgba(0,232,122,0.1);color:var(--green);border:1px solid rgba(0,232,122,0.3);}
@@ -155,12 +141,8 @@ h1 .c{color:var(--cyan);display:block;}
 .job-perks li::before{content:'✓';color:var(--green);font-family:'IBM Plex Mono','Courier New',Courier,monospace;flex-shrink:0;}
 .book-btn{display:block;text-align:center;text-decoration:none;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:13px;font-weight:600;background:var(--gold);color:#000;transition:all 0.2s;margin-bottom:14px;}
 .book-btn:hover{background:var(--gold2);transform:translateY(-1px);}
-
-/* DISCLAIMER */
 .disc{border:1px solid rgba(255,69,96,0.2);background:rgba(255,69,96,0.04);padding:20px 24px;margin-top:40px;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;color:var(--grey);line-height:1.9;}
 .disc strong{color:var(--red);}
-
-/* FOOTER */
 footer{background:var(--surface);border-top:1px solid var(--border);padding:56px 24px 32px;}
 .foot-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px;}
 .foot-logo{font-family:'Syne','Arial Black',Impact,sans-serif;font-weight:800;font-size:26px;color:var(--white);margin-bottom:12px;display:block;}
@@ -172,20 +154,17 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 .foot-links li{margin-bottom:10px;}
 .foot-links a{font-size:13px;color:var(--grey);text-decoration:none;transition:color 0.2s;}
 .foot-links a:hover{color:var(--white);}
+.foot-divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
 .foot-bot{padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
 .foot-bot p{font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;color:var(--grey);}
 .foot-bot span{color:var(--gold);}
-
-/* REVEAL */
 .rev{opacity:1;transform:none;transition:opacity 0.6s ease,transform 0.6s ease;}
-#hamburger{display:none;background:none;border:1px solid #1e3248;outline:none;color:#f0c040;font-size:22px;padding:10px 16px;cursor:pointer;line-height:1;flex-shrink:0;}
-@media(max-width:900px){#hamburger{display:block !important;}.nav-email{display:none !important;}}
 .rev.vis{opacity:1;transform:none;}
-
-/* ── RESPONSIVE ── */
+#hamburger{display:none;background:none;border:1px solid #1e3248;outline:none;color:#f0c040;font-size:22px;padding:10px 16px;cursor:pointer;line-height:1;flex-shrink:0;}
 @media(max-width:900px){
+  #hamburger{display:block !important;}
+  .nav-email{display:none !important;}
   .nav-links{display:none;}
-  .nav-email{font-size:9px;padding:6px 10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;}
   #services .cards{grid-template-columns:1fr;background:none;gap:16px;max-width:100%;}
   #how .steps{grid-template-columns:1fr 1fr;}
   #signal-sample .sample-inner{grid-template-columns:1fr;gap:32px;}
@@ -234,10 +213,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   footer{padding:36px 16px 24px;}
   .disc{padding:14px;font-size:10px;}
   .sec-eye{font-size:9px;}
-  /* Show email in hero instead of nav on mobile */
   .mobile-email{display:block !important;}
 }
-
 @media(max-width:400px){
   h1{font-size:clamp(28px,9vw,40px) !important;}
   .hero-actions{flex-direction:column;}
@@ -248,80 +225,51 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   .hero-badges{gap:12px;}
   .job-rate{font-size:28px;}
 }
-
-/* Performance */
-.ticker-track{will-change:transform;}
 section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 #hero{content-visibility:visible;}
 
-/* ═══════════════════════════════════════════════
-   PRIVATE DASHBOARD - password gated
-═══════════════════════════════════════════════ */
-#dash-lock{position:fixed;inset:0;z-index:9999;background:#04070d;
-  display:none;align-items:center;justify-content:center;flex-direction:column;}
-.lock-box{background:var(--card);border:1px solid var(--border2);
-  padding:48px 40px;max-width:380px;width:90%;position:relative;text-align:center;}
-.lock-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--gold),var(--cyan));}
-.lock-eye{font-size:12px;letter-spacing:4px;font-family:'IBM Plex Mono',monospace;
-  color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
-.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;
-  color:var(--white);margin-bottom:8px;}
+/* DASHBOARD */
+#dash-lock{position:fixed;inset:0;z-index:9999;background:#04070d;display:none;align-items:center;justify-content:center;flex-direction:column;}
+.lock-box{background:var(--card);border:1px solid var(--border2);padding:48px 40px;max-width:380px;width:90%;position:relative;text-align:center;}
+.lock-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan));}
+.lock-eye{font-size:12px;letter-spacing:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+.lock-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;color:var(--white);margin-bottom:8px;}
 .lock-sub{font-size:12px;color:var(--grey);margin-bottom:28px;line-height:1.6;}
-.lock-input{width:100%;background:var(--bg);border:1px solid var(--border2);
-  color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:18px;
-  letter-spacing:6px;text-align:center;padding:14px 16px;outline:none;
-  margin-bottom:12px;transition:border-color 0.2s;}
+.lock-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:6px;text-align:center;padding:14px 16px;outline:none;margin-bottom:12px;transition:border-color 0.2s;}
 .lock-input:focus{border-color:var(--gold);}
 .lock-input.err{border-color:var(--red);animation:shake 0.3s ease;}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.lock-btn{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;
-  text-transform:uppercase;background:var(--gold);color:#000;font-weight:600;
-  padding:14px;border:none;cursor:pointer;transition:all 0.2s;}
+.lock-btn{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:#000;font-weight:600;padding:14px;border:none;cursor:pointer;transition:all 0.2s;}
 .lock-btn:hover{background:var(--gold2);}
-.lock-err{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);
-  margin-top:10px;display:none;letter-spacing:1px;}
+.lock-err{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);margin-top:10px;display:none;letter-spacing:1px;}
 #dash-page{display:none;min-height:100vh;background:var(--bg);padding:80px 24px 60px;}
-.dash-header{display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
 .dash-title{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:28px;color:var(--white);}
 .dash-title em{color:var(--gold);font-style:normal;}
-.dash-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;
-  text-transform:uppercase;display:flex;align-items:center;gap:8px;
-  color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:6px 14px;}
-.dash-logout{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;
-  text-transform:uppercase;background:none;border:1px solid var(--border2);
-  color:var(--grey);cursor:pointer;padding:8px 14px;transition:all 0.2s;}
+.dash-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:8px;color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:6px 14px;}
+.dash-logout{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--grey);cursor:pointer;padding:8px 14px;transition:all 0.2s;}
 .dash-logout:hover{border-color:var(--red);color:var(--red);}
-.dash-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:2px;background:var(--border);margin-bottom:28px;}
+.dash-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px;background:var(--border);margin-bottom:28px;}
 .stat-box{background:var(--surface);padding:20px 18px;}
-.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
 .stat-val{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:22px;color:var(--white);}
 .stat-val.g{color:var(--green);}
 .stat-val.y{color:var(--gold);}
 .stat-val.r{color:var(--red);}
 .dash-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start;}
 @media(max-width:900px){.dash-grid{grid-template-columns:1fr;}}
-.feed-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
-  text-transform:uppercase;color:var(--gold);margin-bottom:14px;
-  display:flex;align-items:center;gap:8px;}
+.feed-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .feed-head::before{content:'●';color:var(--green);animation:blink 1.4s infinite;}
-#signal-feed{display:flex;flex-direction:column;gap:10px;max-height:700px;overflow-y:auto;
-  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+#signal-feed{display:flex;flex-direction:column;gap:10px;max-height:700px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 #signal-feed::-webkit-scrollbar{width:4px;}
 #signal-feed::-webkit-scrollbar-thumb{background:var(--border2);}
-.feed-card{background:var(--card);border:1px solid var(--border);padding:18px 20px;
-  position:relative;font-family:'IBM Plex Mono',monospace;transition:border-color 0.2s;}
+.feed-card{background:var(--card);border:1px solid var(--border);padding:18px 20px;position:relative;font-family:'IBM Plex Mono',monospace;transition:border-color 0.2s;}
 .feed-card:hover{border-color:var(--border2);}
-.feed-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--gold),var(--cyan));}
+.feed-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));}
 .feed-card.buy-card::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
 .feed-card.sell-card::before{background:linear-gradient(90deg,var(--red),#ff8c00);}
 .feed-card.closed-card{opacity:0.65;}
-.fc-top{display:flex;justify-content:space-between;align-items:flex-start;
-  margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.fc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .fc-sym{font-family:'Syne','Arial Black',sans-serif;font-weight:800;font-size:18px;color:var(--white);}
 .fc-meta{font-size:9px;color:var(--grey);letter-spacing:1px;margin-top:3px;}
 .fc-dir{font-size:10px;font-weight:600;padding:5px 10px;}
@@ -329,22 +277,17 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 .fc-dir.sell{color:var(--red);background:rgba(255,69,96,0.1);border:1px solid rgba(255,69,96,0.3);}
 .fc-dir.closed{color:var(--grey);background:rgba(74,102,128,0.1);border:1px solid var(--border);}
 .fc-rows{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;}
-.fc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:10px;
-  border-bottom:1px solid rgba(19,32,48,0.6);}
+.fc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:10px;border-bottom:1px solid rgba(19,32,48,0.6);}
 .fc-row:last-child{border:none;}
 .fk{color:var(--grey);letter-spacing:1px;}
 .fv{color:var(--white);}
 .fv.g{color:var(--green);}
 .fv.r{color:var(--red);}
 .fv.y{color:var(--gold);}
-.fc-foot{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);
-  font-size:9px;color:var(--grey);letter-spacing:1px;display:flex;justify-content:space-between;}
+.fc-foot{margin-top:10px;padding-top:8px;border-top:1px solid var(--border);font-size:9px;color:var(--grey);letter-spacing:1px;display:flex;justify-content:space-between;}
 .pos-panel{background:var(--surface);border:1px solid var(--border);padding:20px;margin-bottom:16px;}
-.pos-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
-  text-transform:uppercase;color:var(--cyan);margin-bottom:14px;
-  display:flex;align-items:center;justify-content:space-between;}
-.pos-card{background:var(--card);border:1px solid var(--border);padding:14px 16px;
-  margin-bottom:8px;position:relative;}
+.pos-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.pos-card{background:var(--card);border:1px solid var(--border);padding:14px 16px;margin-bottom:8px;position:relative;}
 .pos-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
 .pos-card.long::before{background:var(--green);}
 .pos-card.short::before{background:var(--red);}
@@ -355,24 +298,15 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 .pc-v.g{color:var(--green);}
 .pc-v.r{color:var(--red);}
 .pc-v.y{color:var(--gold);}
-.feed-loading{display:flex;align-items:center;justify-content:center;padding:48px;
-  color:var(--grey);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;gap:10px;}
-.spin{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--gold);
-  border-radius:50%;animation:spin 0.8s linear infinite;}
+.feed-loading{display:flex;align-items:center;justify-content:center;padding:48px;color:var(--grey);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;gap:10px;}
+.spin{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.feed-empty{padding:32px;text-align:center;font-family:'IBM Plex Mono',monospace;
-  font-size:11px;color:var(--grey);letter-spacing:1px;border:1px dashed var(--border);}
+.feed-empty{padding:32px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--grey);letter-spacing:1px;border:1px dashed var(--border);}
 .setup-panel{background:var(--surface);border:1px solid var(--border);padding:20px;}
-.setup-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
-  text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
-.setup-note{padding:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;
-  color:var(--grey);line-height:1.9;border:1px dashed var(--border2);
-  background:rgba(240,192,64,0.02);}
+.setup-panel-head{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.setup-note{padding:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);line-height:1.9;border:1px dashed var(--border2);background:rgba(240,192,64,0.02);}
 .setup-note strong{color:var(--gold);}
-.setup-note code{display:block;background:var(--bg);border:1px solid var(--border);
-  padding:10px;margin:8px 0;font-size:9px;color:var(--cyan);
-  letter-spacing:0.5px;line-height:1.7;white-space:pre-wrap;word-break:break-all;}
-
+.setup-note code{display:block;background:var(--bg);border:1px solid var(--border);padding:10px;margin:8px 0;font-size:9px;color:var(--cyan);letter-spacing:0.5px;line-height:1.7;white-space:pre-wrap;word-break:break-all;}
 </style>
 </head>
 <body>
@@ -388,9 +322,10 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
     <a href="#how">How It Works</a>
     <a href="#" onclick="showDashLock();return false;" style="color:var(--cyan);">⚡ Dashboard</a>
   </div>
-  <a href="/cdn-cgi/l/email-protection#24704c4d56505d5c5041474c564157414556474c020712101f4349454d480a474b49" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
+  <a href="mailto:Thirtyxtechresearch@gmail.com" class="nav-email">Thirtyxtechresearch&#64;gmail.com</a>
   <button id="hamburger" aria-label="Menu">&#9776;</button>
 </nav>
+
 <div id="mobile-menu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#04070d;flex-direction:column;padding:80px 24px 40px;gap:0;overflow-y:auto;">
   <a href="#hero" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Home</a>
   <a href="#services" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Pricing</a>
@@ -399,7 +334,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <a href="#how" onclick="closeMenu();" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">How It Works</a>
   <a href="#" onclick="closeMenu();showDashLock();return false;" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">⚡ Dashboard</a>
   <div style="padding:16px 0 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);">Contact &amp; Follow</div>
-  <a href="/cdn-cgi/l/email-protection#04506c6d76707d7c7061676c766177616576676c222732303f6369656d682a676b69" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#9993; Thirtyxtechresearch&#64;gmail.com</a>
+  <a href="mailto:Thirtyxtechresearch@gmail.com" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#9993; Thirtyxtechresearch&#64;gmail.com</a>
   <a href="https://x.com/utecryptoedu" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#120143; @utecryptoedu</a>
   <a href="https://x.com/utestockedu" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">&#120143; @utestockedu</a>
   <a href="https://youtube.com/@thirtyxtechresearch" target="_blank" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;display:flex;align-items:center;gap:10px;">&#9654; @thirtyxtechresearch</a>
@@ -411,14 +346,12 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <div class="hero-left">
     <div class="eyebrow"><span class="dot-live"></span>Live Algorithmic Signals &middot; 24/7 Market Data</div>
     <h1>MARKET<br><span class="g">SIGNALS</span><br><span class="c">THAT WORK</span></h1>
-    <p class="hero-desc">
-      Algorithmic trading signals, real-time market data, and professional remote market analysis &mdash; powered by the <strong style="color:var(--gold)">Powered by the 30&times; Bot Dashboard</strong>. 30&times; smarter research &amp; trading decisions.
-    </p>
+    <p class="hero-desc">Algorithmic trading signals, real-time market data, and professional remote market analysis &mdash; powered by the <strong style="color:var(--gold)">30&times; Bot Dashboard</strong>. 30&times; smarter research &amp; trading decisions.</p>
     <div class="hero-actions">
       <a href="#services" class="btn-gold">View Pricing</a>
       <a href="#jobs" class="btn-ghost">Book an Analyst</a>
     </div>
-    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:11px;color:var(--gold);">&#9993; <a href="/cdn-cgi/l/email-protection#dd89b5b4afa9a4a5a9b8beb5afb8aeb8bcafbeb5fbfeebe9e6bab0bcb4b1f3beb2b0" style="color:var(--gold);">Thirtyxtechresearch&#64;gmail.com</a></div>
+    <div class="mobile-email" style="display:none;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);">&#9993; <a href="mailto:Thirtyxtechresearch@gmail.com" style="color:var(--gold);">Thirtyxtechresearch&#64;gmail.com</a></div>
     <div class="hero-badges">
       <div><div class="badge-val">8<span class="u">+</span></div><div class="badge-lbl">Asset Classes</div></div>
       <div><div class="badge-val">24<span class="u">/7</span></div><div class="badge-lbl">Live Coverage</div></div>
@@ -431,36 +364,21 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
-    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">AMZN</span><span class="t-dn">&#9660; -1.05%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div>
-    <span style="color:var(--border)">&#183;</span>
-    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div>
-    <span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">AMZN</span><span class="t-dn">&#9660; -1.05%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">BTC/USD</span><span class="t-up">&#9650; +2.34%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">ETH/USD</span><span class="t-dn">&#9660; -0.87%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAU/USD</span><span class="t-up">&#9650; +0.52%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">EUR/USD</span><span class="t-dn">&#9660; -0.21%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">SOL/USD</span><span class="t-up">&#9650; +4.12%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">GBP/USD</span><span class="t-up">&#9650; +0.33%</span></div><span style="color:var(--border)">&#183;</span>
+    <div class="t-item"><span class="t-sym">XAG/USD</span><span class="t-up">&#9650; +1.78%</span></div><span style="color:var(--border)">&#183;</span>
     <div class="t-item"><span class="t-sym">AMZN</span><span class="t-dn">&#9660; -1.05%</span></div>
   </div>
 </div>
@@ -471,52 +389,109 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <h2 class="sec-h2 rev">CHOOSE YOUR <span>PLAN</span></h2>
   <p class="sec-sub rev">Pay securely via PayPal. After payment, email your <strong style="color:var(--gold)">invoice + Telegram username</strong> to <strong style="color:var(--gold)">Thirtyxtechresearch&#64;gmail.com</strong> and you will be added to the private Telegram group.</p>
 
-  <div class="cards">
-    <!-- Market Data -->
-    <div class="svc-card rev">
-      <div class="svc-tag">Market Data</div>
-      <div class="svc-icon">&#128202;</div>
-      <div class="svc-name">Market Data Feed</div>
-      <div class="svc-price"><sup>&pound;</sup>450</div>
-      <div class="svc-period">One-time payment</div>
-      <ul class="svc-list">
-        <li>Real-time price data across all markets</li>
-        <li>Crypto, Forex, Stocks &amp; Metals</li>
-        <li>Index macro dashboard (SPX, DXY, CMC20)</li>
-        <li>Daily market summary reports</li>
-        <li>Private Telegram group access</li>
-        <li>Live market analysis</li>
-        <li class="dim">Trade signals not included</li>
-      </ul>
-      <a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;450 via PayPal</a>
-      <div class="after-note">
-        <strong>&#9993; After Payment:</strong>
-        Send invoice + Telegram username to<br>
-        Thirtyxtechresearch&#64;gmail.com
+  <div class="plan-toggle rev">
+    <button class="plan-tab active" onclick="switchPlan('onetime',this)">One-Time</button>
+    <button class="plan-tab" onclick="switchPlan('monthly',this)">Monthly</button>
+  </div>
+
+  <!-- ONE-TIME -->
+  <div class="plan-panel active" id="plan-onetime">
+    <div class="cards">
+      <div class="svc-card rev">
+        <div class="svc-tag">Market Data</div>
+        <div class="svc-icon">&#128202;</div>
+        <div class="svc-name">Market Data Feed</div>
+        <div class="svc-price"><sup>&pound;</sup>450</div>
+        <div class="svc-period">One-time payment</div>
+        <ul class="svc-list">
+          <li>Real-time price data across all markets</li>
+          <li>Crypto, Forex, Stocks &amp; Metals</li>
+          <li>Index macro dashboard (SPX, DXY, CMC20)</li>
+          <li>Daily market summary reports</li>
+          <li>Private Telegram group access</li>
+          <li>Live market analysis</li>
+          <li class="dim">Trade signals not included</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;450 via PayPal</a>
+        <div class="after-note"><strong>&#9993; After Payment:</strong>Send invoice + Telegram username to<br>Thirtyxtechresearch&#64;gmail.com</div>
+      </div>
+      <div class="svc-card featured rev">
+        <div class="svc-tag hot">&#11088; Most Popular</div>
+        <div class="svc-icon">&#9889;</div>
+        <div class="svc-name">Market Signals</div>
+        <div class="svc-price"><sup>&pound;</sup>1,420</div>
+        <div class="svc-period">One-time payment</div>
+        <ul class="svc-list">
+          <li>Full algorithmic BUY/SELL signals</li>
+          <li>Entry price, Stop Loss &amp; Take Profit</li>
+          <li>7-tier signal engine (T1&ndash;T7)</li>
+          <li>Index confluence gate included</li>
+          <li>All 8 timeframes (3m &rarr; 1d)</li>
+          <li>Crypto, Forex, Stocks &amp; Metals</li>
+          <li>AI confirmation on T1 signals</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;1,420 via PayPal</a>
+        <div class="after-note"><strong>&#9993; After Payment:</strong>Send invoice + Telegram username to<br>Thirtyxtechresearch&#64;gmail.com</div>
       </div>
     </div>
+  </div>
 
-    <!-- Market Signals -->
-    <div class="svc-card featured rev">
-      <div class="svc-tag hot">&#11088; Most Popular</div>
-      <div class="svc-icon">&#9889;</div>
-      <div class="svc-name">Market Signals</div>
-      <div class="svc-price"><sup>&pound;</sup>1,420</div>
-      <div class="svc-period">One-time payment</div>
-      <ul class="svc-list">
-        <li>Full algorithmic BUY/SELL signals</li>
-        <li>Entry price, Stop Loss &amp; Take Profit</li>
-        <li>7-tier signal engine (T1&ndash;T7)</li>
-        <li>Index confluence gate included</li>
-        <li>All 8 timeframes (3m &rarr; 1d)</li>
-        <li>Crypto, Forex, Stocks &amp; Metals</li>
-        <li>AI confirmation on T1 signals</li>
-      </ul>
-      <a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;1,420 via PayPal</a>
-      <div class="after-note">
-        <strong>&#9993; After Payment:</strong>
-        Send invoice + Telegram username to<br>
-        Thirtyxtechresearch&#64;gmail.com
+  <!-- MONTHLY -->
+  <div class="plan-panel" id="plan-monthly">
+    <div class="cards-3">
+      <div class="svc-card rev">
+        <div class="svc-tag">Market Data</div>
+        <div class="svc-icon">&#128202;</div>
+        <div class="svc-name">Market Data</div>
+        <div class="svc-price"><sup>&pound;</sup>49</div>
+        <div class="svc-period">per month &middot; cancel anytime</div>
+        <ul class="svc-list">
+          <li>Real-time price data across all markets</li>
+          <li>Crypto, Forex, Stocks &amp; Metals</li>
+          <li>Index macro dashboard (SPX, DXY, CMC20)</li>
+          <li>Daily market summary reports</li>
+          <li>Private Telegram group access</li>
+          <li>Live market analysis</li>
+          <li class="dim">Trade signals not included</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/HJZEWPNV4GYAW" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;49/mo via PayPal</a>
+        <div class="after-note"><strong>&#9993; After Payment:</strong>Send invoice + Telegram username to<br>Thirtyxtechresearch&#64;gmail.com</div>
+      </div>
+      <div class="svc-card featured rev">
+        <div class="svc-tag hot">&#11088; Most Popular</div>
+        <div class="svc-icon">&#9889;</div>
+        <div class="svc-name">Market Signals</div>
+        <div class="svc-price"><sup>&pound;</sup>149</div>
+        <div class="svc-period">per month &middot; cancel anytime</div>
+        <ul class="svc-list">
+          <li>Full algorithmic BUY/SELL signals</li>
+          <li>Entry price, Stop Loss &amp; Take Profit</li>
+          <li>7-tier signal engine (T1&ndash;T7)</li>
+          <li>Index confluence gate included</li>
+          <li>All 8 timeframes (3m &rarr; 1d)</li>
+          <li>Crypto, Forex, Stocks &amp; Metals</li>
+          <li>AI confirmation on T1 signals</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/LTR3J533Y5ERS" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;149/mo via PayPal</a>
+        <div class="after-note"><strong>&#9993; After Payment:</strong>Send invoice + Telegram username to<br>Thirtyxtechresearch&#64;gmail.com</div>
+      </div>
+      <div class="svc-card rev">
+        <div class="svc-tag" style="color:var(--cyan);">&#9733; Pro</div>
+        <div class="svc-icon">&#127775;</div>
+        <div class="svc-name">Pro</div>
+        <div class="svc-price"><sup>&pound;</sup>299</div>
+        <div class="svc-period">per month &middot; cancel anytime</div>
+        <ul class="svc-list">
+          <li>Everything in Market Signals</li>
+          <li>1 dedicated analyst session/month</li>
+          <li>Custom asset analysis on request</li>
+          <li>Priority Telegram support</li>
+          <li>Full dashboard access</li>
+          <li>Live market analysis</li>
+          <li>AI confirmation on T1 signals</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/WVBLCRQ5BSF38" target="_blank" class="pay-btn pay-btn-cyan">Pay &pound;299/mo via PayPal</a>
+        <div class="after-note"><strong>&#9993; After Payment:</strong>Send invoice + Telegram username to<br>Thirtyxtechresearch&#64;gmail.com</div>
       </div>
     </div>
   </div>
@@ -534,7 +509,7 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
       <h2 class="sec-h2 rev">WHAT YOU <span>RECEIVE</span></h2>
       <p class="rev">Every signal delivered to your private Telegram instantly &mdash; full details, no guesswork.</p>
       <p class="rev">Each alert includes tier, entry, stop loss, take profit, RR ratio and full index confluence breakdown.</p>
-      <p class="rev" style="color:var(--gold);font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:12px;letter-spacing:1px;margin-top:12px;">Powered by the 30&times; Bot Dashboard<br>30&times; smarter research &amp; trading decisions.</p>
+      <p class="rev" style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:12px;">Powered by the 30&times; Bot Dashboard<br>30&times; smarter research &amp; trading decisions.</p>
     </div>
     <div class="rev">
       <div class="msg-card">
@@ -561,26 +536,10 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <p class="sec-eye rev">// Process</p>
   <h2 class="sec-h2 rev" style="margin-bottom:40px">HOW IT <span>WORKS</span></h2>
   <div class="steps">
-    <div class="step-box">
-      <div class="step-n">01</div>
-      <div class="step-title">Algorithm Scans</div>
-      <p class="step-desc">30&times; Bot monitors Crypto, FX, Stocks &amp; Metals 24/7 using EMA, RSI, StochRSI and 7-tier signal logic.</p>
-    </div>
-    <div class="step-box">
-      <div class="step-n">02</div>
-      <div class="step-title">Macro Gate Check</div>
-      <p class="step-desc">Every signal passes through 8 macro indexes (SPX, DXY, CMC20 &amp; more) before being approved.</p>
-    </div>
-    <div class="step-box">
-      <div class="step-n">03</div>
-      <div class="step-title">AI Confirmation</div>
-      <p class="step-desc">T1 high-conviction signals go through AI review for final qualitative market context before firing.</p>
-    </div>
-    <div class="step-box">
-      <div class="step-n">04</div>
-      <div class="step-title">Telegram Alert</div>
-      <p class="step-desc">Approved signal delivered instantly to your private Telegram group with full entry, SL, TP and confluence data.</p>
-    </div>
+    <div class="step-box"><div class="step-n">01</div><div class="step-title">Algorithm Scans</div><p class="step-desc">30&times; Bot monitors Crypto, FX, Stocks &amp; Metals 24/7 using EMA, RSI, StochRSI and 7-tier signal logic.</p></div>
+    <div class="step-box"><div class="step-n">02</div><div class="step-title">Macro Gate Check</div><p class="step-desc">Every signal passes through 8 macro indexes (SPX, DXY, CMC20 &amp; more) before being approved.</p></div>
+    <div class="step-box"><div class="step-n">03</div><div class="step-title">AI Confirmation</div><p class="step-desc">T1 high-conviction signals go through AI review for final qualitative market context before firing.</p></div>
+    <div class="step-box"><div class="step-n">04</div><div class="step-title">Telegram Alert</div><p class="step-desc">Approved signal delivered instantly to your private Telegram group with full entry, SL, TP and confluence data.</p></div>
   </div>
 </section>
 
@@ -589,7 +548,6 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   <p class="sec-eye rev">// Professional Analysis</p>
   <h2 class="sec-h2 rev">BOOK A REMOTE <span>ANALYST</span></h2>
   <p class="sec-sub rev">I can analyse, visualise and report on any Crypto, Stock, FX or Metal of your choice &mdash; remotely, on demand. Book a session via PayPal then email your invoice to discuss the job.</p>
-
   <div class="job-grid">
     <div class="job-card">
       <div class="job-badge wd">Business Days</div>
@@ -605,12 +563,8 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
         <li>100% remote &middot; Discuss via email</li>
       </ul>
       <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank" class="book-btn">Book &middot; Pay &pound;90 via PayPal</a>
-      <div class="after-note">
-        <strong>&#9993; After Payment:</strong>
-        Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.
-      </div>
+      <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.</div>
     </div>
-
     <div class="job-card">
       <div class="job-badge we">Weekend Sessions</div>
       <div class="job-title">Remote Market Data Analyst</div>
@@ -625,13 +579,9 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
         <li>100% remote &middot; Discuss via email</li>
       </ul>
       <a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank" class="book-btn">Book &middot; Pay &pound;50 via PayPal</a>
-      <div class="after-note">
-        <strong>&#9993; After Payment:</strong>
-        Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.
-      </div>
+      <div class="after-note"><strong>&#9993; After Payment:</strong>Email invoice to Thirtyxtechresearch&#64;gmail.com<br>to discuss your job requirements.</div>
     </div>
   </div>
-
   <div style="margin-top:28px;border:1px solid var(--border);padding:28px;background:var(--card);" class="rev">
     <p class="sec-eye" style="margin-bottom:14px">// I Can Analyse Any Of These For You</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
@@ -658,14 +608,19 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
       <ul class="foot-links">
         <li><a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank">Market Signals &mdash; &pound;1,420</a></li>
         <li><a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank">Market Data &mdash; &pound;450</a></li>
-        <li><a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank">Analyst Mon&ndash;Fri &mdash; &pound;90</a></li>
+        <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
+          <a href="https://www.paypal.com/ncp/payment/LTR3J533Y5ERS" target="_blank">Signals Monthly &mdash; &pound;149/mo</a></li>
+        <li><a href="https://www.paypal.com/ncp/payment/HJZEWPNV4GYAW" target="_blank">Data Monthly &mdash; &pound;49/mo</a></li>
+        <li><a href="https://www.paypal.com/ncp/payment/WVBLCRQ5BSF38" target="_blank">Pro Monthly &mdash; &pound;299/mo</a></li>
+        <li style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border);">
+          <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank">Analyst Mon&ndash;Fri &mdash; &pound;90</a></li>
         <li><a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank">Analyst Sat&ndash;Sun &mdash; &pound;50</a></li>
       </ul>
     </div>
     <div>
       <div class="foot-h">Contact &amp; Follow</div>
       <ul class="foot-links">
-        <li><a href="/cdn-cgi/l/email-protection#a9fdc1c0dbddd0d1ddcccac1dbccdaccc8dbcac18f8a9f9d92cec4c8c0c587cac6c4">Thirtyxtechresearch&#64;gmail.com</a></li>
+        <li><a href="mailto:Thirtyxtechresearch@gmail.com">Thirtyxtechresearch&#64;gmail.com</a></li>
         <li><a href="https://x.com/utecryptoedu" target="_blank">&#120143; @utecryptoedu</a></li>
         <li><a href="https://x.com/utestockedu" target="_blank">&#120143; @utestockedu</a></li>
         <li><a href="https://youtube.com/@thirtyxtechresearch?si=s1D3pIu55sR7XiP1" target="_blank">&#9654; @thirtyxtechresearch</a></li>
@@ -681,57 +636,17 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
   </div>
 </footer>
 
-    </div>
-  </div>
-</footer>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-function closeMenu(){
-  document.getElementById('mobile-menu').style.display='none';
-  document.getElementById('hamburger').innerHTML='&#9776;';
-  document.body.style.overflow='';
-}
-function openMenu(){
-  document.getElementById('mobile-menu').style.display='flex';
-  document.getElementById('hamburger').innerHTML='&#10005;';
-  document.body.style.overflow='hidden';
-}
-// Hamburger menu toggle
-var _open = false;
-var _btn = document.getElementById('hamburger');
-var _menu = document.getElementById('mobile-menu');
-if(_btn && _menu){
-  _btn.addEventListener('click', function(){
-    _open = !_open;
-    _menu.style.display = _open ? 'flex' : 'none';
-    _btn.innerHTML = _open ? '&#10005;' : '&#9776;';
-    document.body.style.overflow = _open ? 'hidden' : '';
-  });
-}
-window.addEventListener('resize', function(){
-  if(window.innerWidth > 900 && _open){
-    _open = false;
-    _menu.style.display = 'none';
-    _btn.innerHTML = '&#9776;';
-    document.body.style.overflow = '';
-  }
-});
-
-// Scroll reveals
-var revEls = document.querySelectorAll('.rev');
-if('IntersectionObserver' in window){
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target); }
-    });
-  },{threshold:0.08});
-  revEls.forEach(function(el){ obs.observe(el); });
-}
+<script>
+function closeMenu(){document.getElementById('mobile-menu').style.display='none';document.getElementById('hamburger').innerHTML='&#9776;';document.body.style.overflow='';}
+var _open=false,_btn=document.getElementById('hamburger'),_menu=document.getElementById('mobile-menu');
+if(_btn&&_menu){_btn.addEventListener('click',function(){_open=!_open;_menu.style.display=_open?'flex':'none';_btn.innerHTML=_open?'&#10005;':'&#9776;';document.body.style.overflow=_open?'hidden':'';});}
+window.addEventListener('resize',function(){if(window.innerWidth>900&&_open){_open=false;_menu.style.display='none';_btn.innerHTML='&#9776;';document.body.style.overflow='';}});
+var revEls=document.querySelectorAll('.rev');
+if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.08});revEls.forEach(function(el){obs.observe(el);});}
+function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));document.getElementById('plan-'+plan).classList.add('active');btn.classList.add('active');}
 </script>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- PRIVATE DASHBOARD — owner only, password gated  -->
-<!-- ═══════════════════════════════════════════════ -->
+<!-- PRIVATE DASHBOARD -->
 <div id="dash-lock">
   <div class="lock-box">
     <div class="lock-eye">// Private Access</div>
@@ -752,294 +667,62 @@ if('IntersectionObserver' in window){
       <button class="dash-logout" id="dash-logout-btn">&#128274; LOCK</button>
     </div>
   </div>
-
   <div class="dash-status">
-    <div class="stat-box">
-      <div class="stat-lbl">Open Positions</div>
-      <div class="stat-val y" id="stat-active">--</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-lbl">Signals Today</div>
-      <div class="stat-val" id="stat-today">--</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-lbl">Open P&amp;L</div>
-      <div class="stat-val" id="stat-pnl">--</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-lbl">Last Signal</div>
-      <div class="stat-val g" id="stat-lastsig" style="font-size:14px;">--</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-lbl">Bot Status</div>
-      <div class="stat-val g" id="stat-status" style="font-size:14px;">STANDBY</div>
-    </div>
+    <div class="stat-box"><div class="stat-lbl">Open Positions</div><div class="stat-val y" id="stat-active">--</div></div>
+    <div class="stat-box"><div class="stat-lbl">Signals Today</div><div class="stat-val" id="stat-today">--</div></div>
+    <div class="stat-box"><div class="stat-lbl">Open P&amp;L</div><div class="stat-val" id="stat-pnl">--</div></div>
+    <div class="stat-box"><div class="stat-lbl">Last Signal</div><div class="stat-val g" id="stat-lastsig" style="font-size:14px;">--</div></div>
+    <div class="stat-box"><div class="stat-lbl">Bot Status</div><div class="stat-val g" id="stat-status" style="font-size:14px;">STANDBY</div></div>
   </div>
-
   <div class="dash-grid">
     <div>
       <div class="feed-head">Live Signal Feed</div>
-      <div id="signal-feed">
-        <div class="feed-loading"><div class="spin"></div>&nbsp;Connecting to bot&hellip;</div>
-      </div>
+      <div id="signal-feed"><div class="feed-loading"><div class="spin"></div>&nbsp;Connecting to bot&hellip;</div></div>
     </div>
     <div>
       <div class="pos-panel">
-        <div class="pos-head">
-          <span>Active Positions</span>
-          <span id="pos-count" style="color:var(--gold);">0</span>
-        </div>
-        <div id="positions-list">
-          <div class="feed-empty" style="font-size:10px;">No open positions</div>
-        </div>
+        <div class="pos-head"><span>Active Positions</span><span id="pos-count" style="color:var(--gold);">0</span></div>
+        <div id="positions-list"><div class="feed-empty" style="font-size:10px;">No open positions</div></div>
       </div>
       <div class="setup-panel">
-        <div class="setup-panel-head">// Firebase Setup</div>
+        <div class="setup-panel-head">// Firebase Config</div>
         <div class="setup-note">
-          <strong>1.</strong> Go to console.firebase.google.com &rarr; create project<br>
-          <strong>2.</strong> Realtime Database &rarr; create &rarr; test mode<br>
-          <strong>3.</strong> Copy your database URL, add to bot .env:<br>
-          <code>FIREBASE_URL=https://your-project-default-rtdb.firebaseio.com
-FIREBASE_SECRET=your_secret</code>
-          <strong>4.</strong> Add the bot snippet to your bot.py<br>
-          <strong>5.</strong> Replace <code>YOUR_FIREBASE_DB_URL</code> in the JS config at bottom of this file<br><br>
-          Once done, all signals push here automatically.
+          <strong>Database:</strong> x-dashboard-b1098<br>
+          <strong>Region:</strong> europe-west1<br>
+          <strong>Status:</strong> <span style="color:var(--green)">Connected</span>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
 <script>
-/* ══════════════════════════════════════════════════════
-   30× BOT PRIVATE DASHBOARD — owner-only, PIN gated
-   ══════════════════════════════════════════════════════
-   ⚠️ CONFIGURE THESE TWO VALUES BEFORE DEPLOYING:      */
+var DASH_PIN='Bami$2264';
+var FIREBASE_URL='https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app';
+var _unlocked=false,_pollTimer=null,_cachedSignals=[],_cachedPositions={};
 
-var DASH_PIN     = 'Bami$2264';            // ← Change your PIN
-var FIREBASE_URL = 'https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app';  // ← Your Firebase Realtime DB URL e.g. https://yourproject-default-rtdb.firebaseio.com
-/* ══════════════════════════════════════════════════════ */
+function showDashLock(){document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='none';});document.getElementById('dash-page').style.display='none';document.getElementById('dash-lock').style.display='flex';setTimeout(function(){document.getElementById('lock-pin').focus();},100);}
+function checkPin(){var pin=document.getElementById('lock-pin').value.trim();if(pin===DASH_PIN){document.getElementById('dash-lock').style.display='none';document.getElementById('dash-page').style.display='block';_unlocked=true;startDashboard();}else{var inp=document.getElementById('lock-pin');inp.classList.add('err');document.getElementById('lock-err').style.display='block';setTimeout(function(){inp.classList.remove('err');},400);inp.value='';inp.focus();}}
+function lockDash(){_unlocked=false;if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}document.getElementById('dash-page').style.display='none';document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='';});window.scrollTo(0,0);}
+document.addEventListener('DOMContentLoaded',function(){document.getElementById('lock-pin').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});document.getElementById('lock-btn-el').addEventListener('click',checkPin);document.getElementById('dash-logout-btn').addEventListener('click',lockDash);});
 
-var _unlocked = false;
-var _pollTimer = null;
-var _cachedSignals = [];
-var _cachedPositions = {};
-
-// ── Lock / unlock ────────────────────────────────────────────
-function showDashLock(){
-  document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){
-    el.style.display='none';
-  });
-  document.getElementById('dash-page').style.display='none';
-  document.getElementById('dash-lock').style.display='flex';
-  setTimeout(function(){ document.getElementById('lock-pin').focus(); },100);
-}
-
-function checkPin(){
-  var pin = document.getElementById('lock-pin').value.trim();
-  if(pin === DASH_PIN){
-    document.getElementById('dash-lock').style.display='none';
-    document.getElementById('dash-page').style.display='block';
-    _unlocked = true;
-    startDashboard();
-  } else {
-    var inp = document.getElementById('lock-pin');
-    inp.classList.add('err');
-    document.getElementById('lock-err').style.display='block';
-    setTimeout(function(){ inp.classList.remove('err'); },400);
-    inp.value=''; inp.focus();
-  }
-}
-
-function lockDash(){
-  _unlocked = false;
-  if(_pollTimer){ clearInterval(_pollTimer); _pollTimer=null; }
-  document.getElementById('dash-page').style.display='none';
-  document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){
-    el.style.display='';
-  });
-  window.scrollTo(0,0);
-}
-
-// Wire up buttons after DOM ready
-document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('lock-pin').addEventListener('keydown',function(e){
-    if(e.key==='Enter') checkPin();
-  });
-  document.getElementById('lock-btn-el').addEventListener('click', checkPin);
-  document.getElementById('dash-logout-btn').addEventListener('click', lockDash);
-});
-
-// ── Firebase polling ─────────────────────────────────────────
-function startDashboard(){
-  var url = (FIREBASE_URL||'').trim().replace(/\/$/,'');
-  if(!url || url === 'YOUR_FIREBASE_DB_URL' || url.indexOf('http') !== 0){
-    document.getElementById('signal-feed').innerHTML =
-      '<div class="feed-empty">&#9881; Firebase not configured yet.<br><br>'
-      +'Open this HTML file, find <strong>FIREBASE_URL</strong> in the &lt;script&gt; and replace '
-      +'<code>YOUR_FIREBASE_DB_URL</code> with your Realtime Database URL, then redeploy.</div>';
-    document.getElementById('stat-status').textContent='SETUP NEEDED';
-    document.getElementById('stat-status').style.color='var(--gold)';
-    document.getElementById('dash-lastupdate').textContent='Not connected';
-    return;
-  }
-  fetchData();
-  _pollTimer = setInterval(fetchData, 8000);
-}
-
+function startDashboard(){fetchData();_pollTimer=setInterval(fetchData,8000);}
 function fetchData(){
-  var base = FIREBASE_URL.replace(/\/$/, '');
-
-  // Fetch last 100 signals — sort client-side to avoid needing Firebase index rules
-  fetch(base + '/signals.json?limitToLast=100')
-    .then(function(r){
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(function(data){
-      if(data && typeof data === 'object' && !Array.isArray(data)){
-        _cachedSignals = Object.values(data)
-          .filter(function(s){ return s && typeof s === 'object'; })
-          .sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
-      } else {
-        _cachedSignals = [];
-      }
-      renderFeed(_cachedSignals);
-      updateStats(_cachedSignals, _cachedPositions);
-      document.getElementById('dash-lastupdate').textContent =
-        'Updated ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      document.getElementById('stat-status').textContent='ONLINE';
-      document.getElementById('stat-status').style.color='var(--green)';
-    })
-    .catch(function(err){
-      console.error('[Dashboard] signals fetch error:', err);
-      document.getElementById('stat-status').textContent='OFFLINE';
-      document.getElementById('stat-status').style.color='var(--red)';
-    });
-
-  // Fetch active positions
-  fetch(base + '/positions.json')
-    .then(function(r){
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(function(data){
-      _cachedPositions = (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
-      renderPositions(_cachedPositions);
-      updateStats(_cachedSignals, _cachedPositions);
-    })
-    .catch(function(err){
-      console.error('[Dashboard] positions fetch error:', err);
-    });
+  var base=FIREBASE_URL.replace(/\/$/,'');
+  fetch(base+'/signals.json?limitToLast=100').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(data){
+    if(data&&typeof data==='object'&&!Array.isArray(data)){_cachedSignals=Object.values(data).filter(function(s){return s&&typeof s==='object';}).sort(function(a,b){return(b.ts||0)-(a.ts||0);});}else{_cachedSignals=[];}
+    renderFeed(_cachedSignals);updateStats(_cachedSignals,_cachedPositions);
+    document.getElementById('dash-lastupdate').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('stat-status').textContent='ONLINE';document.getElementById('stat-status').style.color='var(--green)';
+  }).catch(function(err){console.error(err);document.getElementById('stat-status').textContent='OFFLINE';document.getElementById('stat-status').style.color='var(--red)';});
+  fetch(base+'/positions.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(data){_cachedPositions=(data&&typeof data==='object'&&!Array.isArray(data))?data:{};renderPositions(_cachedPositions);updateStats(_cachedSignals,_cachedPositions);}).catch(function(err){console.error(err);});
 }
 
-// ── Render signal feed ────────────────────────────────────────
-function renderFeed(signals){
-  var feed = document.getElementById('signal-feed');
-  if(!signals || signals.length===0){
-    feed.innerHTML='<div class="feed-empty">No signals yet — bot will push here automatically.</div>';
-    return;
-  }
-  feed.innerHTML = signals.map(buildCard).join('');
-}
-
-function buildCard(s){
-  var dir = (s.direction||'').toUpperCase();
-  var isBuy    = dir==='BUY'  || dir==='LONG';
-  var isClosed = s.status==='CLOSED' || s.status==='closed';
-  var cardCls  = 'feed-card ' + (isClosed ? 'closed-card' : (isBuy ? 'buy-card' : 'sell-card'));
-  var dirCls   = 'fc-dir ' + (isClosed ? 'closed' : (isBuy ? 'buy' : 'sell'));
-  var dirLbl   = isClosed ? '&#9632; CLOSED' : (isBuy ? '&#9650; BUY' : '&#9660; SELL');
-  var ts   = s.ts   ? new Date(s.ts*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '--';
-  var date = s.ts   ? new Date(s.ts*1000).toLocaleDateString([],{month:'short',day:'numeric'})     : '';
-  var sym  = (s.symbol||'???').replace('USDT','');
-  var pnl  = (s.pnl!==undefined && isClosed)
-    ? '<span class="fc-pnl '+(parseFloat(s.pnl)>=0?'pos':'neg')+'">'
-      +(parseFloat(s.pnl)>=0?'+':'')+parseFloat(s.pnl).toFixed(2)+'%</span>' : '';
-  var ai   = s.ai_confirm
-    ? '<span style="color:var(--cyan);font-size:9px;">&#11041; AI: '+s.ai_confirm+'</span>' : '';
-  return '<div class="'+cardCls+'">'
-    +'<div class="fc-top">'
-      +'<div><div class="fc-sym">'+sym+'</div>'
-      +'<div class="fc-meta">'+(s.tf||'--')+' &middot; T'+(s.tier||'?')+' &middot; '+date+' '+ts+'</div></div>'
-      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
-      +'<div class="'+dirCls+'">'+dirLbl+'</div>'+pnl+'</div>'
-    +'</div>'
-    +'<div class="fc-rows">'
-      +'<div class="fc-row"><span class="fk">ENTRY</span><span class="fv y">'+fp(s.entry)+'</span></div>'
-      +'<div class="fc-row"><span class="fk">STOP</span><span class="fv r">'+fp(s.sl)+'</span></div>'
-      +'<div class="fc-row"><span class="fk">TP</span><span class="fv g">'+fp(s.tp)+'</span></div>'
-      +'<div class="fc-row"><span class="fk">RR</span><span class="fv g">'+(s.rr?'1:'+parseFloat(s.rr).toFixed(2):'--')+'</span></div>'
-      +(s.ema_signal?'<div class="fc-row"><span class="fk">EMA</span><span class="fv g">'+s.ema_signal+'</span></div>':'')
-      +(s.index_gate?'<div class="fc-row"><span class="fk">INDEX</span><span class="fv g">'+s.index_gate+'</span></div>':'')
-    +'</div>'
-    +'<div class="fc-foot"><span>'+(s.status?s.status.toUpperCase():'ACTIVE')+'</span>'+ai+'</div>'
-  +'</div>';
-}
-
-// ── Render positions ──────────────────────────────────────────
-function renderPositions(data){
-  var list  = document.getElementById('positions-list');
-  var count = document.getElementById('pos-count');
-  var keys  = Object.keys(data||{});
-  count.textContent = keys.length;
-  if(keys.length===0){
-    list.innerHTML='<div class="feed-empty" style="font-size:10px;">No open positions</div>';
-    return;
-  }
-  list.innerHTML = keys.map(function(k){
-    var p = data[k];
-    var isLong = (p.direction||'').toUpperCase()==='BUY'||(p.direction||'').toUpperCase()==='LONG';
-    var pnl = p.unrealised_pnl!==undefined
-      ? '<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '
-        +(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'
-        +(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>' : '';
-    return '<div class="pos-card '+(isLong?'long':'short')+'">'
-      +'<div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div>'
-      +'<div class="pc-row"><span class="pc-k">Entry</span><span class="pc-v y">'+fp(p.entry)+'</span></div>'
-      +'<div class="pc-row"><span class="pc-k">SL</span><span class="pc-v r">'+fp(p.sl)+'</span></div>'
-      +'<div class="pc-row"><span class="pc-k">TP</span><span class="pc-v g">'+fp(p.tp)+'</span></div>'
-      +pnl
-      +'<div class="pc-row"><span class="pc-k">Tier</span><span class="pc-v">T'+(p.tier||'?')+' &middot; '+(p.tf||'--')+'</span></div>'
-    +'</div>';
-  }).join('');
-}
-
-// ── Stats ─────────────────────────────────────────────────────
-function updateStats(signals, positions){
-  var posCount = Object.keys(positions||{}).length;
-  document.getElementById('stat-active').textContent = posCount;
-  var now = Math.floor(Date.now()/1000);
-  var dayStart = now - (now % 86400);
-  document.getElementById('stat-today').textContent =
-    (signals||[]).filter(function(s){ return s.ts && s.ts >= dayStart; }).length;
-  if(signals && signals.length>0){
-    var last = signals[0];
-    document.getElementById('stat-lastsig').textContent =
-      (last.symbol||'?').replace('USDT','') + ' T' + (last.tier||'?');
-  }
-  var pnls = Object.values(positions||{}).map(function(p){
-    return parseFloat(p.unrealised_pnl||0);
-  }).filter(function(v){ return !isNaN(v); });
-  if(pnls.length>0){
-    var total = pnls.reduce(function(a,b){return a+b;},0);
-    var el = document.getElementById('stat-pnl');
-    el.textContent = (total>=0?'+':'')+total.toFixed(2)+'%';
-    el.className = 'stat-val '+(total>=0?'g':'r');
-  }
-}
-
-// ── Price formatter ───────────────────────────────────────────
-function fp(v){
-  if(v===undefined||v===null||v==='') return '--';
-  var n = parseFloat(v);
-  if(isNaN(n)) return String(v);
-  if(n>=1000)  return '$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  if(n>=1)     return '$'+n.toFixed(4);
-  return '$'+n.toFixed(6);
-}
+function renderFeed(signals){var feed=document.getElementById('signal-feed');if(!signals||signals.length===0){feed.innerHTML='<div class="feed-empty">No signals yet — bot will push here automatically.</div>';return;}feed.innerHTML=signals.map(buildCard).join('');}
+function buildCard(s){var dir=(s.direction||'').toUpperCase();var isBuy=dir==='BUY'||dir==='LONG';var isClosed=s.status==='CLOSED'||s.status==='closed';var cardCls='feed-card '+(isClosed?'closed-card':(isBuy?'buy-card':'sell-card'));var dirCls='fc-dir '+(isClosed?'closed':(isBuy?'buy':'sell'));var dirLbl=isClosed?'&#9632; CLOSED':(isBuy?'&#9650; BUY':'&#9660; SELL');var ts=s.ts?new Date(s.ts*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'--';var date=s.ts?new Date(s.ts*1000).toLocaleDateString([],{month:'short',day:'numeric'}):'';var sym=(s.symbol||'???').replace('USDT','');var pnl=(s.pnl!==undefined&&isClosed)?'<span class="fc-pnl '+(parseFloat(s.pnl)>=0?'pos':'neg')+'">'+(parseFloat(s.pnl)>=0?'+':'')+parseFloat(s.pnl).toFixed(2)+'%</span>':'';var ai=s.ai_confirm?'<span style="color:var(--cyan);font-size:9px;">&#11041; AI: '+s.ai_confirm+'</span>':'';return '<div class="'+cardCls+'"><div class="fc-top"><div><div class="fc-sym">'+sym+'</div><div class="fc-meta">'+(s.tf||'--')+' &middot; T'+(s.tier||'?')+' &middot; '+date+' '+ts+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><div class="'+dirCls+'">'+dirLbl+'</div>'+pnl+'</div></div><div class="fc-rows"><div class="fc-row"><span class="fk">ENTRY</span><span class="fv y">'+fp(s.entry)+'</span></div><div class="fc-row"><span class="fk">STOP</span><span class="fv r">'+fp(s.sl)+'</span></div><div class="fc-row"><span class="fk">TP</span><span class="fv g">'+fp(s.tp)+'</span></div><div class="fc-row"><span class="fk">RR</span><span class="fv g">'+(s.rr?'1:'+parseFloat(s.rr).toFixed(2):'--')+'</span></div>'+(s.ema_signal?'<div class="fc-row"><span class="fk">EMA</span><span class="fv g">'+s.ema_signal+'</span></div>':'')+(s.index_gate?'<div class="fc-row"><span class="fk">INDEX</span><span class="fv g">'+s.index_gate+'</span></div>':'')+'</div><div class="fc-foot"><span>'+(s.status?s.status.toUpperCase():'ACTIVE')+'</span>'+ai+'</div></div>';}
+function renderPositions(data){var list=document.getElementById('positions-list');var count=document.getElementById('pos-count');var keys=Object.keys(data||{});count.textContent=keys.length;if(keys.length===0){list.innerHTML='<div class="feed-empty" style="font-size:10px;">No open positions</div>';return;}list.innerHTML=keys.map(function(k){var p=data[k];var isLong=(p.direction||'').toUpperCase()==='BUY'||(p.direction||'').toUpperCase()==='LONG';var pnl=p.unrealised_pnl!==undefined?'<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '+(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'+(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>':'';return '<div class="pos-card '+(isLong?'long':'short')+'"><div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div><div class="pc-row"><span class="pc-k">Entry</span><span class="pc-v y">'+fp(p.entry)+'</span></div><div class="pc-row"><span class="pc-k">SL</span><span class="pc-v r">'+fp(p.sl)+'</span></div><div class="pc-row"><span class="pc-k">TP</span><span class="pc-v g">'+fp(p.tp)+'</span></div>'+pnl+'<div class="pc-row"><span class="pc-k">Tier</span><span class="pc-v">T'+(p.tier||'?')+' &middot; '+(p.tf||'--')+'</span></div></div>';}).join('');}
+function updateStats(signals,positions){var posCount=Object.keys(positions||{}).length;document.getElementById('stat-active').textContent=posCount;var now=Math.floor(Date.now()/1000);var dayStart=now-(now%86400);document.getElementById('stat-today').textContent=(signals||[]).filter(function(s){return s.ts&&s.ts>=dayStart;}).length;if(signals&&signals.length>0){var last=signals[0];document.getElementById('stat-lastsig').textContent=(last.symbol||'?').replace('USDT','')+'T'+(last.tier||'?');}var pnls=Object.values(positions||{}).map(function(p){return parseFloat(p.unrealised_pnl||0);}).filter(function(v){return!isNaN(v);});if(pnls.length>0){var total=pnls.reduce(function(a,b){return a+b;},0);var el=document.getElementById('stat-pnl');el.textContent=(total>=0?'+':'')+total.toFixed(2)+'%';el.className='stat-val '+(total>=0?'g':'r');}}
+function fp(v){if(v===undefined||v===null||v==='')return'--';var n=parseFloat(v);if(isNaN(n))return String(v);if(n>=1000)return'$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});if(n>=1)return'$'+n.toFixed(4);return'$'+n.toFixed(6);}
 </script>
-
 </body>
-  </html>
+</html>
