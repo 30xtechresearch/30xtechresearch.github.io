@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,6 +98,11 @@ h1 .c{color:var(--cyan);display:block;}
 .pay-btn-cyan:hover{opacity:0.9;transform:translateY(-1px);}
 .after-note{font-family:'DM Mono','Courier New',Courier,monospace;font-size:10px;color:var(--grey);line-height:1.9;text-align:center;letter-spacing:0.5px;padding:12px;background:var(--gold-dim);border:1px solid rgba(232,184,75,0.18);}
 .after-note strong{color:var(--gold);display:block;margin-bottom:2px;}
+/* Bot links inside after-note */
+.bot-links{display:flex;flex-direction:column;gap:4px;margin-top:6px;}
+.bot-link{display:inline-flex;align-items:center;gap:6px;color:var(--cyan);text-decoration:none;font-size:9px;letter-spacing:1px;transition:color 0.2s;}
+.bot-link:hover{color:var(--gold);}
+.bot-link svg{flex-shrink:0;}
 #signal-sample .sample-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
 .sample-text p{font-size:14px;color:var(--grey);line-height:1.8;margin-bottom:14px;}
 .msg-card{background:var(--card);border:1px solid var(--border);padding:28px;position:relative;font-family:'DM Mono','Courier New',Courier,monospace;}
@@ -359,7 +363,6 @@ h1{opacity:1 !important;}
 .ai-dots span:nth-child(2){animation-delay:.2s;}
 .ai-dots span:nth-child(3){animation-delay:.4s;}
 @keyframes dot-blink{0%,80%,100%{opacity:0;}40%{opacity:1;}}
-/* Disabled input state */
 .ai-input:disabled{opacity:0.45;cursor:not-allowed;}
 .ai-quick-btns{padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid var(--border);}
 .ai-quick-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);background:var(--bg);color:var(--grey);cursor:pointer;transition:all 0.18s;white-space:nowrap;}
@@ -372,8 +375,6 @@ h1{opacity:1 !important;}
 .ai-send-btn{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;font-weight:700;padding:0 14px;flex-shrink:0;cursor:pointer;transition:opacity 0.2s;}
 .ai-send-btn:hover{opacity:0.85;}
 .ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-
-/* Claude badge in chat header */
 .ai-claude-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:2px 6px;border:1px solid var(--border);border-radius:2px;margin-left:4px;}
 </style>
 </head>
@@ -467,11 +468,14 @@ h1{opacity:1 !important;}
   </div>
 </div>
 
+<!-- REUSABLE AFTER-PAYMENT NOTE SNIPPETS (via JS template) -->
+<!-- Bot links helper: inserted by JS into each .after-note -->
+
 <!-- PRICING -->
 <section class="section" id="services">
   <p class="sec-eye rev">// Services &amp; Pricing</p>
   <h2 class="sec-h2 rev">CHOOSE YOUR <span>PLAN</span></h2>
-  <p class="sec-sub rev">Pay securely via PayPal. After payment, DM your <strong style="color:var(--gold)">invoice + Telegram username</strong> to <strong style="color:var(--gold)">𝕏 @utecryptoedu</strong> or <strong style="color:var(--gold)">𝕏 @utestockedu</strong> and you will be added to the private Telegram group.</p>
+  <p class="sec-sub rev">Pay securely via PayPal. After payment, DM your <strong style="color:var(--gold)">invoice + Telegram username</strong> to <strong style="color:var(--gold)">𝕏 @utecryptoedu</strong> or <strong style="color:var(--gold)">𝕏 @utestockedu</strong> — you will be added to your private Telegram bot instantly.</p>
 
   <div class="plan-toggle rev">
     <button class="plan-tab active" onclick="switchPlan('onetime',this)">One-Time</button>
@@ -481,8 +485,9 @@ h1{opacity:1 !important;}
   <!-- ONE-TIME -->
   <div class="plan-panel active" id="plan-onetime">
     <div class="cards">
+      <!-- Market Data / Bot1 (Index Confluence) -->
       <div class="svc-card rev">
-        <div class="svc-tag">Market Data</div>
+        <div class="svc-tag">Market Data · Index Confluence</div>
         <div class="svc-icon">&#128202;</div>
         <div class="svc-name">Market Data Feed</div>
         <div class="svc-price"><sup>&pound;</sup>450</div>
@@ -492,15 +497,28 @@ h1{opacity:1 !important;}
           <li>Crypto, Forex, Stocks &amp; Metals</li>
           <li>Index macro dashboard (SPX, DXY, CMC20)</li>
           <li>Daily market summary reports</li>
-          <li>Private Telegram group access</li>
+          <li>Direct access via <strong style="color:var(--cyan);">@Thirtyxpremiumindexconfluencebot</strong></li>
           <li>Live market analysis</li>
           <li class="dim">Trade signals not included</li>
         </ul>
         <a href="https://www.paypal.com/ncp/payment/TQB2KETT5T28Q" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;450 via PayPal</a>
-        <div class="after-note"><strong>𝕏 After Payment:</strong> DM invoice + Telegram username to<br><a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">@utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">@utestockedu</a></div>
+        <div class="after-note">
+          <strong>&#128276; After Payment:</strong>
+          DM invoice + Telegram username to<br>
+          <a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">𝕏 @utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">𝕏 @utestockedu</a>
+          <div class="bot-links">
+            <span style="font-size:9px;color:var(--grey);letter-spacing:1px;">THEN START YOUR BOT:</span>
+            <a href="https://t.me/Thirtyxpremiumindexconfluencebot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumindexconfluencebot
+            </a>
+          </div>
+        </div>
       </div>
+
+      <!-- Market Signals / Bot2 (Premium Signals) -->
       <div class="svc-card featured rev">
-        <div class="svc-tag hot">&#11088; Most Popular</div>
+        <div class="svc-tag hot">&#11088; Most Popular · Premium Signals</div>
         <div class="svc-icon">&#9889;</div>
         <div class="svc-name">Market Signals</div>
         <div class="svc-price"><sup>&pound;</sup>1,420</div>
@@ -515,11 +533,27 @@ h1{opacity:1 !important;}
           <li>Liq-aware SL/TP &middot; Structural trailing</li>
           <li>All 9 timeframes (3m &rarr; 1w)</li>
           <li>Crypto, Forex, Stocks &amp; Metals + Memecoins</li>
-          <li>FX, metals, oil &amp; memecoin markets covered</li>
           <li>AI confirmation on T1 &amp; T8 signals</li>
+          <li>Direct access via <strong style="color:var(--cyan);">@Thirtyxpremiumsignalsbot</strong></li>
+          <li>+ Articles via <strong style="color:var(--cyan);">@Thirtyxpremiummarketarticlesbot</strong></li>
         </ul>
         <a href="https://www.paypal.com/ncp/payment/ADP4U9NME53NU" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;1,420 via PayPal</a>
-        <div class="after-note"><strong>𝕏 After Payment:</strong> DM invoice + Telegram username to<br><a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">@utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">@utestockedu</a></div>
+        <div class="after-note">
+          <strong>&#128276; After Payment:</strong>
+          DM invoice + Telegram username to<br>
+          <a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">𝕏 @utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">𝕏 @utestockedu</a>
+          <div class="bot-links">
+            <span style="font-size:9px;color:var(--grey);letter-spacing:1px;">THEN START YOUR BOTS:</span>
+            <a href="https://t.me/Thirtyxpremiumsignalsbot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumsignalsbot
+            </a>
+            <a href="https://t.me/Thirtyxpremiummarketarticlesbot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiummarketarticlesbot
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -527,8 +561,9 @@ h1{opacity:1 !important;}
   <!-- MONTHLY -->
   <div class="plan-panel" id="plan-monthly">
     <div class="cards-3">
+      <!-- Market Data monthly / Bot1 -->
       <div class="svc-card rev">
-        <div class="svc-tag">Market Data</div>
+        <div class="svc-tag">Market Data · Index Confluence</div>
         <div class="svc-icon">&#128202;</div>
         <div class="svc-name">Market Data</div>
         <div class="svc-price"><sup>&pound;</sup>49</div>
@@ -538,15 +573,28 @@ h1{opacity:1 !important;}
           <li>Crypto, Forex, Stocks &amp; Metals</li>
           <li>Index macro dashboard (SPX, DXY, CMC20)</li>
           <li>Daily market summary reports</li>
-          <li>Private Telegram group access</li>
+          <li>Direct access via <strong style="color:var(--cyan);">@Thirtyxpremiumindexconfluencebot</strong></li>
           <li>Live market analysis</li>
           <li class="dim">Trade signals not included</li>
         </ul>
         <a href="https://www.paypal.com/ncp/payment/HJZEWPNV4GYAW" target="_blank" class="pay-btn pay-btn-outline">Pay &pound;49/mo via PayPal</a>
-        <div class="after-note"><strong>𝕏 After Payment:</strong> DM invoice + Telegram username to<br><a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">@utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">@utestockedu</a></div>
+        <div class="after-note">
+          <strong>&#128276; After Payment:</strong>
+          DM invoice + Telegram username to<br>
+          <a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">𝕏 @utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">𝕏 @utestockedu</a>
+          <div class="bot-links">
+            <span style="font-size:9px;color:var(--grey);letter-spacing:1px;">THEN START YOUR BOT:</span>
+            <a href="https://t.me/Thirtyxpremiumindexconfluencebot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumindexconfluencebot
+            </a>
+          </div>
+        </div>
       </div>
+
+      <!-- Signals monthly / Bot2 -->
       <div class="svc-card featured rev">
-        <div class="svc-tag hot">&#11088; Most Popular</div>
+        <div class="svc-tag hot">&#11088; Most Popular · Premium Signals</div>
         <div class="svc-icon">&#9889;</div>
         <div class="svc-name">Market Signals</div>
         <div class="svc-price"><sup>&pound;</sup>149</div>
@@ -561,14 +609,27 @@ h1{opacity:1 !important;}
           <li>Liq-aware SL/TP &middot; Structural trailing</li>
           <li>All 9 timeframes (3m &rarr; 1w)</li>
           <li>Crypto, Forex, Stocks &amp; Metals + Memecoins</li>
-          <li>FX, metals, oil &amp; memecoin markets covered</li>
           <li>AI confirmation on T1 &amp; T8 signals</li>
+          <li>Direct access via <strong style="color:var(--cyan);">@Thirtyxpremiumsignalsbot</strong></li>
         </ul>
         <a href="https://www.paypal.com/ncp/payment/LTR3J533Y5ERS" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;149/mo via PayPal</a>
-        <div class="after-note"><strong>𝕏 After Payment:</strong> DM invoice + Telegram username to<br><a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">@utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">@utestockedu</a></div>
+        <div class="after-note">
+          <strong>&#128276; After Payment:</strong>
+          DM invoice + Telegram username to<br>
+          <a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">𝕏 @utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">𝕏 @utestockedu</a>
+          <div class="bot-links">
+            <span style="font-size:9px;color:var(--grey);letter-spacing:1px;">THEN START YOUR BOT:</span>
+            <a href="https://t.me/Thirtyxpremiumsignalsbot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumsignalsbot
+            </a>
+          </div>
+        </div>
       </div>
+
+      <!-- Pro monthly / Bot1 + Bot2 + Bot4 -->
       <div class="svc-card rev">
-        <div class="svc-tag" style="color:var(--cyan);">&#9733; Pro</div>
+        <div class="svc-tag" style="color:var(--cyan);">&#9733; Pro · All Bots</div>
         <div class="svc-icon">&#127775;</div>
         <div class="svc-name">Pro</div>
         <div class="svc-price"><sup>&pound;</sup>299</div>
@@ -579,11 +640,30 @@ h1{opacity:1 !important;}
           <li>Custom asset analysis on request</li>
           <li>Priority Telegram support</li>
           <li>Full dashboard access</li>
-          <li>Live market analysis</li>
           <li>AI confirmation on all tier signals</li>
+          <li>All 3 bots included: Signals + Index + Articles</li>
         </ul>
         <a href="https://www.paypal.com/ncp/payment/WVBLCRQ5BSF38" target="_blank" class="pay-btn pay-btn-cyan">Pay &pound;299/mo via PayPal</a>
-        <div class="after-note"><strong>𝕏 After Payment:</strong> DM invoice + Telegram username to<br><a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">@utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">@utestockedu</a></div>
+        <div class="after-note">
+          <strong>&#128276; After Payment:</strong>
+          DM invoice + Telegram username to<br>
+          <a href="https://x.com/utecryptoedu" target="_blank" style="color:var(--gold);">𝕏 @utecryptoedu</a> or <a href="https://x.com/utestockedu" target="_blank" style="color:var(--gold);">𝕏 @utestockedu</a>
+          <div class="bot-links">
+            <span style="font-size:9px;color:var(--grey);letter-spacing:1px;">THEN START ALL YOUR BOTS:</span>
+            <a href="https://t.me/Thirtyxpremiumsignalsbot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumsignalsbot
+            </a>
+            <a href="https://t.me/Thirtyxpremiumindexconfluencebot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiumindexconfluencebot
+            </a>
+            <a href="https://t.me/Thirtyxpremiummarketarticlesbot" target="_blank" class="bot-link">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+              @Thirtyxpremiummarketarticlesbot
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -599,9 +679,24 @@ h1{opacity:1 !important;}
     <div class="sample-text">
       <p class="sec-eye rev">// Live Signal Example</p>
       <h2 class="sec-h2 rev">WHAT YOU <span>RECEIVE</span></h2>
-      <p class="rev">Every signal delivered to your private Telegram instantly — full details, no guesswork.</p>
+      <p class="rev">Every signal delivered directly to your Telegram bot instantly — full details, no guesswork.</p>
       <p class="rev">Each v14 alert includes tier, entry, liq-adjusted SL/TP, MTF confluence vote, Ichimoku bias, VWAP level, and full index confluence breakdown.</p>
       <p class="rev" style="color:var(--gold);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:1px;margin-top:12px;">Powered by the 30&times; Bot v14 Dashboard<br>8-tier engine &middot; MTF gate &middot; multi-exchange</p>
+      <div class="rev" style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);">Start your bot:</span>
+        <a href="https://t.me/Thirtyxpremiumsignalsbot" target="_blank" class="bot-link" style="font-size:11px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiumsignalsbot
+        </a>
+        <a href="https://t.me/Thirtyxpremiummarketarticlesbot" target="_blank" class="bot-link" style="font-size:11px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiummarketarticlesbot
+        </a>
+        <a href="https://t.me/Thirtyxpremiumindexconfluencebot" target="_blank" class="bot-link" style="font-size:11px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiumindexconfluencebot
+        </a>
+      </div>
     </div>
     <div class="rev">
       <div class="msg-card">
@@ -636,7 +731,7 @@ h1{opacity:1 !important;}
     <div class="step-box"><div class="step-n">01</div><div class="step-title">Algorithm Scans</div><p class="step-desc">30&times; Bot v14 monitors 14 instruments across 9 timeframes using EMA², RSI, StochRSI, VWAP, Ichimoku Cloud, Volume Profile, and the 8-tier signal engine (T1–T8) 24/7.</p></div>
     <div class="step-box"><div class="step-n">02</div><div class="step-title">MTF + Macro Gate</div><p class="step-desc">Every T1–T3 entry must pass the Multi-Timeframe Confluence Gate — 4+ votes across 15m/1h/4h/1d — plus 8 macro indexes (SPX, DXY, CMC20). Weak setups are auto-blocked.</p></div>
     <div class="step-box"><div class="step-n">03</div><div class="step-title">AI Confirmation</div><p class="step-desc">T1 and T8 signals go through Claude AI review. SL/TP are automatically adjusted using live liquidation cluster data. Walk-Forward Optimiser tunes params every 7 days.</p></div>
-    <div class="step-box"><div class="step-n">04</div><div class="step-title">Telegram Alert</div><p class="step-desc">Approved signal delivered instantly with entry, liq-adjusted SL/TP, RR ratio, MTF vote score, Ichimoku bias, VWAP level, and full index confluence. Multi-exchange execution runs in parallel.</p></div>
+    <div class="step-box"><div class="step-n">04</div><div class="step-title">Bot Alert</div><p class="step-desc">Approved signal delivered instantly to your private Telegram bot with entry, liq-adjusted SL/TP, RR ratio, MTF vote score, Ichimoku bias, VWAP level, and full index confluence.</p></div>
   </div>
 </section>
 
@@ -779,6 +874,21 @@ h1{opacity:1 !important;}
       <span class="foot-logo"><em>30×</em>TECH RESEARCH</span>
       <p class="foot-desc">Algorithmic trading signal software and professional market analysis. Powered by the 30&times; Bot Dashboard.</p>
       <p class="foot-tagline">30&times; smarter research &amp; trading decisions.</p>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);">Our Telegram Bots</span>
+        <a href="https://t.me/Thirtyxpremiumsignalsbot" target="_blank" class="bot-link">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiumsignalsbot
+        </a>
+        <a href="https://t.me/Thirtyxpremiumindexconfluencebot" target="_blank" class="bot-link">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiumindexconfluencebot
+        </a>
+        <a href="https://t.me/Thirtyxpremiummarketarticlesbot" target="_blank" class="bot-link">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+          @Thirtyxpremiummarketarticlesbot
+        </a>
+      </div>
     </div>
     <div>
       <div class="foot-h">Pricing</div>
@@ -982,19 +1092,12 @@ function buildCard(s){
   var date=s.ts?new Date(s.ts*1000).toLocaleDateString([],{month:'short',day:'numeric'}):'';
   var sym=(s.symbol||'???').replace('USDT','');
   var pnl=(s.pnl!==undefined&&isClosed)?'<span class="fc-pnl '+(parseFloat(s.pnl)>=0?'pos':'neg')+'">'+(parseFloat(s.pnl)>=0?'+':'')+parseFloat(s.pnl).toFixed(2)+'%</span>':'';
-  // Exchange badge
-  var exch='';  // exchange name not shown
-  var exchBadge=exch?'<span style="font-size:8px;padding:1px 5px;border-radius:2px;background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.2);">'+exch+'</span>':'';
-  // T8 confidence
   var confBadge=isT8&&s.confidence?'<span style="font-size:8px;color:var(--gold);padding:1px 5px;border:1px solid rgba(240,192,64,0.3);">conf '+s.confidence+'/10</span>':'';
   var ai=s.ai_confirm?'<span style="color:var(--cyan);font-size:9px;">&#11041; '+s.ai_confirm+'</span>':'';
-  // v14 fields
   var mtf=s.mtf_votes?'<div class="fc-row"><span class="fk">MTF GATE</span><span class="fv" style="color:var(--cyan);">'+s.mtf_votes+'</span></div>':'';
   var ichi=s.ichi_bias?'<div class="fc-row"><span class="fk">ICHIMOKU</span><span class="fv g">'+s.ichi_bias+'</span></div>':'';
   var vwap=s.vwap?'<div class="fc-row"><span class="fk">VWAP</span><span class="fv g">'+fp(s.vwap)+'</span></div>':'';
   var liqAdj=s.liq_adjusted?'<div class="fc-row" style="grid-column:1/-1;"><span class="fk">SL/TP</span><span class="fv" style="color:var(--cyan);">&#10003; Liq-adjusted</span></div>':'';
-  var trailType=s.swing_trail?'<div class="fc-row"><span class="fk">TRAIL</span><span class="fv" style="color:var(--cyan);">Swing structural</span></div>':'';
-  // Chain-of-thought snippet (T8 only)
   var cotSnip='';
   if(isT8&&s.cot&&typeof s.cot==='string'){
     var snippet=s.cot.length>80?s.cot.slice(0,80)+'…':s.cot;
@@ -1006,7 +1109,7 @@ function buildCard(s){
     +'<div class="fc-meta">'+(s.tf||'--')+' &middot; T'+(s.tier||'?')+' &middot; '+date+' '+ts+'</div>'
     +'</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
     +'<div class="'+dirCls+'">'+dirLbl+'</div>'+pnl+'</div></div>'
-    +(exchBadge||confBadge?'<div style="display:flex;gap:5px;margin-bottom:8px;">'+exchBadge+confBadge+'</div>':'')
+    +(confBadge?'<div style="display:flex;gap:5px;margin-bottom:8px;">'+confBadge+'</div>':'')
     +'<div class="fc-rows">'
     +'<div class="fc-row"><span class="fk">ENTRY</span><span class="fv y">'+fp(s.entry)+'</span></div>'
     +'<div class="fc-row"><span class="fk">STOP</span><span class="fv r">'+fp(s.sl)+'</span></div>'
@@ -1014,7 +1117,7 @@ function buildCard(s){
     +'<div class="fc-row"><span class="fk">RR</span><span class="fv g">'+(s.rr?'1:'+parseFloat(s.rr).toFixed(2):'--')+'</span></div>'
     +(s.ema_signal?'<div class="fc-row"><span class="fk">EMA</span><span class="fv g">'+s.ema_signal+'</span></div>':'')
     +(s.index_gate?'<div class="fc-row"><span class="fk">INDEX</span><span class="fv g">'+s.index_gate+'</span></div>':'')
-    +mtf+ichi+vwap+liqAdj+trailType
+    +mtf+ichi+vwap+liqAdj
     +'</div>'
     +cotSnip
     +'<div class="fc-foot"><span>'+(s.status?s.status.toUpperCase():'ACTIVE')+'</span>'+ai+'</div>'
@@ -1034,16 +1137,14 @@ function renderPositions(data){
       ?'<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '+(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'+(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>'
       :'';
     var trail=p.trail_stop!==undefined
-      ?'<div class="pc-row"><span class="pc-k">Trail</span><span class="pc-v" style="color:var(--cyan);">'+fp(p.trail_stop)+(p.swing_trail?' &#9670;':'')+'</span></div>'
+      ?'<div class="pc-row"><span class="pc-k">Trail</span><span class="pc-v" style="color:var(--cyan);">'+fp(p.trail_stop)+'</span></div>'
       :'';
-    var exch=p.exchange?'<span style="font-size:8px;padding:1px 4px;background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.2);margin-left:4px;">'+p.exchange+'</span>':'';
     return '<div class="pos-card '+(isLong?'long':'short')+'">'
-      +'<div class="pc-sym">'+(p.symbol||k).replace('USDT','')+exch+'</div>'
+      +'<div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div>'
       +'<div class="pc-row"><span class="pc-k">Entry</span><span class="pc-v y">'+fp(p.entry)+'</span></div>'
       +'<div class="pc-row"><span class="pc-k">SL</span><span class="pc-v r">'+fp(p.sl)+'</span></div>'
       +'<div class="pc-row"><span class="pc-k">TP</span><span class="pc-v g">'+fp(p.tp)+'</span></div>'
-      +trail
-      +pnl
+      +trail+pnl
       +'<div class="pc-row"><span class="pc-k">Tier</span><span class="pc-v">T'+(p.tier||'?')+' &middot; '+(p.tf||'--')+'</span></div>'
       +'</div>';
   }).join('');
@@ -1056,7 +1157,6 @@ function updateStats(signals,positions){
   var dayStart=now-(now%86400);
   var todaySignals=(signals||[]).filter(function(s){return s.ts&&s.ts>=dayStart;});
   document.getElementById('stat-today').textContent=todaySignals.length;
-  // T8 trades today
   var t8today=todaySignals.filter(function(s){return parseInt(s.tier||0)===8;}).length;
   var t8el=document.getElementById('stat-t8today');
   if(t8el)t8el.textContent=t8today;
@@ -1142,7 +1242,7 @@ function fp(v){
 <!-- Twitter/X Widget Script -->
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<!-- AI CHAT WIDGET HTML -->
+<!-- AI CHAT WIDGET -->
 <button id="ai-chat-btn" onclick="toggleChat()" aria-label="Open AI Assistant" title="Ask 30X AI Assistant">
   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 </button>
@@ -1163,7 +1263,7 @@ function fp(v){
     <button class="ai-quick-btn" onclick="quickAsk('What products do you offer?')">Products</button>
     <button class="ai-quick-btn" onclick="quickAsk('How does the signal system work?')">How it works</button>
     <button class="ai-quick-btn" onclick="quickAsk('What is the pricing?')">Pricing</button>
-    <button class="ai-quick-btn" onclick="quickAsk('How do I join the Telegram group?')">Telegram</button>
+    <button class="ai-quick-btn" onclick="quickAsk('How do I start receiving signals on Telegram?')">Start Bot</button>
   </div>
   <div class="ai-input-row">
     <button class="ai-menu-btn" id="ai-menu-btn" onclick="resetChatMenu()" title="Back to menu">&#8592;</button>
@@ -1172,20 +1272,14 @@ function fp(v){
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     30× AI AGENT — Powered by Claude (Anthropic API)
-     Full conversation history · real Claude responses
-     Replaces the original rule-based keyword matcher entirely
-     ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function(){
   var _open=false, _busy=false, _history=[];
 
-  /* ── System prompt: everything Claude needs to know about 30X ── */
   var SYSTEM =
     "You are the 30X Tech Research AI Assistant — professional, concise, and helpful. " +
-    "Keep all responses under 160 words. Plain text only — no markdown asterisks or # headers " +
-    "(renders in a chat widget). Use line breaks for lists.\n\n" +
+    "Keep all responses under 160 words. Plain text only — no markdown asterisks or # headers. " +
+    "Use line breaks for lists.\n\n" +
 
     "ABOUT 30X TECH RESEARCH:\n" +
     "Algorithmic trading signals, real-time market data, and professional remote market analysis " +
@@ -1195,172 +1289,138 @@ function fp(v){
     "Monitors 14 instruments across 9 timeframes (3m to 1W) using an 8-tier signal engine.\n" +
     "Crypto (live): BTC, ETH, SOL, PAXG\n" +
     "Stocks (live): AMZN, MSTR, COIN, PLTR\n" +
-    "FX (analysis + live trading): EUR/USD, GBP/USD, USD/JPY, AUD/USD\n" +
-    "Metals/Oil (analysis + live trading): XAU/USD, XAG/USD, USOIL\n" +
-    "Trades across multiple exchanges including crypto, FX, metals, oil, and memecoins.\n\n" +
+    "FX: EUR/USD, GBP/USD, USD/JPY, AUD/USD\n" +
+    "Metals/Oil: XAU/USD, XAG/USD, USOIL\n\n" +
 
     "SIGNAL TIERS:\n" +
-    "T1 High Conviction: EMA+RSI+StochRSI+CVD+PA+Ichimoku+MTF gate+AI approval → market order\n" +
-    "T2 Momentum: relaxed indicators + MTF advisory → limit\n" +
-    "T3 Structure: BOS/CHoCH market structure + MTF gate → limit\n" +
-    "T4 Chart Pattern: 25 patterns (Gartley, Elliott, H&S...) → limit\n" +
-    "T5 Order Flow: 7-signal CVD engine → limit\n" +
-    "T6 EMA+StochRSI cross → limit\n" +
-    "T7 News/Event: AI-scored headlines → market\n" +
-    "T8 AI Agent: Claude Sonnet autonomous loop with 30+ tools\n\n" +
+    "T1 High Conviction · T2 Momentum · T3 Structure · T4 Chart Pattern\n" +
+    "T5 Order Flow · T6 EMA+StochRSI · T7 News/Event · T8 AI Agent (Claude)\n\n" +
 
-    "v14 NEW FEATURES:\n" +
-    "VWAP + Volume Profile (POC/VAH/VAL), Ichimoku Cloud, MTF Confluence Gate " +
-    "(T1-3 need 4+ votes across 15m/1h/4h/1d), Liquidation-aware SL/TP, " +
-    "Structural Trailing Stop, Walk-Forward Parameter Optimiser, " +
-    "FX/metals/oil live trading, memecoin auto-scanner engine.\n\n" +
-
-    "WHAT SIGNALS INCLUDE:\n" +
-    "Symbol, timeframe, tier, BUY/SELL, entry, SL, TP, RR ratio, EMA signal, Stoch RSI, " +
-    "VWAP level, Ichimoku bias, MTF vote score, index confluence, AI confirmation. " +
-    "Delivered instantly to private Telegram group.\n\n" +
+    "v14 FEATURES:\n" +
+    "VWAP + Volume Profile, Ichimoku Cloud, MTF Confluence Gate (4+ votes across 15m/1h/4h/1d), " +
+    "Liquidation-aware SL/TP, Structural Trailing Stop, Walk-Forward Optimiser, " +
+    "FX/metals/oil live trading, memecoin auto-scanner.\n\n" +
 
     "PRICING:\n" +
-    "One-time:\n" +
-    "  Market Data £450 → paypal.com/ncp/payment/TQB2KETT5T28Q\n" +
-    "  Market Signals £1,420 → paypal.com/ncp/payment/ADP4U9NME53NU\n" +
-    "Monthly (cancel anytime):\n" +
-    "  Market Data £49/mo → paypal.com/ncp/payment/HJZEWPNV4GYAW\n" +
-    "  Market Signals £149/mo → paypal.com/ncp/payment/LTR3J533Y5ERS\n" +
-    "  Pro £299/mo (signals + 1 analyst session/mo) → paypal.com/ncp/payment/WVBLCRQ5BSF38\n" +
-    "Analyst sessions:\n" +
-    "  Business days £90 → paypal.com/ncp/payment/XDB3CUUNQBEGA\n" +
-    "  Weekends £50 → paypal.com/ncp/payment/XQHVH3YUUTWK6\n" +
-    "Training:\n" +
-    "  3-Month Visual Zoom Programme £799 → paypal.com/ncp/payment/M7D9GECA4A4H8\n\n" +
+    "One-time: Market Data £450 · Market Signals £1,420\n" +
+    "Monthly: Market Data £49/mo · Market Signals £149/mo · Pro £299/mo\n" +
+    "Analyst: Business days £90 · Weekends £50\n" +
+    "Training: 3-Month Zoom Programme £799\n\n" +
 
-    "HOW TO JOIN:\n" +
-    "1. Pay via PayPal link above\n" +
+    "HOW TO JOIN — TELEGRAM BOTS (not groups, bots):\n" +
+    "1. Pay via PayPal link on the website\n" +
     "2. DM invoice + Telegram username to X @utecryptoedu or @utestockedu\n" +
-    "3. Added to private Telegram group — signals start immediately\n\n" +
+    "3. You will be activated on your bot — start it on Telegram:\n" +
+    "   Signals → t.me/Thirtyxpremiumsignalsbot\n" +
+    "   Index/Data → t.me/Thirtyxpremiumindexconfluencebot\n" +
+    "   Articles → t.me/Thirtyxpremiummarketarticlesbot\n" +
+    "Signals are pushed directly to you via your private bot — no group needed.\n\n" +
 
     "SOCIAL: X @utecryptoedu (crypto), X @utestockedu (stocks), YouTube @thirtyxtechresearch\n\n" +
 
     "RISK: Always clarify this is NOT financial advice. Signals are informational only.";
 
-  /* ── Helpers ── */
   function md(t){
-    return t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
   }
 
-  function addMsg(text, cls){
-    var m = document.getElementById('ai-messages');
-    var d = document.createElement('div');
-    d.className = 'ai-msg ' + cls;
-    if(cls === 'bot'){ d.innerHTML = md(text); } else { d.textContent = text; }
+  function addMsg(text,cls){
+    var m=document.getElementById('ai-messages');
+    var d=document.createElement('div');
+    d.className='ai-msg '+cls;
+    if(cls==='bot'){d.innerHTML=md(text);}else{d.textContent=text;}
     m.appendChild(d);
-    m.scrollTop = m.scrollHeight;
+    m.scrollTop=m.scrollHeight;
   }
 
   function setTyping(on){
-    var t = document.getElementById('ai-typing');
-    if(on && !t){
-      var m = document.getElementById('ai-messages');
-      var d = document.createElement('div');
-      d.className = 'ai-msg bot typing'; d.id = 'ai-typing';
-      d.innerHTML = '<span class="ai-dots"><span>.</span><span>.</span><span>.</span></span>';
-      m.appendChild(d); m.scrollTop = m.scrollHeight;
-    } else if(!on && t){ t.remove(); }
+    var t=document.getElementById('ai-typing');
+    if(on&&!t){
+      var m=document.getElementById('ai-messages');
+      var d=document.createElement('div');
+      d.className='ai-msg bot typing';d.id='ai-typing';
+      d.innerHTML='<span class="ai-dots"><span>.</span><span>.</span><span>.</span></span>';
+      m.appendChild(d);m.scrollTop=m.scrollHeight;
+    }else if(!on&&t){t.remove();}
   }
 
   function greet(){
     addMsg(
       "Hi! I'm the 30X AI Assistant — powered by Claude.\n" +
-      "Ask me anything about our signals, pricing, how the bot works, or how to join.",
+      "Ask me anything about our signals, pricing, how the bot works, or how to start receiving alerts.",
       'bot'
     );
   }
 
-  /* ── Public API ── */
-  window.resetChatMenu = function(){
-    _history = [];
-    document.getElementById('ai-messages').innerHTML = '';
-    document.getElementById('ai-quick-btns').style.display = 'flex';
+  window.resetChatMenu=function(){
+    _history=[];
+    document.getElementById('ai-messages').innerHTML='';
+    document.getElementById('ai-quick-btns').style.display='flex';
     greet();
   };
 
-  window.toggleChat = function(){
-    _open = !_open;
-    var box = document.getElementById('ai-chat-box');
-    box.style.display = _open ? 'flex' : 'none';
-    if(_open && _history.length === 0){ greet(); }
-    if(_open){
-      setTimeout(function(){
-        var el = document.getElementById('ai-input');
-        if(el) el.focus();
-      }, 200);
-    }
+  window.toggleChat=function(){
+    _open=!_open;
+    var box=document.getElementById('ai-chat-box');
+    box.style.display=_open?'flex':'none';
+    if(_open&&_history.length===0){greet();}
+    if(_open){setTimeout(function(){var el=document.getElementById('ai-input');if(el)el.focus();},200);}
   };
 
-  window.quickAsk = function(q){
-    document.getElementById('ai-input').value = q;
+  window.quickAsk=function(q){
+    document.getElementById('ai-input').value=q;
     window.sendChat();
   };
 
-  /* ── Claude API call ── */
-  window.sendChat = function(){
-    if(_busy) return;
-    var input = document.getElementById('ai-input');
-    var msg   = (input.value || '').trim();
-    if(!msg) return;
-
-    input.value   = '';
-    input.disabled = true;
-    addMsg(msg, 'user');
-    document.getElementById('ai-quick-btns').style.display = 'none';
-
-    _history.push({ role: 'user', content: msg });
-    if(_history.length > 20) _history = _history.slice(-20);
-
-    _busy = true;
-    document.getElementById('ai-send-btn').disabled = true;
+  window.sendChat=function(){
+    if(_busy)return;
+    var input=document.getElementById('ai-input');
+    var msg=(input.value||'').trim();
+    if(!msg)return;
+    input.value='';
+    input.disabled=true;
+    addMsg(msg,'user');
+    document.getElementById('ai-quick-btns').style.display='none';
+    _history.push({role:'user',content:msg});
+    if(_history.length>20)_history=_history.slice(-20);
+    _busy=true;
+    document.getElementById('ai-send-btn').disabled=true;
     setTyping(true);
-
-    fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model:      'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        system:     SYSTEM,
-        messages:   _history,
+    fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        system:SYSTEM,
+        messages:_history,
       }),
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){return r.json();})
     .then(function(data){
       setTyping(false);
-      var reply = (data.content && data.content[0] && data.content[0].text)
-        ? data.content[0].text.trim()
-        : 'Sorry, I had a hiccup. Please DM \uD835\uDD4F @utecryptoedu directly for fast help!';
-      _history.push({ role: 'assistant', content: reply });
-      addMsg(reply, 'bot');
+      var reply=(data.content&&data.content[0]&&data.content[0].text)
+        ?data.content[0].text.trim()
+        :'Sorry, I had a hiccup. Please DM \uD835\uDD4F @utecryptoedu directly for fast help!';
+      _history.push({role:'assistant',content:reply});
+      addMsg(reply,'bot');
     })
     .catch(function(){
       setTyping(false);
       _history.pop();
-      addMsg(
-        'Connection issue \u2014 please DM \uD835\uDD4F @utecryptoedu or @utestockedu and we\'ll help right away!',
-        'bot'
-      );
+      addMsg('Connection issue \u2014 DM \uD835\uDD4F @utecryptoedu or @utestockedu and we\'ll help right away!','bot');
     })
     .finally(function(){
-      input.disabled = false;
+      input.disabled=false;
       input.focus();
-      _busy = false;
-      document.getElementById('ai-send-btn').disabled = false;
+      _busy=false;
+      document.getElementById('ai-send-btn').disabled=false;
     });
   };
-
 })();
 </script>
 
 <script>
-// Social carousel nav
 (function(){
   var grid=document.getElementById('social-grid');
   if(!grid)return;
@@ -1377,12 +1437,11 @@ function fp(v){
   updateDots();
 })();
 
-// Drag-to-scroll for social feed
 (function(){
   var el=document.getElementById('social-grid');
   if(!el)return;
   var isDown=false,startX,scrollLeft;
-  el.addEventListener('mousedown',function(e){isDown=true;el.classList.add('active');startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
+  el.addEventListener('mousedown',function(e){isDown=true;startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft;});
   el.addEventListener('mouseleave',function(){isDown=false;});
   el.addEventListener('mouseup',function(){isDown=false;});
   el.addEventListener('mousemove',function(e){if(!isDown)return;e.preventDefault();var x=e.pageX-el.offsetLeft;el.scrollLeft=scrollLeft-(x-startX)*1.2;});
