@@ -63,7 +63,7 @@ h1 .c{color:var(--cyan);display:block;}
 .sec-h2{font-family:'Bebas Neue','Arial Black',Impact,sans-serif;font-weight:400;font-size:clamp(30px,5vw,58px);color:var(--white);letter-spacing:-0.5px;line-height:1.05;margin-bottom:12px;}
 .sec-h2 span{color:var(--gold);}
 .sec-sub{font-size:15px;color:var(--grey);max-width:560px;line-height:1.7;margin-bottom:48px;}
-.plan-toggle{display:flex;gap:2px;background:var(--border);margin-bottom:32px;max-width:400px;}
+.plan-toggle{display:flex;gap:2px;background:var(--border);margin-bottom:32px;max-width:600px;}
 .plan-tab{flex:1;font-family:'DM Mono','Courier New',Courier,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:12px 16px;text-align:center;cursor:pointer;border:none;background:var(--bg);color:var(--grey);transition:all 0.2s;}
 .plan-tab.active{background:var(--gold);color:#000;font-weight:600;}
 .plan-tab:hover:not(.active){background:var(--card);color:var(--text);}
@@ -480,6 +480,7 @@ h1{opacity:1 !important;}
   <div class="plan-toggle rev">
     <button class="plan-tab active" onclick="switchPlan('onetime',this)">One-Time</button>
     <button class="plan-tab" onclick="switchPlan('monthly',this)">Monthly</button>
+    <button class="plan-tab" onclick="switchPlan('baas',this)">Bot-as-a-Service</button>
   </div>
 
   <!-- ONE-TIME -->
@@ -665,6 +666,158 @@ h1{opacity:1 !important;}
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- BOT-AS-A-SERVICE -->
+  <div class="plan-panel" id="plan-baas">
+    <p class="sec-sub rev" style="margin-bottom:32px;font-size:13px;">Power your own branded Telegram bot with our AI signal engine. White-label (WL) plans deliver signals, indexes &amp; articles under your brand. CopyTrade (CT) plans mirror our live signals to your clients automatically. After payment, send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong>.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px;background:var(--border);max-width:1200px;">
+
+      <!-- WL Signals -->
+      <div class="svc-card rev">
+        <div class="svc-tag" style="color:var(--gold);">&#9889; White-Label · Signals</div>
+        <div class="svc-icon">&#128268;</div>
+        <div class="svc-name">WL &mdash; Signals</div>
+        <div class="svc-price"><sup>&pound;</sup>299</div>
+        <div class="svc-period">per month &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>Full algorithmic BUY/SELL signals under your brand</li>
+          <li>8-tier signal engine delivered to your bot</li>
+          <li>Crypto, Forex, Stocks &amp; Metals coverage</li>
+          <li>MTF Confluence Gate &middot; Liq-aware SL/TP</li>
+          <li>Your bot, your subscribers</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/VE3GH6GXS96SW" target="_blank" class="pay-btn pay-btn-gold">Subscribe &pound;299/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL Index Confluence -->
+      <div class="svc-card rev">
+        <div class="svc-tag">&#128202; White-Label · Indexes</div>
+        <div class="svc-icon">&#128200;</div>
+        <div class="svc-name">WL &mdash; Index Confluence</div>
+        <div class="svc-price"><sup>&pound;</sup>149</div>
+        <div class="svc-period">per month &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>Live index confluence dashboard under your brand</li>
+          <li>SPX, DXY, CMC20, VIX &amp; more</li>
+          <li>4h · 1d · 1wk · 1mo timeframes</li>
+          <li>RSI &amp; MACD across all indexes</li>
+          <li>Your bot, your subscribers</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/YJ5NF7WALVEHJ" target="_blank" class="pay-btn pay-btn-outline">Subscribe &pound;149/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL Market Articles -->
+      <div class="svc-card rev">
+        <div class="svc-tag">&#128240; White-Label · Articles</div>
+        <div class="svc-icon">&#129488;</div>
+        <div class="svc-name">WL &mdash; Market Articles</div>
+        <div class="svc-price"><sup>&pound;</sup>149</div>
+        <div class="svc-period">per month &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>AI-generated market articles every 60 min</li>
+          <li>Delivered to your branded bot automatically</li>
+          <li>Crypto, Stocks, FX &amp; Metals coverage</li>
+          <li>Keeps your subscribers engaged 24/7</li>
+          <li>Your bot, your subscribers</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/4JLH9R65UMJ5U" target="_blank" class="pay-btn pay-btn-outline">Subscribe &pound;149/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL Index + Articles -->
+      <div class="svc-card rev">
+        <div class="svc-tag">&#128202; White-Label · Indexes + Articles</div>
+        <div class="svc-icon">&#128301;</div>
+        <div class="svc-name">WL &mdash; Index + Articles</div>
+        <div class="svc-price"><sup>&pound;</sup>249</div>
+        <div class="svc-period">per month &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>Index confluence dashboard + AI articles bundle</li>
+          <li>Full macro coverage + hourly market updates</li>
+          <li>Best value for data-focused white-label bots</li>
+          <li>4 timeframes &middot; RSI &amp; MACD on all indexes</li>
+          <li>Your bot, your subscribers</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/96TUFK4CWZJXW" target="_blank" class="pay-btn pay-btn-outline">Subscribe &pound;249/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL Full Premium -->
+      <div class="svc-card featured rev">
+        <div class="svc-tag hot">&#11088; Most Popular · Full White-Label</div>
+        <div class="svc-icon">&#127775;</div>
+        <div class="svc-name">WL &mdash; Full Premium</div>
+        <div class="svc-price"><sup>&pound;</sup>549</div>
+        <div class="svc-period">per month &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>Signals + Index Confluence + AI Articles</li>
+          <li>Complete white-label engine under your brand</li>
+          <li>All markets &middot; All timeframes &middot; 8-tier engine</li>
+          <li>MTF gate &middot; Liq-aware SL/TP &middot; AI confirmation</li>
+          <li>Everything your subscribers need in one bot</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/LFMFPA6842T8S" target="_blank" class="pay-btn pay-btn-gold">Subscribe &pound;549/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- CopyTrade Signals Mirror -->
+      <div class="svc-card rev">
+        <div class="svc-tag" style="color:var(--cyan);">&#128257; CopyTrade · Mirror</div>
+        <div class="svc-icon">&#128279;</div>
+        <div class="svc-name">CopyTrade &mdash; Signals Mirror</div>
+        <div class="svc-price"><sup>&pound;</sup>199</div>
+        <div class="svc-period">per month &middot; Mode: CT</div>
+        <ul class="svc-list">
+          <li>Mirror our live signals to your subscribers in real-time</li>
+          <li>No white-labelling — signals sent as-is</li>
+          <li>All 8 tiers &middot; all markets &middot; all timeframes</li>
+          <li>Instant relay — zero delay</li>
+          <li>Great for copy-trading communities</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/WCH7J4JP7NDK6" target="_blank" class="pay-btn pay-btn-cyan">Subscribe &pound;199/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL + CopyTrade Full -->
+      <div class="svc-card rev">
+        <div class="svc-tag" style="color:var(--cyan);">&#128257; White-Label + CopyTrade · Full</div>
+        <div class="svc-icon">&#128640;</div>
+        <div class="svc-name">WL + CopyTrade &mdash; Full</div>
+        <div class="svc-price"><sup>&pound;</sup>699</div>
+        <div class="svc-period">per month &middot; Mode: CT+WL</div>
+        <ul class="svc-list">
+          <li>Full white-label engine + live signal mirroring</li>
+          <li>Indexes &middot; Signals &middot; Articles + CopyTrade relay</li>
+          <li>Maximum offering for established signal providers</li>
+          <li>All markets &middot; All tiers &middot; AI confirmation</li>
+          <li>Your brand, our engine, their trades</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/YDAEKZLZ6TP96" target="_blank" class="pay-btn pay-btn-cyan">Subscribe &pound;699/mo via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
+      <!-- WL Lifetime -->
+      <div class="svc-card rev" style="border-top:3px solid var(--gold);">
+        <div class="svc-tag hot">&#9889; White-Label · Lifetime Access</div>
+        <div class="svc-icon">&#128142;</div>
+        <div class="svc-name">WL &mdash; Lifetime</div>
+        <div class="svc-price"><sup>&pound;</sup>2,999</div>
+        <div class="svc-period">One-time payment &middot; Mode: WL</div>
+        <ul class="svc-list">
+          <li>Full white-label engine — forever, no monthly fees</li>
+          <li>Signals + Index Confluence + AI Articles included</li>
+          <li>All future updates &amp; new features included</li>
+          <li>Priority support &amp; onboarding session</li>
+          <li>Best ROI for serious signal providers</li>
+        </ul>
+        <a href="https://www.paypal.com/ncp/payment/Q5DAUEPLQVFSU" target="_blank" class="pay-btn pay-btn-gold">Pay &pound;2,999 (Lifetime) via PayPal</a>
+        <div class="after-note"><strong>&#128276; After Payment:</strong> Send proof to <strong style="color:var(--gold);">@ThirtyxSaas</strong> and use <strong style="color:var(--gold);">/ping</strong> in your bot.</div>
+      </div>
+
     </div>
   </div>
 
