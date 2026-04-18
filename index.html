@@ -4,6 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>30×Tech Research — Algorithmic Trading Signals &amp; Market Data</title>
+<meta name="description" content="Institutional-grade algorithmic trading signals, live market data and research. Powered by the 30× Bot v14.">
+<meta name="theme-color" content="#09090b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="30×Tech">
+<link rel="manifest" id="pwa-manifest">
+<script>
+// Inject manifest as blob URL (works on GitHub Pages, no separate file needed)
+(function(){
+  const manifest = {
+    name: "30×Tech Research",
+    short_name: "30×Tech",
+    description: "Institutional-grade trading signals & market data",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#09090b",
+    theme_color: "#09090b",
+    icons: [{
+      src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%2309090b'/><text x='50%25' y='58%25' text-anchor='middle' dominant-baseline='middle' font-size='280' font-family='Georgia,serif' fill='%23c9a84c'>30</text></svg>",
+      sizes: "512x512",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    }]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+  const url  = URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').href = url;
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap">
@@ -375,6 +405,24 @@ h1{opacity:1 !important;}
 .ai-send-btn:hover{opacity:0.85;}
 .ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
 .ai-claude-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:2px 6px;border:1px solid var(--border);border-radius:2px;margin-left:4px;}
+
+/* ── PWA Install Banner ── */
+#pwa-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:8999;
+  background:#111114;border-top:1px solid #1f3350;
+  padding:14px 18px;display:none;align-items:center;gap:14px;
+  animation:slideUp 0.3s ease;font-family:'DM Sans',sans-serif;
+}
+#pwa-banner.show{display:flex;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.pwa-icon{width:44px;height:44px;background:#0b1626;border:1px solid #1f3350;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',serif;font-size:17px;color:var(--gold);font-weight:700;}
+.pwa-text{flex:1;min-width:0;}
+.pwa-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;}
+.pwa-sub{font-size:11px;color:var(--grey);line-height:1.4;}
+.pwa-btn-install{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:10px 18px;cursor:pointer;flex-shrink:0;transition:background .2s;white-space:nowrap;}
+.pwa-btn-install:hover{background:var(--gold2);}
+.pwa-btn-close{background:none;border:1px solid var(--border2);color:var(--grey);font-size:16px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,color .2s;}
+.pwa-btn-close:hover{border-color:var(--gold);color:var(--gold);}
 </style>
 <style id="app-portal-css">
 /* ══ PORTAL — full viewport takeover ══ */
@@ -535,27 +583,115 @@ h1{opacity:1 !important;}
   #app-portal .seg-btn.active { background: var(--card); color: var(--text); }
 
   /* ── Signals ─────────────────────────── */
-  #app-portal .signal-card { margin: 0 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; }
-  #app-portal .signal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  #app-portal .signal-symbol { font-family: 'DM Serif Display', serif; font-size: 16px; }
-  #app-portal .signal-dir { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 20px; }
-  #app-portal .signal-dir.long { background: rgba(46,204,113,.12); color: var(--green); }
+  /* ── Signal card ───────────────────────────────── */
+  #app-portal .signal-card {
+    margin: 0 16px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    overflow: hidden;         /* nothing escapes the card */
+  }
+  /* Top accent line — gold for long, red for short */
+  #app-portal .signal-card.sig-long  { border-top: 2px solid var(--green); }
+  #app-portal .signal-card.sig-short { border-top: 2px solid var(--red); }
+
+  #app-portal .signal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  #app-portal .signal-header-left  { flex: 1; min-width: 0; overflow: hidden; }
+  #app-portal .signal-header-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+  #app-portal .signal-symbol {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #app-portal .signal-tf {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  #app-portal .signal-dir {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+  }
+  #app-portal .signal-dir.long  { background: rgba(46,204,113,.12); color: var(--green); }
   #app-portal .signal-dir.short { background: rgba(231,76,60,.12);  color: var(--red);   }
-  #app-portal .signal-meta { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
-  #app-portal .sf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin-bottom: 2px; }
-  #app-portal .sf-val { font-size: 13px; font-weight: 600; }
-  #app-portal .signal-time { font-size: 10px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
-  #app-portal .status-pill { font-size: 10px; font-weight: 700; letter-spacing: .8px; padding: 2px 8px; border-radius: 20px; }
+
+  /* 2×2 grid — much more readable on mobile than 4 columns */
+  #app-portal .signal-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    margin-bottom: 10px;
+  }
+  #app-portal .signal-meta-item { min-width: 0; }
+  #app-portal .sf-label {
+    font-size: 9px; text-transform: uppercase;
+    letter-spacing: 1.1px; color: var(--muted); margin-bottom: 3px;
+  }
+  #app-portal .sf-val {
+    font-size: 13px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  #app-portal .signal-extras {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 8px;
+  }
+  #app-portal .signal-tag {
+    font-size: 9px; font-weight: 600; letter-spacing: .8px;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  #app-portal .status-pill {
+    font-size: 9px; font-weight: 700; letter-spacing: .8px;
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  #app-portal .status-active  { background: rgba(46,204,113,.1);  color: var(--green); }
+  #app-portal .status-closed  { background: rgba(107,107,120,.1); color: var(--muted); }
+  #app-portal .status-pending { background: rgba(52,152,219,.1);  color: var(--blue);  }
+
+  #app-portal .signal-pnl {
+    font-size: 12px; font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  #app-portal .signal-pnl.pos { background: rgba(46,204,113,.1);  color: var(--green); }
+  #app-portal .signal-pnl.neg { background: rgba(231,76,60,.1);   color: var(--red);   }
+
+  #app-portal .signal-time {
+    font-size: 10px; color: var(--muted);
+    padding-top: 8px; border-top: 1px solid var(--border);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
   #app-portal .status-active { background: rgba(46,204,113,.1);  color: var(--green); }
   #app-portal .status-closed { background: rgba(107,107,120,.1); color: var(--muted); }
   #app-portal .status-pending { background: rgba(52,152,219,.1);  color: var(--blue);  }
 
   /* ── Market Update card ──────────────── */
-  #app-portal .update-card { margin: 0 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  #app-portal .update-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  #app-portal .update-card { margin: 0 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow: hidden; }
+  #app-portal .update-header { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 10px; }
   #app-portal .update-ts { font-size: 10px; color: var(--muted); }
-  #app-portal .bias-row { display: flex; align-items: center; gap: 6px; margin: 4px 0; font-size: 13px; font-weight: 500; }
+  /* bias grid — 5 categories in clean rows */
+  #app-portal .art-bias-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  #app-portal .art-bias-row { display: flex; align-items: center; gap: 10px; }
   #app-portal .bias-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  #app-portal .art-bias-label { font-size: 12px; color: var(--muted); width: 64px; flex-shrink: 0; }
+  #app-portal .art-bias-val { font-size: 13px; font-weight: 700; letter-spacing: .5px; }
+  #app-portal .art-warn { font-size: 11px; color: var(--red); margin-top: 6px; padding: 6px 10px; background: rgba(231,76,60,.08); border-radius: 6px; }
+  /* legacy bias-row kept for any other usage */
+  #app-portal .bias-row { display: flex; align-items: center; gap: 6px; margin: 4px 0; font-size: 13px; font-weight: 500; }
   #app-portal .bias-bull { background: var(--green); }
   #app-portal .bias-bear { background: var(--red); }
   #app-portal .bias-neut { background: var(--muted); }
@@ -1554,7 +1690,10 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
     <div class="scroll-content">
       <div class="section-head">
         <div class="section-title">Signals</div>
-        <div class="section-sub" id="signals-count">—</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+          <div class="section-sub" id="signals-count">—</div>
+          <div class="section-sub" id="signals-last-upd" style="font-size:9px;opacity:0.6;">—</div>
+        </div>
       </div>
       <div id="signals-container"><div class="loading-wrap"><div class="spinner"></div> Loading…</div></div>
       <div class="disclaimer">Signals are generated algorithmically. Not financial advice. Past performance does not guarantee future results.</div>
@@ -1564,7 +1703,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
   <!-- ══ CONFLUENCE ════════════════════════════════ -->
   <div class="screen" id="screen-confluence">
     <div class="topbar">
-      <div><div class="topbar-logo">Market Updates</div><div class="topbar-sub">Live Price & Bias</div></div>
+      <div><div class="topbar-logo">Research</div><div class="topbar-sub">Index Confluence</div></div>
       <div class="live-dot">Live</div>
       <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
     </div>
@@ -1577,14 +1716,17 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
   <!-- ══ RESEARCH ══════════════════════════════════ -->
   <div class="screen" id="screen-articles">
     <div class="topbar">
-      <div><div class="topbar-logo">Research</div><div class="topbar-sub">AI Market Analysis</div></div>
-      <div class="live-dot">Updated hourly</div>
+      <div><div class="topbar-logo">Updates</div><div class="topbar-sub">Market Intelligence</div></div>
+      <div class="live-dot">Live</div>
       <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
     </div>
     <div class="scroll-content">
       <div class="section-head">
-        <div class="section-title">Latest Updates</div>
-        <div class="section-sub">Refreshed every 60 min</div>
+        <div class="section-title">Market Updates</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+          <div class="section-sub" id="articles-next-upd">Every 60 min</div>
+          <div class="section-sub" id="articles-last-upd" style="font-size:9px;opacity:0.6;">—</div>
+        </div>
       </div>
       <div id="articles-container"><div class="loading-wrap"><div class="spinner"></div> Loading…</div></div>
       <div class="disclaimer">Market updates are template-based from live verified data. Not financial advice.</div>
@@ -1871,11 +2013,11 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Signals
     </button>
-    <button class="nav-item" onclick="navigate('confluence')">
+    <button class="nav-item" onclick="navigate('articles')">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Updates
     </button>
-    <button class="nav-item" onclick="navigate('articles')">
+    <button class="nav-item" onclick="navigate('confluence')">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Research
     </button>
@@ -2057,7 +2199,20 @@ const BOT5_TOKEN = '8174818224:AAHclqmV4t1TWFZFiZfRG9I_F6lXjE4wPo8';
 const BOT2_TOKEN = '8635047321:AAHszfF7JFWdH3C8YV4BoJ4wQ6UeQVhnjQo';
 
 function fbUrl(p){return `${FB_URL}/${p}.json?auth=${FB_SECRET}`;}
-async function fbGet(p){const r=await fetch(fbUrl(p));if(!r.ok)throw new Error('FB '+r.status);return r.json();}
+async function fbGet(p) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 10000); // 10s timeout
+  try {
+    const r = await fetch(fbUrl(p), { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!r.ok) throw new Error('FB ' + r.status);
+    return r.json();
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error('Firebase timeout — check connection');
+    throw e;
+  }
+}
 async function fbSet(p,data){const r=await fetch(fbUrl(p),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('FB '+r.status);return r.json();}
 async function fbPatch(p,data){const r=await fetch(fbUrl(p),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('FB '+r.status);return r.json();}
 
@@ -2372,12 +2527,15 @@ async function startRecover() {
 function onLoginSuccess() {
   document.getElementById('bottom-nav').classList.add('visible');
   navigate('home');
+  // Initial load of all screens
   loadSignals();
   loadMarketUpdates();
   loadArticles();
   renderSaasPlans();
   renderBaasPlans();
   loadNotifPrefs();
+  // Start live polling loops
+  startLivePolling();
 
   // Populate profile fields
   const u = currentUser;
@@ -2402,6 +2560,7 @@ function onLoginSuccess() {
 
 function doSignOut() {
   currentUser = null;
+  stopLivePolling();
   document.getElementById('bottom-nav').classList.remove('visible');
   ['si-tgid','si-pw','reg-tgid','reg-pw','reg-pw2','rec-tgid'].forEach(id=>{
     const el = document.getElementById(id); if(el) el.value='';
@@ -2460,44 +2619,16 @@ const OTHER_SERVICES = [
   { key:'analyst_weekend',label:'Market Analyst — Weekends', desc:'Weekend coverage',     price:'£50',   priceRaw:'50',   pp:'https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6' },
 ];
 
+// ═══════════════════════════════════════════════════
+// STATE — current logged-in user
+// ═══════════════════════════════════════════════════
+let currentUser = null;
+
 const BOT_ACCESS = {
   1: new Set(['bot1','bot1_bot4','bot1_bot2_bot4','all']),
   2: new Set(['bot2','bot1_bot2_bot4','all']),
   4: new Set(['bot4','bot1_bot4','bot1_bot2_bot4','all']),
 };
-
-// Full index list from IDX_SYMBOLS + IDX_LABELS in bot
-const ALL_INDICES = [
-  // Crypto
-  { key:'CMC20',   name:'CMC20',    label:'Crypto Top 20',    cat:'Crypto',       val:74, bull:true  },
-  // Equities
-  { key:'SPX',     name:'S&P 500',  label:'S&P 500',          cat:'Equities',     val:68, bull:true  },
-  { key:'NDX',     name:'NDX',      label:'Nasdaq 100',        cat:'Equities',     val:71, bull:true  },
-  { key:'RUT',     name:'RUT',      label:'Russell 2000',      cat:'Equities',     val:44, bull:false },
-  // Sector ETFs
-  { key:'XLE',     name:'XLE',      label:'Energy',            cat:'Sectors',      val:52, bull:true  },
-  { key:'XLF',     name:'XLF',      label:'Financials',        cat:'Sectors',      val:60, bull:true  },
-  { key:'S5REAS',  name:'S5REAS',   label:'Real Estate',       cat:'Sectors',      val:40, bull:false },
-  { key:'S5TELS',  name:'S5TELS',   label:'Comms Services',    cat:'Sectors',      val:55, bull:true  },
-  { key:'XME',     name:'XME',      label:'Mining',            cat:'Sectors',      val:63, bull:true  },
-  // Macro / Rates / FX
-  { key:'DXY',     name:'DXY',      label:'Dollar Index',      cat:'Macro',        val:35, bull:false },
-  { key:'TNX',     name:'TNX',      label:'10Y Yield',         cat:'Macro',        val:58, bull:true  },
-  { key:'TLT',     name:'TLT',      label:'20Y Bond ETF',      cat:'Macro',        val:42, bull:false },
-  // Volatility
-  { key:'VIX',     name:'VIX',      label:'VIX Fear Index',    cat:'Volatility',   val:29, bull:false },
-  { key:'VVIX',    name:'VVIX',     label:'Vol-of-Vol',        cat:'Volatility',   val:32, bull:false },
-  // Commodities
-  { key:'GLD',     name:'GLD',      label:'Gold ETF',          cat:'Commodities',  val:66, bull:true  },
-  { key:'USO',     name:'USO',      label:'Oil ETF',           cat:'Commodities',  val:48, bull:false },
-  { key:'UNG',     name:'UNG',      label:'Nat Gas ETF',       cat:'Commodities',  val:38, bull:false },
-  { key:'SPGSCI',  name:'SPGSCI',   label:'Commodities Index', cat:'Commodities',  val:51, bull:true  },
-];
-
-// ═══════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════
-let currentUser = null;
 
 function userHasBot(n) {
   if (!currentUser) return false;
@@ -2508,125 +2639,326 @@ function userHasBot(n) {
     const exp = Number(currentUser.expires);
     if (!isNaN(exp) && exp > 0 && Date.now()/1000 > exp) return false;
   }
-  return BOT_ACCESS[n]?.has(p);
+  return BOT_ACCESS[n]?.has(p) ?? false;
 }
 
 function getPlanLabel() {
   if (!currentUser) return '—';
-  if (currentUser.role === 'owner') return 'Owner';
-  if (currentUser.role === 'admin') return 'Admin';
-  return SAAS_PLANS[currentUser.plan]?.label || BAAS_PLANS[currentUser.plan]?.label || (currentUser.plan || 'No Active Plan');
+  if (currentUser.role === 'owner') return 'Owner — Full Access';
+  if (currentUser.role === 'admin') return 'Admin — Full Access';
+  return SAAS_PLANS[currentUser.plan]?.label
+      || BAAS_PLANS[currentUser.plan]?.label
+      || (currentUser.plan ? currentUser.plan : 'No Active Plan');
 }
 
-async function genBrandedId(uid) {
-  const data = new TextEncoder().encode(`30xTech_v2_${uid}`);
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  const hex  = Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
-  return hex.slice(0,8);
+// Full index list from IDX_SYMBOLS + IDX_LABELS in bot
+// ═══════════════════════════════════════════════════
+// LIVE DATA SYSTEM
+// Polls Firebase every 30s for signals, articles, positions.
+// Index confluence pulled from Firebase (admin/indexes) with
+// static fallback if not yet written by bot.
+// Visibility-aware: pauses polling when tab/screen is hidden.
+// ═══════════════════════════════════════════════════
+
+// ── Polling intervals (ms) ──────────────────────────
+const POLL_SIGNALS   = 30000;   // 30s
+const POLL_UPDATES   = 45000;   // 45s
+const POLL_ARTICLES  = 60000;   // 60s  (bot writes every 60 min)
+const POLL_TICKER    = 15000;   // 15s  (live price ticker refresh)
+
+// ── Interval handles — cleared on sign-out ──────────
+let _pollHandles = {};
+
+// ── Last-seen timestamps for change detection ───────
+let _lastSigTs   = 0;
+let _lastArtTs   = 0;
+let _lastIdxTs   = 0;
+
+// ── Static fallback index definitions (metadata only, no values) ──
+const IDX_META = [
+  { key:'CMC20',   name:'CMC20',   label:'Crypto Top 20',    cat:'Crypto'      },
+  { key:'SPX',     name:'S&P 500', label:'S&P 500',          cat:'Equities'    },
+  { key:'NDX',     name:'NDX',     label:'Nasdaq 100',        cat:'Equities'    },
+  { key:'RUT',     name:'RUT',     label:'Russell 2000',      cat:'Equities'    },
+  { key:'XLE',     name:'XLE',     label:'Energy',            cat:'Sectors'     },
+  { key:'XLF',     name:'XLF',     label:'Financials',        cat:'Sectors'     },
+  { key:'S5REAS',  name:'S5REAS',  label:'Real Estate',       cat:'Sectors'     },
+  { key:'S5TELS',  name:'S5TELS',  label:'Comms Services',    cat:'Sectors'     },
+  { key:'XME',     name:'XME',     label:'Mining',            cat:'Sectors'     },
+  { key:'DXY',     name:'DXY',     label:'Dollar Index',      cat:'Macro'       },
+  { key:'TNX',     name:'TNX',     label:'10Y Yield',         cat:'Macro'       },
+  { key:'TLT',     name:'TLT',     label:'20Y Bond ETF',      cat:'Macro'       },
+  { key:'VIX',     name:'VIX',     label:'VIX Fear Index',    cat:'Volatility'  },
+  { key:'VVIX',    name:'VVIX',    label:'Vol-of-Vol',        cat:'Volatility'  },
+  { key:'GLD',     name:'GLD',     label:'Gold ETF',          cat:'Commodities' },
+  { key:'USO',     name:'USO',     label:'Oil ETF',           cat:'Commodities' },
+  { key:'UNG',     name:'UNG',     label:'Nat Gas ETF',       cat:'Commodities' },
+  { key:'SPGSCI',  name:'SPGSCI',  label:'Commodities Index', cat:'Commodities' },
+];
+
+// ── Start all polling loops after login ─────────────
+function startLivePolling() {
+  stopLivePolling(); // clear any existing
+
+  // Signals: poll every 30s
+  _pollHandles.signals = setInterval(() => {
+    if (isScreenVisible('screen-home')) loadSignals(true);
+  }, POLL_SIGNALS);
+
+  // Market updates: poll every 45s
+  _pollHandles.updates = setInterval(() => {
+    if (isScreenVisible('screen-confluence')) loadMarketUpdates(true);
+  }, POLL_UPDATES);
+
+  // Articles: poll every 60s
+  _pollHandles.articles = setInterval(() => {
+    if (isScreenVisible('screen-articles')) loadArticles(true);
+  }, POLL_ARTICLES);
+
+  console.log('[30xTech] Live polling started');
 }
 
-// togglePw() replaced by togglePwVis(inputId, btnId) for multi-field support
+// ── Stop all polling (on sign-out) ──────────────────
+function stopLivePolling() {
+  Object.values(_pollHandles).forEach(h => clearInterval(h));
+  _pollHandles = {};
+  _lastSigTs = _lastArtTs = _lastIdxTs = 0;
+}
+
+// ── Check if a screen is the currently active one ───
+function isScreenVisible(screenId) {
+  const el = document.getElementById(screenId);
+  return el && el.classList.contains('active') && !document.hidden;
+}
+
+// ── Show a subtle "updated" flash on a container ────
+function flashUpdated(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.style.transition = 'opacity 0.2s';
+  el.style.opacity = '0.5';
+  setTimeout(() => { el.style.opacity = '1'; }, 200);
+}
+
+// ── Live last-updated timestamp display ─────────────
+function setLastUpdated(elementId, ts) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const d = ts ? new Date(ts * 1000) : new Date();
+  el.textContent = 'Updated ' + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+}
 
 // ═══════════════════════════════════════════════════
-// AUTH — legacy stubs (real auth is startSignIn / doSignOut above)
+// SIGNALS — live polling
 // ═══════════════════════════════════════════════════
-// doLogin removed — replaced by startSignIn() + OTP flow
-
-// ═══════════════════════════════════════════════════
-// SIGNALS
-// ═══════════════════════════════════════════════════
-async function loadSignals() {
+async function loadSignals(silent = false) {
   const cont  = document.getElementById('signals-container');
   const count = document.getElementById('signals-count');
+  if (!cont) return;
 
   if (!userHasBot(2)) {
     cont.innerHTML = lockedHTML('Signals Locked', 'Upgrade to <strong>Signals Monthly</strong> or a full bundle plan to unlock live trading signals.');
-    count.textContent = 'Upgrade to unlock'; return;
+    if (count) count.textContent = 'Upgrade to unlock';
+    return;
+  }
+
+  if (!silent) {
+    cont.innerHTML = '<div class="loading-wrap"><div class="spinner"></div> Loading…</div>';
   }
 
   try {
     const data = await fbGet('signals');
-    if (!data) { cont.innerHTML = '<div class="empty-state">No signals yet.</div>'; return; }
-    const sigs = Object.entries(data).map(([k,v])=>({...v,_key:k})).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,25);
-    count.textContent = `${sigs.filter(s=>s.status==='ACTIVE').length} active · ${sigs.length} total`;
+    if (!data) {
+      cont.innerHTML = '<div class="empty-state">No signals yet. They will appear here as the bot fires them.</div>';
+      return;
+    }
+
+    const sigs = Object.entries(data)
+      .map(([k,v]) => ({...v, _key:k}))
+      .sort((a,b) => (b.ts||0) - (a.ts||0))
+      .slice(0, 25);
+
+    // Change detection — skip re-render if nothing new
+    const latestTs = sigs[0]?.ts || 0;
+    if (silent && latestTs === _lastSigTs) return;
+    _lastSigTs = latestTs;
+
+    if (silent) flashUpdated('signals-container');
+
+    const activeCount = sigs.filter(s => (s.status||'').toUpperCase() === 'ACTIVE').length;
+    if (count) count.textContent = `${activeCount} active · ${sigs.length} total`;
+    const updEl = document.getElementById('signals-last-upd');
+    if (updEl) updEl.textContent = 'Refreshed ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
     cont.innerHTML = sigs.map(s => {
-      const dir = (s.direction||'').toUpperCase();
-      const stat= (s.status||'ACTIVE').toUpperCase();
-      const ts  = s.ts ? fmtTs(s.ts) : '—';
-      const pill= stat==='ACTIVE'?'status-active':stat==='PENDING'?'status-pending':'status-closed';
-      const pnl = (s.pnl!=null)?`<div style="font-size:12px;margin-top:6px;">PnL: <span style="color:${s.pnl>=0?'var(--green)':'var(--red)'};font-weight:600;">${s.pnl>=0?'+':''}${(s.pnl*100).toFixed(2)}%</span></div>`:'';
-      const meta= [s.ema_signal?`EMA: ${s.ema_signal}`:'',s.index_gate?`Gate: ${s.index_gate}`:''].filter(Boolean).join(' · ');
-      return `<div class="signal-card">
+      const dir  = (s.direction||'').toUpperCase();
+      const stat = (s.status||'ACTIVE').toUpperCase();
+      const ts   = s.ts ? fmtTs(s.ts) : '—';
+      const pill = stat==='ACTIVE' ? 'status-active' : stat==='PENDING' ? 'status-pending' : 'status-closed';
+      const pnl  = s.pnl != null
+        ? `<div style="font-size:12px;margin-top:6px;">PnL: <span style="color:${s.pnl>=0?'var(--green)':'var(--red)'};font-weight:600;">${s.pnl>=0?'+':''}${(s.pnl*100).toFixed(2)}%</span></div>`
+        : '';
+      const meta = [
+        s.ema_signal  ? `EMA: ${s.ema_signal}`   : '',
+        s.index_gate  ? `Gate: ${s.index_gate}`   : '',
+        s.mtf_votes   ? `MTF: ${s.mtf_votes}`     : '',
+      ].filter(Boolean).join(' · ');
+
+      // Format prices safely — truncate if too long
+      const fmtPx = (v) => {
+        if (!v) return '—';
+        const n = Number(v);
+        if (isNaN(n)) return '—';
+        if (n >= 1000)  return '$' + n.toLocaleString('en-US', {maximumFractionDigits: 2});
+        if (n >= 1)     return '$' + n.toFixed(4);
+        return '$' + n.toFixed(6);
+      };
+
+      const pnlHtml = s.pnl != null
+        ? `<div class="signal-pnl ${s.pnl >= 0 ? 'pos' : 'neg'}">
+            PnL: ${s.pnl >= 0 ? '+' : ''}${(s.pnl * 100).toFixed(2)}%
+           </div>`
+        : '';
+
+      return `<div class="signal-card ${dir === 'LONG' ? 'sig-long' : 'sig-short'}">
         <div class="signal-header">
-          <div><div class="signal-symbol">${s.symbol||'—'}</div><span style="font-size:10px;color:var(--muted);">${s.tf||'—'} · T${s.tier||'?'}</span></div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-            <div class="signal-dir ${dir==='LONG'?'long':'short'}">${dir}</div>
+          <div class="signal-header-left">
+            <div class="signal-symbol">${s.symbol || '—'}</div>
+            <div class="signal-tf">${s.tf || '—'} · T${s.tier || '?'}</div>
+          </div>
+          <div class="signal-header-right">
+            <div class="signal-dir ${dir === 'LONG' ? 'long' : 'short'}">${dir}</div>
             <span class="status-pill ${pill}">${stat}</span>
           </div>
         </div>
+
         <div class="signal-meta">
-          <div><div class="sf-label">Entry</div><div class="sf-val">${s.entry?'$'+Number(s.entry).toLocaleString():'—'}</div></div>
-          <div><div class="sf-label">Stop</div><div class="sf-val">${s.sl?'$'+Number(s.sl).toLocaleString():'—'}</div></div>
-          <div><div class="sf-label">Target</div><div class="sf-val">${s.tp?'$'+Number(s.tp).toLocaleString():'—'}</div></div>
-          <div><div class="sf-label">R:R</div><div class="sf-val text-gold">${s.rr?s.rr+'R':'—'}</div></div>
+          <div class="signal-meta-item">
+            <div class="sf-label">Entry</div>
+            <div class="sf-val">${fmtPx(s.entry)}</div>
+          </div>
+          <div class="signal-meta-item">
+            <div class="sf-label">Stop Loss</div>
+            <div class="sf-val" style="color:var(--red);">${fmtPx(s.sl)}</div>
+          </div>
+          <div class="signal-meta-item">
+            <div class="sf-label">Take Profit</div>
+            <div class="sf-val" style="color:var(--green);">${fmtPx(s.tp)}</div>
+          </div>
+          <div class="signal-meta-item">
+            <div class="sf-label">R:R Ratio</div>
+            <div class="sf-val text-gold">${s.rr ? s.rr + 'R' : '—'}</div>
+          </div>
         </div>
-        ${pnl}
-        <div class="signal-time">${meta?meta+' · ':''}${ts}</div>
+
+        ${pnlHtml}
+
+        ${meta ? `<div class="signal-extras">
+          ${meta.split(' · ').map(m => `<span class="signal-tag" style="background:rgba(201,168,76,.1);color:var(--gold);">${m}</span>`).join('')}
+        </div>` : ''}
+
+        <div class="signal-time">${ts}</div>
       </div>`;
     }).join('');
+
   } catch(e) {
-    cont.innerHTML = `<div class="empty-state">Unable to load signals.<br><span style="font-size:11px;">${e.message}</span></div>`;
+    if (!silent) cont.innerHTML = `<div class="empty-state">Unable to load signals.<br><span style="font-size:11px;">${e.message}</span></div>`;
   }
 }
 
 // ═══════════════════════════════════════════════════
-// MARKET UPDATES — full index list from bot
+// MARKET UPDATES — live index data from Firebase
+// Bot writes to: admin/indexes/{KEY} = { val, bull, ts }
+// Falls back to static snapshot if not available.
 // ═══════════════════════════════════════════════════
-async function loadMarketUpdates() {
+async function loadMarketUpdates(silent = false) {
   const cont = document.getElementById('confluence-container');
+  if (!cont) return;
+
   if (!userHasBot(1) && !userHasBot(2)) {
-    cont.innerHTML = lockedHTML('Market Updates Locked', 'Upgrade to any plan to access live market price & bias data.'); return;
+    cont.innerHTML = lockedHTML('Market Updates Locked', 'Upgrade to any plan to access live market price & bias data.');
+    return;
+  }
+
+  if (!silent) {
+    cont.innerHTML = '<div class="loading-wrap"><div class="spinner"></div> Loading…</div>';
   }
 
   try {
-    const [positions, symbols] = await Promise.all([
-      fbGet('positions').catch(()=>null),
-      fbGet('admin/symbols').catch(()=>null),
+    // Pull all three in parallel
+    const [positions, symbols, liveIndexes] = await Promise.all([
+      fbGet('positions').catch(() => null),
+      fbGet('admin/symbols').catch(() => null),
+      fbGet('admin/indexes').catch(() => null),
     ]);
+
+    // Merge live Firebase index data onto IDX_META
+    // Firebase shape: { CMC20: { val:74, bull:true, ts:1234567 }, ... }
+    const indexData = IDX_META.map(m => {
+      const live = liveIndexes?.[m.key];
+      return {
+        ...m,
+        val:  live?.val  ?? 50,
+        bull: live?.bull ?? true,
+        ts:   live?.ts   ?? null,
+      };
+    });
+
+    // Change detection on indexes
+    const latestIdxTs = Math.max(...indexData.map(i => i.ts || 0));
+    if (silent && latestIdxTs === _lastIdxTs && latestIdxTs !== 0) return;
+    _lastIdxTs = latestIdxTs;
+
+    if (silent) flashUpdated('confluence-container');
 
     let html = '';
 
-    // Live positions
+    // ── Open Positions ──────────────────────────────
     if (positions && Object.keys(positions).length) {
       const entries = Object.entries(positions);
-      html += `<div class="section-head"><div class="section-title">Open Positions</div><div class="section-sub">${entries.length} live</div></div>
-        <div class="card">${entries.map(([sym,p])=>{
-          const dir=(p.direction||'').toUpperCase(), pnl=p.unrealised_pnl;
-          return `<div class="price-row">
-            <div><span class="price-sym">${sym}</span><span style="font-size:10px;color:var(--muted);margin-left:6px;">${p.tf||''} T${p.tier||'?'}</span></div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span class="signal-dir ${dir==='LONG'?'long':'short'}" style="font-size:9px;">${dir}</span>
-              ${pnl!=null?`<span style="font-size:12px;font-weight:600;color:${pnl>=0?'var(--green)':'var(--red)'};">${pnl>=0?'+':''}${(pnl*100).toFixed(2)}%</span>`:''}
-            </div>
-          </div>`;
-        }).join('')}</div>`;
+      html += `<div class="section-head">
+        <div class="section-title">Open Positions</div>
+        <div class="section-sub">${entries.length} live</div>
+      </div>
+      <div class="card">${entries.map(([sym, p]) => {
+        const dir = (p.direction||'').toUpperCase();
+        const pnl = p.unrealised_pnl;
+        return `<div class="price-row">
+          <div>
+            <span class="price-sym">${sym}</span>
+            <span style="font-size:10px;color:var(--muted);margin-left:6px;">${p.tf||''} T${p.tier||'?'}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="signal-dir ${dir==='LONG'?'long':'short'}" style="font-size:9px;">${dir}</span>
+            ${pnl != null ? `<span style="font-size:12px;font-weight:600;color:${pnl>=0?'var(--green)':'var(--red)'};">${pnl>=0?'+':''}${(pnl*100).toFixed(2)}%</span>` : ''}
+          </div>
+        </div>`;
+      }).join('')}</div>`;
     }
 
-    // Group ALL_INDICES by category
+    // ── Index Confluence ────────────────────────────
+    const lastUpdStr = latestIdxTs
+      ? 'Live · ' + new Date(latestIdxTs*1000).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+      : 'Static snapshot';
+
+    html += `<div class="section-head">
+      <div class="section-title">Index Confluence</div>
+      <div class="section-sub" id="idx-last-updated">${lastUpdStr}</div>
+    </div>
+    <div style="padding:0 16px 8px;">
+      <div class="idx-legend">
+        <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--green);"></div>BULLISH &gt; 50</div>
+        <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--red);"></div>BEARISH &lt; 50</div>
+        <div class="idx-legend-item"><div class="idx-legend-dot" style="background:#555;"></div>NEUTRAL = 50</div>
+      </div>
+    </div>`;
+
+    // Group by category and render
     const cats = {};
-    ALL_INDICES.forEach(idx => {
+    indexData.forEach(idx => {
       if (!cats[idx.cat]) cats[idx.cat] = [];
       cats[idx.cat].push(idx);
     });
-
-    html += `<div class="section-head"><div class="section-title">Index Confluence</div><div class="section-sub">4H · 1D · 1W</div></div>
-      <div style="padding:0 16px 8px;">
-        <div class="idx-legend">
-          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--green);"></div>BULLISH &gt; 50</div>
-          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--red);"></div>BEARISH &lt; 50</div>
-          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:#555;"></div>NEUTRAL = 50</div>
-        </div>
-      </div>`;
     Object.entries(cats).forEach(([cat, items]) => {
       html += `<div class="card" style="margin-bottom:10px;">
         <div class="card-label">${cat}</div>
@@ -2634,17 +2966,21 @@ async function loadMarketUpdates() {
       </div>`;
     });
 
-    // Tracked symbols from Firebase
+    // ── Tracked Symbols ─────────────────────────────
     if (symbols?.list?.length) {
-      html += `<div class="section-head"><div class="section-title">Tracked Symbols</div><div class="section-sub">${symbols.list.length}</div></div>
-        <div class="card"><div style="display:flex;flex-wrap:wrap;gap:7px;">
-          ${symbols.list.map(s=>`<span style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;">${s}</span>`).join('')}
-        </div></div>`;
+      html += `<div class="section-head">
+        <div class="section-title">Tracked Symbols</div>
+        <div class="section-sub">${symbols.list.length}</div>
+      </div>
+      <div class="card"><div style="display:flex;flex-wrap:wrap;gap:7px;">
+        ${symbols.list.map(s => `<span style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;">${s}</span>`).join('')}
+      </div></div>`;
     }
 
     cont.innerHTML = html;
+
   } catch(e) {
-    cont.innerHTML = `<div class="empty-state">Unable to load market data.<br><span style="font-size:11px;">${e.message}</span></div>`;
+    if (!silent) cont.innerHTML = `<div class="empty-state">Unable to load market data.<br><span style="font-size:11px;">${e.message}</span></div>`;
   }
 }
 
@@ -2659,56 +2995,119 @@ function idxRow(name, label, val, bull) {
 }
 
 // ═══════════════════════════════════════════════════
-// RESEARCH (Bot4 market updates)
+// RESEARCH — live articles from Firebase
 // ═══════════════════════════════════════════════════
-async function loadArticles() {
+async function loadArticles(silent = false) {
   const cont = document.getElementById('articles-container');
+  if (!cont) return;
+
   if (!userHasBot(4)) {
-    cont.innerHTML = lockedHTML('Research Locked', 'Upgrade to <strong>Articles Only</strong>, <strong>Index + Articles</strong>, or a full plan to access verified market updates.'); return;
+    cont.innerHTML = lockedHTML('Research Locked', 'Upgrade to <strong>Articles Only</strong>, <strong>Index + Articles</strong>, or a full plan to access verified market updates.');
+    return;
   }
+
+  if (!silent) {
+    cont.innerHTML = '<div class="loading-wrap"><div class="spinner"></div> Loading…</div>';
+  }
+
   try {
-    const data = await fbGet('articles').catch(()=>null);
+    const data = await fbGet('articles').catch(() => null);
+
     if (!data) { cont.innerHTML = fallbackUpdates(); return; }
-    const items = Object.entries(data).map(([k,v])=>({...v,_key:k})).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,10);
+
+    const items = Object.entries(data)
+      .map(([k,v]) => ({...v, _key:k}))
+      .sort((a,b) => (b.ts||0) - (a.ts||0))
+      .slice(0, 10);
+
     if (!items.length) { cont.innerHTML = fallbackUpdates(); return; }
+
+    // Change detection
+    const latestTs = items[0]?.ts || 0;
+    if (silent && latestTs === _lastArtTs) return;
+    _lastArtTs = latestTs;
+
+    if (silent) flashUpdated('articles-container');
+    const _now = new Date();
+    const artUpd  = document.getElementById('articles-last-upd');
+    const artNext = document.getElementById('articles-next-upd');
+    if (artUpd)  artUpd.textContent  = 'Updated ' + _now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    if (artNext) {
+      const _nextMs = new Date(_now.getTime() + POLL_ARTICLES);
+      artNext.textContent = 'Next: ' + _nextMs.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    }
+
     cont.innerHTML = items.map(a => {
-      const ts = a.ts ? fmtTs(a.ts) : 'Latest';
-      const cat= (a.category||a.tag||'Update').toUpperCase();
-      const tagClass = {CRYPTO:'tag-crypto',MACRO:'tag-macro',STOCKS:'tag-stocks',EQUITIES:'tag-stocks',FX:'tag-fx',METALS:'tag-metals'}[cat]||'tag-crypto';
-      return `<div class="update-card">
-        <div class="update-header"><span class="tag ${tagClass}">${cat}</span><div class="update-ts">${ts}</div></div>
-        ${a.bias_crypto||a.bias_stocks?`<div style="margin-bottom:8px;">
-          ${a.bias_crypto?`<div class="bias-row"><div class="bias-dot ${a.bias_crypto==='BULLISH'?'bias-bull':'bias-bear'}"></div>Crypto: <strong style="margin-left:4px;color:${a.bias_crypto==='BULLISH'?'var(--green)':'var(--red)'};">${a.bias_crypto}</strong></div>`:''}
-          ${a.bias_stocks?`<div class="bias-row"><div class="bias-dot ${a.bias_stocks==='BULLISH'?'bias-bull':'bias-bear'}"></div>Stocks: <strong style="margin-left:4px;color:${a.bias_stocks==='BULLISH'?'var(--green)':'var(--red)'};">${a.bias_stocks}</strong></div>`:''}
-        </div>`:''}
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">${a.title||a.headline||'Market Update'}</div>
-        <div style="font-size:12px;color:var(--muted);line-height:1.6;">${a.body||a.excerpt||a.text||''}</div>
-        ${a.warn?`<div style="font-size:11px;color:var(--red);margin-top:8px;">Watch: ${a.warn}</div>`:''}
-        ${a.prices?buildPriceList(a.prices):''}
+      const ts  = a.ts ? fmtTs(a.ts) : 'Latest';
+
+      // Build all 5 bias rows — show all available categories
+      const biasFields = [
+        { key: 'bias_crypto',  label: 'Crypto'    },
+        { key: 'bias_stocks',  label: 'Stocks'    },
+        { key: 'bias_fx',      label: 'FX'        },
+        { key: 'bias_metals',  label: 'Metals'    },
+        { key: 'bias_oil_gas', label: 'Oil & Gas' },
+      ];
+      const biasRows = biasFields
+        .filter(f => a[f.key] && a[f.key] !== 'NEUTRAL')
+        .map(f => {
+          const bull = a[f.key] === 'BULLISH';
+          const col  = bull ? 'var(--green)' : 'var(--red)';
+          const dot  = bull ? 'bias-bull' : 'bias-bear';
+          return `<div class="art-bias-row">
+            <div class="bias-dot ${dot}"></div>
+            <span class="art-bias-label">${f.label}</span>
+            <span class="art-bias-val" style="color:${col};">${a[f.key]}</span>
+          </div>`;
+        }).join('');
+
+      // Determine overall direction for accent colour
+      const hasBull = biasFields.some(f => a[f.key] === 'BULLISH');
+      const hasBear = biasFields.some(f => a[f.key] === 'BEARISH');
+      const accentCol = hasBear && !hasBull ? 'var(--red)' : hasBull ? 'var(--green)' : 'var(--gold)';
+
+      return `<div class="update-card" style="border-top:2px solid ${accentCol};">
+        <div class="update-header">
+          <div class="update-ts">${ts}</div>
+        </div>
+        ${biasRows ? `<div class="art-bias-grid">${biasRows}</div>` : ''}
+        ${a.warn ? `<div class="art-warn">⚠ ${a.warn}</div>` : ''}
+        ${a.prices && a.prices.length ? buildPriceList(a.prices) : ''}
       </div>`;
     }).join('');
-  } catch(e) { cont.innerHTML = fallbackUpdates(); }
+
+  } catch(e) {
+    if (!silent) cont.innerHTML = fallbackUpdates();
+  }
 }
 
 function buildPriceList(prices) {
   if (!Array.isArray(prices)) return '';
-  return `<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
-    <div class="card-label" style="margin-bottom:6px;">LIVE PRICES</div>
-    ${prices.map(p=>`<div class="price-row"><span class="price-sym">${p.label||p.sym||''}</span><span class="price-val">${p.price||p.px||''}</span></div>`).join('')}
+  // Strip emoji/special chars from labels (e.g. currency symbols injected by bot)
+  const cleanLbl = (s) => (s||'').replace(/[^\w\s\/\.\-\&]/g, '').trim();
+  return `<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px;">
+    <div class="card-label" style="margin-bottom:8px;">LIVE PRICES</div>
+    ${prices.map(p => `<div class="price-row">
+      <span class="price-sym">${cleanLbl(p.label||p.sym||'')}</span>
+      <span class="price-val">${p.price||p.px||''}</span>
+    </div>`).join('')}
   </div>`;
 }
 
 function fallbackUpdates() {
-  return [
-    {cat:'CRYPTO',cls:'tag-crypto',title:'Bitcoin & Crypto Market Update',body:'Crypto indices trending with order flow bias confirmed. Watch key support/resistance on BTC/USDT and ETH/USDT. MFI readings suggest continued buyer momentum.'},
-    {cat:'MACRO', cls:'tag-macro', title:'DXY Weakness — Risk-On Rotation',body:'Dollar index continues softening from multi-month highs. Capital rotation toward higher-beta risk assets confirmed. Bullish bias on crypto and emerging market proxies.'},
-    {cat:'STOCKS',cls:'tag-stocks',title:'Equities — NASDAQ Holds Support',body:'NDX maintained its 20-week EMA for the third consecutive week. Options positioning suggests muted volatility expectations heading into earnings season.'},
-    {cat:'METALS',cls:'tag-metals',title:'Gold & Commodities Update',body:'XAUUSD cleared key resistance on strong volume. GLD ETF confirming bullish bias. Oil ETF (USO) and natural gas (UNG) watching for directional momentum.'},
-  ].map(a=>`<div class="update-card">
-    <div class="update-header"><span class="tag ${a.cls}">${a.cat}</span><div class="update-ts">Latest · Verified Data</div></div>
-    <div style="font-size:13px;font-weight:600;margin-bottom:6px;">${a.title}</div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.6;">${a.body}</div>
-  </div>`).join('');
+  return `<div class="update-card" style="border-top:2px solid var(--gold);">
+    <div class="update-header">
+      <div class="update-ts">Waiting for live data from bot...</div>
+    </div>
+    <div class="art-bias-grid">
+      <div class="art-bias-row"><div class="bias-dot" style="background:var(--muted);"></div><span class="art-bias-label">Crypto</span><span class="art-bias-val" style="color:var(--muted);">LOADING</span></div>
+      <div class="art-bias-row"><div class="bias-dot" style="background:var(--muted);"></div><span class="art-bias-label">Stocks</span><span class="art-bias-val" style="color:var(--muted);">LOADING</span></div>
+      <div class="art-bias-row"><div class="bias-dot" style="background:var(--muted);"></div><span class="art-bias-label">FX</span><span class="art-bias-val" style="color:var(--muted);">LOADING</span></div>
+      <div class="art-bias-row"><div class="bias-dot" style="background:var(--muted);"></div><span class="art-bias-label">Metals</span><span class="art-bias-val" style="color:var(--muted);">LOADING</span></div>
+      <div class="art-bias-row"><div class="bias-dot" style="background:var(--muted);"></div><span class="art-bias-label">Oil & Gas</span><span class="art-bias-val" style="color:var(--muted);">LOADING</span></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6;">Live market updates are delivered every 60 minutes by the bot. Check back shortly.</div>
+  </div>`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -2833,9 +3232,17 @@ function showScreen(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
 }
-function navigate(tab) { showScreen('screen-'+tab); updateNav(tab); }
+function navigate(tab) {
+  showScreen('screen-'+tab);
+  updateNav(tab);
+  // Reload data immediately when user taps a tab
+  if (!currentUser) return;
+  if (tab === 'home')       loadSignals(true);
+  if (tab === 'confluence') loadMarketUpdates(true);
+  if (tab === 'articles')   loadArticles(true);
+}
 function updateNav(tab) {
-  const tabs = ['home','confluence','articles','plans','profile'];
+  const tabs = ['home','articles','confluence','plans','profile'];
   document.querySelectorAll('#bottom-nav .nav-item').forEach((el,i)=>el.classList.toggle('active',tabs[i]===tab));
 }
 function openDetail(id) {
@@ -2929,6 +3336,17 @@ function closeAppPortal(){
 window.addEventListener("popstate",function(){
   var p=document.getElementById("app-portal");
   if(p&&p.classList.contains("open"))closeAppPortal();
+});
+
+// ── Pause/resume polling when tab becomes hidden/visible ──
+document.addEventListener('visibilitychange', function() {
+  if (!currentUser) return;
+  if (!document.hidden) {
+    // Tab became visible — reload whichever screen is active immediately
+    if (isScreenVisible('screen-home'))       loadSignals(true);
+    if (isScreenVisible('screen-confluence')) loadMarketUpdates(true);
+    if (isScreenVisible('screen-articles'))   loadArticles(true);
+  }
 });
 </script>
 <!-- LIVE TICKER SCRIPT -->
@@ -3320,5 +3738,131 @@ window.addEventListener("popstate",function(){
 })();
 </script>
 
+<!-- ── PWA Install Banner ── -->
+<div id="pwa-banner">
+  <div class="pwa-icon">30×</div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install 30×Tech Research</div>
+    <div class="pwa-sub">Add to home screen — live signals &amp; offline access</div>
+  </div>
+  <button class="pwa-btn-install" id="pwa-install-btn">Install</button>
+  <button class="pwa-btn-close" id="pwa-close-btn">&#10005;</button>
+</div>
+
+<script>
+// ── PWA Install Prompt ──────────────────────────────────────────
+(function() {
+  let _deferredPrompt = null;
+  const banner     = document.getElementById('pwa-banner');
+  const installBtn = document.getElementById('pwa-install-btn');
+  const closeBtn   = document.getElementById('pwa-close-btn');
+
+  // Already installed in standalone mode — hide everything
+  if (window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true) {
+    if (banner) banner.style.display = 'none';
+    return;
+  }
+
+  // Already dismissed this session
+  const dismissed = sessionStorage.getItem('pwa-dismissed');
+
+  // Catch the browser's native install prompt
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    _deferredPrompt = e;
+    if (!dismissed) {
+      setTimeout(function() {
+        if (banner) banner.classList.add('show');
+      }, 4000);
+    }
+  });
+
+  // Install button clicked
+  if (installBtn) {
+    installBtn.addEventListener('click', async function() {
+      if (_deferredPrompt) {
+        // Native install prompt available
+        banner.classList.remove('show');
+        _deferredPrompt.prompt();
+        const { outcome } = await _deferredPrompt.userChoice;
+        _deferredPrompt = null;
+      } else {
+        // Fallback — show instructions for iOS / unsupported browsers
+        banner.classList.remove('show');
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        if (isIOS) {
+          alert('To install:
+1. Tap the Share button (box with arrow)
+2. Scroll down and tap "Add to Home Screen"
+3. Tap "Add"');
+        } else {
+          alert('To install:
+1. Tap the menu (3 dots) in your browser
+2. Tap "Add to Home Screen" or "Install App"
+3. Tap "Install"');
+        }
+      }
+    });
+  }
+
+  // Dismiss button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      banner.classList.remove('show');
+      sessionStorage.setItem('pwa-dismissed', '1');
+    });
+  }
+
+  // Fallback: show banner after 6s regardless of beforeinstallprompt
+  // (covers iOS Safari which never fires beforeinstallprompt)
+  if (!dismissed) {
+    setTimeout(function() {
+      if (banner && !banner.classList.contains('show')) {
+        banner.classList.add('show');
+      }
+    }, 6000);
+  }
+})();
+
+// ── Service Worker — enables offline & installability ──────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    // Inline service worker via blob URL (no separate file needed for GitHub Pages)
+    const swCode = `
+      const CACHE = '30xtech-v1';
+      const PRECACHE = ['/'];
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)));
+        self.skipWaiting();
+      });
+      self.addEventListener('activate', e => {
+        e.waitUntil(caches.keys().then(keys =>
+          Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+        ));
+        self.clients.claim();
+      });
+      self.addEventListener('fetch', e => {
+        // Network-first for Firebase API calls
+        if (e.request.url.includes('firebasedatabase.app') ||
+            e.request.url.includes('api.telegram.org')) {
+          return;
+        }
+        // Cache-first for static assets
+        e.respondWith(
+          caches.match(e.request).then(cached => cached || fetch(e.request))
+        );
+      });
+    `;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).then(function(reg) {
+      console.log('[SW] Registered:', reg.scope);
+    }).catch(function(err) {
+      console.log('[SW] Registration failed:', err);
+    });
+  });
+}
+</script>
 </body>
 </html>
