@@ -6,7 +6,7 @@
 <title>30×Tech Research — Algorithmic Trading Signals &amp; Market Data</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap">
 
 <style>
 :root{
@@ -85,7 +85,7 @@ h1 .c{color:var(--cyan);display:block;}
 .svc-price sup{font-size:24px;vertical-align:super;color:var(--grey);}
 .svc-period{font-family:'DM Mono','Courier New',Courier,monospace;font-size:11px;color:var(--grey);margin-bottom:24px;letter-spacing:1px;}
 .svc-list{list-style:none;flex:1;margin-bottom:28px;}
-.svc-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);display:flex;gap:10px;align-items:flex-start;}
+.svc-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);display:flex;gap:10px;align-items:flex-start;word-break:break-word;overflow-wrap:break-word;}
 .svc-list li::before{content:'→';color:var(--gold);font-family:'DM Mono','Courier New',Courier,monospace;flex-shrink:0;}
 .svc-list li.dim{color:var(--grey);}
 .svc-list li.dim::before{content:'—';color:var(--border2);}
@@ -337,7 +337,6 @@ h1{opacity:1 !important;}
 .social-follow-btn{margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--border);color:var(--grey);text-decoration:none;background:rgba(255,255,255,0.04);transition:all 0.2s;}
 .social-follow-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-
 /* ── AI Chat Widget ── */
 #ai-chat-btn{position:fixed;bottom:28px;right:28px;z-index:9000;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8a000);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(232,184,75,0.4);transition:transform 0.2s,box-shadow 0.2s;}
 #ai-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(232,184,75,0.55);}
@@ -377,6 +376,350 @@ h1{opacity:1 !important;}
 .ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
 .ai-claude-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:2px 6px;border:1px solid var(--border);border-radius:2px;margin-left:4px;}
 </style>
+<style id="app-portal-css">
+/* ══ PORTAL — full viewport takeover ══ */
+#app-portal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  background: #09090b;
+  color: #e8e8ec;
+  font-family: 'DM Sans', sans-serif;
+}
+#app-portal.open { display: block; }
+
+/* ══ SHELL — max-width centred column ══ */
+#app-portal .shell {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ══ SCREENS — absolute fill, hidden by default ══ */
+#app-portal .screen {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  bottom: 66px;
+  overflow: hidden;
+}
+#app-portal .screen.active {
+  display: flex;
+  animation: fadeIn .18s ease;
+}
+/* auth screen fills full height — no nav */
+#app-portal #screen-auth {
+  bottom: 0 !important;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+
+/* ══ SCROLL CONTENT — fills screen, scrolls internally ══ */
+#app-portal .scroll-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+#app-portal .scroll-content::-webkit-scrollbar { display: none; }
+
+/* ══ BOTTOM NAV — pinned to bottom of shell ══ */
+#app-portal .nav {
+  display: none;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 66px;
+  background: #111114;
+  border-top: 1px solid #232329;
+  z-index: 100;
+  flex-direction: row;
+  align-items: stretch;
+}
+#app-portal .nav.visible { display: flex; }
+#app-portal .nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8px 4px 12px; gap: 3px;
+  cursor: pointer; color: #6b6b78; font-size: 10px; font-weight: 500;
+  letter-spacing: .5px; text-transform: uppercase; border: none; background: none;
+  transition: color .15s; -webkit-tap-highlight-color: transparent;
+}
+#app-portal .nav-item.active { color: #c9a84c; }
+#app-portal .nav-icon { width: 22px; height: 22px; stroke-width: 1.6; flex-shrink: 0; }
+
+/* ══ BACK BUTTON — hidden, replaced by inline topbar buttons ══ */
+#app-portal-back { display: none !important; }
+</style>
+<style>
+
+  #app-portal {
+    --bg:        #09090b;
+    --surface:   #111114;
+    --card:      #16161a;
+    --border:    #232329;
+    --gold:      #c9a84c;
+    --gold-dim:  #7a6230;
+    --text:      #e8e8ec;
+    --muted:     #6b6b78;
+    --green:     #2ecc71;
+    --red:       #e74c3c;
+    --blue:      #3498db;
+    --radius:    16px;
+    --radius-sm: 10px;
+  }
+  /* ── Utility reset (scoped to portal only) ─── */
+  #app-portal *, #app-portal *::before, #app-portal *::after { box-sizing: border-box; }
+
+  /* ── Topbar ──────────────────────────── */
+  #app-portal .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 12px; position: sticky; top: 0; z-index: 10;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  #app-portal .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--gold); }
+  #app-portal .topbar-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: -2px; }
+  #app-portal .live-dot {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--green); font-weight: 500;
+  }
+  #app-portal .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── Nav styles defined in app-portal-css block above ─── */
+
+  /* ── Cards ───────────────────────────── */
+  #app-portal .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin: 0 16px 12px; }
+  #app-portal .card-sm { padding: 14px 16px; }
+  #app-portal .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.8px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+
+  /* ── Section head ────────────────────── */
+  #app-portal .section-head { padding: 18px 20px 10px; display: flex; align-items: baseline; justify-content: space-between; }
+  #app-portal .section-title { font-family: 'DM Serif Display', serif; font-size: 18px; }
+  #app-portal .section-sub { font-size: 11px; color: var(--muted); }
+
+  /* ── Buttons ─────────────────────────── */
+  #app-portal .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: opacity .15s, transform .1s;
+  }
+  #app-portal .btn:active { transform: scale(.98); }
+  #app-portal .btn:disabled { opacity:.45; cursor:not-allowed; }
+  #app-portal .btn-gold { background: var(--gold); color: #09090b; }
+  #app-portal .btn-gold:hover { opacity:.88; }
+  #app-portal .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  #app-portal .btn-outline:hover { border-color: var(--gold-dim); }
+  #app-portal .btn-sm { padding: 10px 16px; font-size: 13px; width: auto; }
+
+  /* ── Inputs ──────────────────────────── */
+  #app-portal .input-wrap { margin-bottom: 14px; }
+  #app-portal .input-label { font-size: 11px; color: var(--muted); letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px; display: block; }
+  #app-portal .input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 13px 15px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px;
+    outline: none; transition: border-color .15s;
+  }
+  #app-portal .input:focus { border-color: var(--gold-dim); }
+  #app-portal .input::placeholder { color: var(--muted); }
+
+  /* ── Segment ─────────────────────────── */
+  #app-portal .segment { display: flex; background: var(--surface); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--border); }
+  #app-portal .seg-btn { flex:1; padding:9px; border:none; background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; border-radius:8px; cursor:pointer; transition:all .15s; }
+  #app-portal .seg-btn.active { background: var(--card); color: var(--text); }
+
+  /* ── Signals ─────────────────────────── */
+  #app-portal .signal-card { margin: 0 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; }
+  #app-portal .signal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  #app-portal .signal-symbol { font-family: 'DM Serif Display', serif; font-size: 16px; }
+  #app-portal .signal-dir { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 20px; }
+  #app-portal .signal-dir.long { background: rgba(46,204,113,.12); color: var(--green); }
+  #app-portal .signal-dir.short { background: rgba(231,76,60,.12);  color: var(--red);   }
+  #app-portal .signal-meta { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+  #app-portal .sf-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin-bottom: 2px; }
+  #app-portal .sf-val { font-size: 13px; font-weight: 600; }
+  #app-portal .signal-time { font-size: 10px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
+  #app-portal .status-pill { font-size: 10px; font-weight: 700; letter-spacing: .8px; padding: 2px 8px; border-radius: 20px; }
+  #app-portal .status-active { background: rgba(46,204,113,.1);  color: var(--green); }
+  #app-portal .status-closed { background: rgba(107,107,120,.1); color: var(--muted); }
+  #app-portal .status-pending { background: rgba(52,152,219,.1);  color: var(--blue);  }
+
+  /* ── Market Update card ──────────────── */
+  #app-portal .update-card { margin: 0 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  #app-portal .update-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  #app-portal .update-ts { font-size: 10px; color: var(--muted); }
+  #app-portal .bias-row { display: flex; align-items: center; gap: 6px; margin: 4px 0; font-size: 13px; font-weight: 500; }
+  #app-portal .bias-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  #app-portal .bias-bull { background: var(--green); }
+  #app-portal .bias-bear { background: var(--red); }
+  #app-portal .bias-neut { background: var(--muted); }
+  #app-portal .price-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  #app-portal .price-row:last-child { border-bottom: none; }
+  #app-portal .price-sym { color: var(--muted); font-weight: 500; }
+  #app-portal .price-val { font-weight: 600; font-family: monospace; }
+
+  /* ── Index bars ──────────────────────── */
+  #app-portal .idx-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  #app-portal .idx-name { font-size: 11px; width: 52px; flex-shrink: 0; color: var(--muted); font-weight: 500; }
+  #app-portal .idx-label { font-size: 10px; width: 72px; flex-shrink: 0; color: #3d3d46; line-height: 1.3; }
+  #app-portal .idx-bar-wrap { flex: 1; background: var(--surface); border-radius: 4px; height: 5px; min-width: 0; }
+  #app-portal .idx-bar { height: 5px; border-radius: 4px; }
+  #app-portal .idx-bar.bull { background: var(--green); }
+  #app-portal .idx-bar.bear { background: var(--red); }
+  #app-portal .idx-val { font-size: 12px; font-weight: 700; width: 26px; flex-shrink: 0; text-align: right; }
+  /* Legend */
+  #app-portal .idx-legend { display: flex; gap: 14px; padding: 10px 0 6px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+  #app-portal .idx-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: .5px; }
+  #app-portal .idx-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Plans ───────────────────────────── */
+  #app-portal .plan-card { margin: 0 16px 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  #app-portal .plan-card.featured { border-color: var(--gold-dim); background: rgba(201,168,76,.04); }
+  #app-portal .plan-card.baas { border-color: rgba(52,152,219,.35); background: rgba(52,152,219,.04); }
+  #app-portal .plan-name { font-family: 'DM Serif Display', serif; font-size: 19px; margin-bottom: 2px; }
+  #app-portal .plan-price { font-size: 28px; font-weight: 600; color: var(--gold); margin: 6px 0 2px; }
+  #app-portal .plan-period { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+  #app-portal .plan-features { list-style: none; margin-bottom: 14px; }
+  #app-portal .plan-feature { font-size: 12px; color: var(--muted); padding: 2px 0; }
+  #app-portal .plan-fi { margin-right: 6px; }
+  #app-portal .plan-badge { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; background: var(--gold); color: #09090b; padding: 2px 8px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+  #app-portal .plan-badge-blue { background: var(--blue); color: #fff; }
+  #app-portal .plan-section-head { padding: 8px 20px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; }
+  #app-portal .pay-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  #app-portal .pay-btn { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid; transition: opacity .15s; text-decoration: none; }
+  #app-portal .pay-btn.pp { background: #ffc439; color: #003087; border-color: #ffc439; }
+  #app-portal .pay-btn.ps { background: #00c4a7; color: #fff;    border-color: #00c4a7; }
+  #app-portal .pay-btn.cr { background: transparent; color: var(--text); border-color: var(--border); }
+  #app-portal .pay-btn:hover { opacity:.85; }
+
+  /* ── Profile ─────────────────────────── */
+  #app-portal .profile-avatar { width: 60px; height: 60px; background: var(--gold); color: #09090b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 24px; margin: 0 auto 10px; }
+  #app-portal .profile-name { font-family: 'DM Serif Display', serif; font-size: 19px; }
+  #app-portal .profile-plan { font-size: 12px; color: var(--gold); margin-top: 2px; }
+  #app-portal .profile-id { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: monospace; }
+  #app-portal .menu-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity .15s; }
+  #app-portal .menu-item:last-child { border-bottom: none; }
+  #app-portal .menu-item:hover { opacity: .75; }
+  #app-portal .menu-item-left { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  #app-portal .menu-icon { color: var(--muted); }
+  #app-portal .menu-chevron { color: var(--muted); }
+
+  /* ── Auth topbar ────────────────────── */
+  #app-portal .auth-topbar {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px 0;
+    flex-shrink: 0;
+  }
+  #app-portal .auth-exit-btn {
+    background: none;
+    border: 1px solid #232329;
+    color: #6b6b78;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 12px; cursor: pointer; border-radius: 4px;
+    transition: border-color .2s, color .2s;
+  }
+  #app-portal .auth-exit-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+
+  /* ── Topbar exit button (× on logged-in screens) ── */
+  #app-portal .topbar-exit {
+    background: none;
+    border: none;
+    color: #6b6b78;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #app-portal .topbar-exit:hover { color: #e8e8ec; }
+
+  /* ── Auth ────────────────────────────── */
+  #app-portal .auth-hero { padding: 24px 20px 20px; text-align: center; }
+  #app-portal .auth-wordmark { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--gold); margin-bottom: 4px; white-space: nowrap; letter-spacing: -0.3px; }
+  #app-portal .auth-tagline { font-size: 13px; color: var(--muted); }
+  #app-portal .auth-form { padding: 0 20px; }
+  #app-portal .auth-info { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 15px; margin-bottom: 16px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  #app-portal .auth-info strong { color: var(--text); }
+  #app-portal .auth-error { background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: var(--radius-sm); padding: 11px 14px; margin-bottom: 12px; font-size: 12px; color: var(--red); display: none; }
+  #app-portal .auth-error.show { display: block; }
+
+  /* ── Setup ───────────────────────────── */
+  #app-portal .setup-tab-bar { display: flex; padding: 14px 16px 0; gap: 8px; }
+  #app-portal .setup-tab { flex:1; padding:10px 6px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all .15s; }
+  #app-portal .setup-tab.active { border-color: var(--gold-dim); color: var(--gold); background: rgba(201,168,76,.06); }
+  #app-portal .setup-panel { display: none; }
+  #app-portal .setup-panel.active { display: block; }
+  #app-portal .step-card { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+  #app-portal .step-card:last-child { border-bottom: none; }
+  #app-portal .step-num { width: 26px; height: 26px; background: var(--gold); color: #09090b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  #app-portal .step-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  #app-portal .step-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  #app-portal .exchange-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 16px 14px; }
+  #app-portal .exchange-btn { padding: 13px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; text-align: center; transition: border-color .15s; }
+  #app-portal .exchange-btn.selected { border-color: var(--gold); background: rgba(201,168,76,.05); }
+  #app-portal .exchange-btn-name { font-size: 13px; font-weight: 600; }
+  #app-portal .exchange-btn-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  #app-portal .info-box { background: rgba(52,152,219,.06); border: 1px solid rgba(52,152,219,.2); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  #app-portal .info-box strong { color: var(--blue); }
+
+  /* ── Detail screens ──────────────────── */
+  #app-portal .detail-screen { display: none; position: absolute; inset: 0; background: var(--bg); z-index: 200; overflow-y: auto; max-width: 420px; margin: 0 auto; }
+  #app-portal .detail-screen.open { display: block; }
+  #app-portal .detail-topbar { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+  #app-portal .back-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--card); border: 1px solid var(--border); border-radius: 50%; cursor: pointer; }
+  #app-portal .detail-title { font-family: 'DM Serif Display', serif; font-size: 18px; }
+  #app-portal .form-section { margin: 16px; }
+  #app-portal .form-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+  #app-portal .notif-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); }
+  #app-portal .notif-row:last-child { border-bottom: none; }
+  #app-portal .notif-info { flex: 1; }
+  #app-portal .notif-label { font-size: 13px; font-weight: 500; margin-bottom: 1px; }
+  #app-portal .notif-desc { font-size: 11px; color: var(--muted); }
+  #app-portal .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  #app-portal .toggle input { opacity:0; width:0; height:0; }
+  #app-portal .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); border-radius: 24px; transition: .3s; }
+  #app-portal .toggle-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.3s; }
+  #app-portal .toggle input:checked + .toggle-slider { background: var(--gold); }
+  #app-portal .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* ── Utility ─────────────────────────── */
+  #app-portal .disclaimer { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.6; padding: 8px 24px 16px; }
+  #app-portal .scroll-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  #app-portal .scroll-content::-webkit-scrollbar { display: none; }
+  #app-portal .loading-wrap { display: flex; align-items: center; justify-content: center; padding: 32px; gap: 10px; color: var(--muted); font-size: 13px; }
+  #app-portal .empty-state { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px; }
+  #app-portal .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(201,168,76,.3); border-top-color: var(--gold); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .locked-overlay { text-align: center; padding: 40px 20px; }
+  #app-portal .locked-icon { font-size: 40px; margin-bottom: 12px; }
+  #app-portal .locked-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 6px; }
+  #app-portal .locked-text { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  #app-portal .mt-8 { margin-top: 8px; }
+  #app-portal .mt-12 { margin-top: 12px; }
+  #app-portal .mt-16 { margin-top: 16px; }
+  #app-portal .text-gold { color: var(--gold); }
+  #app-portal .text-green { color: var(--green); }
+  #app-portal .text-red { color: var(--red); }
+  #app-portal .divider { height: 1px; background: var(--border); margin: 4px 16px; }
+  #app-portal .tag { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+  #app-portal .tag-crypto { background: rgba(201,168,76,.12); color: var(--gold); }
+  #app-portal .tag-macro { background: rgba(52,152,219,.12); color: var(--blue); }
+  #app-portal .tag-stocks { background: rgba(46,204,113,.12); color: var(--green); }
+  #app-portal .tag-fx { background: rgba(155,89,182,.12); color: #9b59b6; }
+  #app-portal .tag-metals { background: rgba(231,76,60,.12);  color: var(--red); }
+
+</style>
 </head>
 <body>
 
@@ -390,7 +733,7 @@ h1{opacity:1 !important;}
     <a href="#social">Follow Us</a>
     <a href="#jobs">Book Analyst</a>
     <a href="#how">How It Works</a>
-    <a href="#" onclick="showDashLock();return false;" style="color:var(--cyan);">⚡ Dashboard</a>
+    <a href="#" onclick="openAppPortal();return false;" style="color:var(--cyan);">⚡ Dashboard</a>
   </div>
   <a href="https://t.me/ThirtyxSaas" target="_blank" class="nav-email">&#9992; @ThirtyxSaas</a>
   <button id="hamburger" aria-label="Menu">&#9776;</button>
@@ -403,7 +746,7 @@ h1{opacity:1 !important;}
   <a href="#social" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Follow Us</a>
   <a href="#jobs" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Book Analyst</a>
   <a href="#how" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">How It Works</a>
-  <a href="#" onclick="closeMenu();showDashLock();return false;" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">⚡ Dashboard</a>
+  <a href="#" onclick="closeMenu();openAppPortal();return false;" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">⚡ Dashboard</a>
   <div style="padding:16px 0 8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);">Contact &amp; Follow</div>
   <a href="https://t.me/ThirtyxSaas" target="_blank" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--grey);text-decoration:none;padding:10px 0;display:flex;align-items:center;gap:10px;">&#9992; @ThirtyxSaas (Telegram)</a>
 </div>
@@ -993,7 +1336,6 @@ h1{opacity:1 !important;}
       </div>
     </div>
 
-
   </div>
 
   <div class="social-nav">
@@ -1004,6 +1346,8 @@ h1{opacity:1 !important;}
     </div>
     <div class="social-nav-dots" id="social-dots">
       <button class="social-nav-dot active" onclick="socialScrollTo(0)"></button>
+      <button class="social-nav-dot" onclick="socialScrollTo(1)"></button>
+      <button class="social-nav-dot" onclick="socialScrollTo(2)"></button>
     </div>
     <div class="social-nav-arrows">
       <button class="social-nav-arrow" id="social-prev" onclick="socialScroll(-1)" title="Previous">&#8592;</button>
@@ -1077,256 +1421,1516 @@ if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(e
 function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));document.getElementById('plan-'+plan).classList.add('active');btn.classList.add('active');}
 </script>
 
-<!-- PRIVATE DASHBOARD -->
-<div id="dash-lock">
-  <div class="lock-box">
-    <button onclick="lockDash()" aria-label="Go back" style="position:absolute;top:14px;left:14px;background:none;border:none;color:var(--grey);font-size:18px;cursor:pointer;padding:6px 10px;font-family:'DM Mono',monospace;letter-spacing:1px;transition:color 0.2s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--grey)'">&#8592; <span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;">Back</span></button>
-    <div class="lock-eye">// Private Access</div>
-    <div class="lock-title">30× DASHBOARD</div>
-    <p class="lock-sub">Bot signals &middot; Active positions &middot; Live feed<br>Owner access only.</p>
-    <input class="lock-input" id="lock-pin" type="password" maxlength="20" placeholder="Enter PIN" autocomplete="off">
-    <button class="lock-btn" id="lock-btn-el">UNLOCK</button>
-    <div class="lock-err" id="lock-err">&#9940; Incorrect PIN</div>
+<!-- ═══ 30xTech App Portal ═══ -->
+<div id="app-portal">
+  <button id="app-portal-back" onclick="closeAppPortal()">&#8592; Back to Site</button>
+  <div class="shell">
+
+  <!-- ══ AUTH ══════════════════════════════════════ -->
+  <div class="screen active" id="screen-auth">
+    <div class="auth-topbar">
+      <button class="auth-exit-btn" onclick="closeAppPortal()">&#8592; Back to Site</button>
+    </div>
+    <div class="scroll-content">
+      <div class="auth-hero">
+        <div class="auth-wordmark">30×Tech Research</div>
+        <div class="auth-tagline">Institutional-grade signals for independent traders</div>
+      </div>
+      <div class="auth-form">
+
+        <!-- ── Mode tabs ── -->
+        <div class="segment" style="margin-bottom:20px;" id="auth-mode-tabs">
+          <button class="seg-btn active" id="tab-signin"   onclick="setAuthMode('signin')">Sign In</button>
+          <button class="seg-btn"        id="tab-register" onclick="setAuthMode('register')">Create Account</button>
+          <button class="seg-btn"        id="tab-recover"  onclick="setAuthMode('recover')">Recover</button>
+        </div>
+
+        <!-- ── Error / info ── -->
+        <div id="auth-error" class="auth-error"></div>
+        <div id="auth-info"  class="auth-info" style="display:none;"></div>
+
+        <!-- ══════ STEP: SIGN IN ══════ -->
+        <div id="step-signin">
+          <div class="auth-info">
+            Sign in with your <strong>Telegram Chat ID</strong> and your account password.<br>
+            Find your ID by messaging <strong>@userinfobot</strong> on Telegram.
+          </div>
+          <div class="input-wrap mt-12">
+            <label class="input-label">Telegram Chat ID</label>
+            <input class="input" type="number" id="si-tgid" placeholder="e.g. 1234567890" inputmode="numeric">
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Password</label>
+            <div style="position:relative;">
+              <input class="input" type="password" id="si-pw" placeholder="Enter your password" style="padding-right:48px;">
+              <button onclick="togglePwVis('si-pw','si-eye')" id="si-eye" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="btn btn-gold mt-8" id="si-btn" onclick="startSignIn()"><span id="si-btn-lbl">Continue</span></button>
+          <p class="disclaimer mt-8">By continuing you agree to our Terms of Service. Not financial advice.</p>
+        </div>
+
+        <!-- ══════ STEP: SIGN-IN OTP ══════ -->
+        <div id="step-signin-otp" style="display:none;">
+          <div class="auth-info">
+            <strong>OTP sent to your Telegram!</strong><br>
+            A 6-digit code was sent to your Telegram via the bot. Enter it below to complete sign-in.
+          </div>
+          <div class="input-wrap mt-12">
+            <label class="input-label">One-Time Passcode (OTP)</label>
+            <input class="input" type="number" id="si-otp" placeholder="6-digit code" inputmode="numeric" maxlength="6" style="letter-spacing:6px;font-size:20px;text-align:center;">
+          </div>
+          <button class="btn btn-gold mt-8" id="si-otp-btn" onclick="verifySignInOtp()"><span id="si-otp-btn-lbl">Verify & Sign In</span></button>
+          <button class="btn btn-outline mt-8" onclick="setAuthMode('signin')" style="margin-top:8px;">Back</button>
+        </div>
+
+        <!-- ══════ STEP: CREATE ACCOUNT ══════ -->
+        <div id="step-register" style="display:none;">
+          <div class="auth-info">
+            Create your account using your Telegram Chat ID. You must already be a subscriber — your ID must be registered by the admin.<br>
+            Find your ID by messaging <strong>@userinfobot</strong> on Telegram.
+          </div>
+          <div class="input-wrap mt-12">
+            <label class="input-label">Telegram Chat ID</label>
+            <input class="input" type="number" id="reg-tgid" placeholder="e.g. 1234567890" inputmode="numeric">
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Choose Password</label>
+            <div style="position:relative;">
+              <input class="input" type="password" id="reg-pw" placeholder="Min 8 characters" style="padding-right:48px;">
+              <button onclick="togglePwVis('reg-pw','reg-eye')" id="reg-eye" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="input-wrap">
+            <label class="input-label">Confirm Password</label>
+            <input class="input" type="password" id="reg-pw2" placeholder="Repeat password">
+          </div>
+          <button class="btn btn-gold mt-8" id="reg-btn" onclick="startRegister()"><span id="reg-btn-lbl">Send OTP to Telegram</span></button>
+          <p class="disclaimer mt-8">An OTP will be sent to your Telegram to verify your account.</p>
+        </div>
+
+        <!-- ══════ STEP: REGISTER OTP ══════ -->
+        <div id="step-register-otp" style="display:none;">
+          <div class="auth-info">
+            <strong>OTP sent to your Telegram!</strong><br>
+            A 6-digit verification code was sent to your Telegram. Enter it to complete account creation.
+          </div>
+          <div class="input-wrap mt-12">
+            <label class="input-label">One-Time Passcode (OTP)</label>
+            <input class="input" type="number" id="reg-otp" placeholder="6-digit code" inputmode="numeric" maxlength="6" style="letter-spacing:6px;font-size:20px;text-align:center;">
+          </div>
+          <button class="btn btn-gold mt-8" id="reg-otp-btn" onclick="verifyRegisterOtp()"><span id="reg-otp-btn-lbl">Verify & Create Account</span></button>
+          <button class="btn btn-outline mt-8" onclick="setAuthMode('register')" style="margin-top:8px;">Back</button>
+        </div>
+
+        <!-- ══════ STEP: RECOVER PASSWORD ══════ -->
+        <div id="step-recover" style="display:none;">
+          <div class="auth-info">
+            Enter your Telegram Chat ID. A new temporary password will be generated and sent to your Telegram via the bot.
+          </div>
+          <div class="input-wrap mt-12">
+            <label class="input-label">Telegram Chat ID</label>
+            <input class="input" type="number" id="rec-tgid" placeholder="e.g. 1234567890" inputmode="numeric">
+          </div>
+          <button class="btn btn-gold mt-8" id="rec-btn" onclick="startRecover()"><span id="rec-btn-lbl">Send Recovery Code</span></button>
+          <button class="btn btn-outline mt-8" onclick="setAuthMode('signin')" style="margin-top:8px;">Back to Sign In</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+    <!-- ══ HOME — SIGNALS ════════════════════════════ -->
+  <div class="screen" id="screen-home">
+    <div class="topbar">
+      <div><div class="topbar-logo">30×Tech</div><div class="topbar-sub">Research Platform</div></div>
+      <div class="live-dot">Live</div>
+      <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
+    </div>
+    <div class="scroll-content">
+      <div class="section-head">
+        <div class="section-title">Signals</div>
+        <div class="section-sub" id="signals-count">—</div>
+      </div>
+      <div id="signals-container"><div class="loading-wrap"><div class="spinner"></div> Loading…</div></div>
+      <div class="disclaimer">Signals are generated algorithmically. Not financial advice. Past performance does not guarantee future results.</div>
+    </div>
+  </div>
+
+  <!-- ══ CONFLUENCE ════════════════════════════════ -->
+  <div class="screen" id="screen-confluence">
+    <div class="topbar">
+      <div><div class="topbar-logo">Market Updates</div><div class="topbar-sub">Live Price & Bias</div></div>
+      <div class="live-dot">Live</div>
+      <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
+    </div>
+    <div class="scroll-content">
+      <div id="confluence-container"><div class="loading-wrap"><div class="spinner"></div> Loading…</div></div>
+      <div class="disclaimer">Market updates are generated from live price confluence across tracked symbols. Not financial advice.</div>
+    </div>
+  </div>
+
+  <!-- ══ RESEARCH ══════════════════════════════════ -->
+  <div class="screen" id="screen-articles">
+    <div class="topbar">
+      <div><div class="topbar-logo">Research</div><div class="topbar-sub">AI Market Analysis</div></div>
+      <div class="live-dot">Updated hourly</div>
+      <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
+    </div>
+    <div class="scroll-content">
+      <div class="section-head">
+        <div class="section-title">Latest Updates</div>
+        <div class="section-sub">Refreshed every 60 min</div>
+      </div>
+      <div id="articles-container"><div class="loading-wrap"><div class="spinner"></div> Loading…</div></div>
+      <div class="disclaimer">Market updates are template-based from live verified data. Not financial advice.</div>
+    </div>
+  </div>
+
+  <!-- ══ PLANS ═════════════════════════════════════ -->
+  <div class="screen" id="screen-plans">
+    <div class="topbar">
+      <div><div class="topbar-logo">Plans</div><div class="topbar-sub">Choose your access level</div></div>
+      <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
+    </div>
+    <div class="scroll-content">
+      <div class="section-head">
+        <div class="section-title">Membership Plans</div>
+        <div class="section-sub">SaaS · BaaS</div>
+      </div>
+      <!-- SaaS plans heading -->
+      <div class="plan-section-head">💎 SaaS — Subscriber Plans</div>
+      <div id="saas-plans-container"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      <!-- BaaS plans heading -->
+      <div class="plan-section-head" style="margin-top:8px;">🏢 BaaS — Bot as a Service</div>
+      <div id="baas-plans-container"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      <!-- Other services -->
+      <div class="plan-section-head" style="margin-top:8px;">📞 Other Services</div>
+      <div class="card">
+        <div class="notif-row" style="padding:12px 0;">
+          <div class="notif-info">
+            <div class="notif-label">Zoom Visual Session</div>
+            <div class="notif-desc">3 months intensive — £799 one-time</div>
+          </div>
+          <a href="https://www.paypal.com/ncp/payment/M7D9GECA4A4H8" target="_blank" class="btn btn-gold btn-sm" style="width:auto;">Book</a>
+        </div>
+        <div class="notif-row" style="padding:12px 0;">
+          <div class="notif-info">
+            <div class="notif-label">Market Analyst — Weekdays</div>
+            <div class="notif-desc">Daily analysis — £90/wk</div>
+          </div>
+          <a href="https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA" target="_blank" class="btn btn-gold btn-sm" style="width:auto;">Book</a>
+        </div>
+        <div class="notif-row" style="padding:12px 0; border-bottom:none;">
+          <div class="notif-info">
+            <div class="notif-label">Market Analyst — Weekends</div>
+            <div class="notif-desc">Weekend coverage — £50/wk</div>
+          </div>
+          <a href="https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6" target="_blank" class="btn btn-gold btn-sm" style="width:auto;">Book</a>
+        </div>
+      </div>
+      <div class="disclaimer">
+        Subscriptions auto-renew monthly unless stated. After payment via PayPal or USDC, send proof + your Telegram ID to <strong>@ThirtyxSaas</strong>.<br>
+        Paystack payments activate automatically ✅. Not financial advice.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SETUP ═════════════════════════════════════ -->
+  <div class="screen" id="screen-setup">
+    <div class="topbar">
+      <div><div class="topbar-logo">Setup</div><div class="topbar-sub">Bot & Exchange Config</div></div>
+    </div>
+    <div class="scroll-content">
+      <!-- Tab switcher: SaaS / BaaS -->
+      <div class="setup-tab-bar">
+        <div class="setup-tab active" id="tab-saas" onclick="switchSetupTab('saas')">SaaS Client</div>
+        <div class="setup-tab" id="tab-baas" onclick="switchSetupTab('baas')">BaaS Client</div>
+      </div>
+
+      <!-- ── SaaS Panel ── -->
+      <div class="setup-panel active" id="panel-saas">
+        <div class="section-head"><div class="section-title">SaaS Setup</div><div class="section-sub">2 steps</div></div>
+        <div class="card">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Telegram Delivery</div>
+              <div class="step-desc">Your Telegram Chat ID is already linked. Signals, market updates and articles are delivered directly to your Telegram by the bot.</div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Select Your Plan</div>
+              <div class="step-desc">Go to Plans to choose a SaaS subscriber plan — Bot2 (Signals), Bot1 (Index Confluence), Bot4 (Market Articles), or a combined bundle.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-head" style="padding-top:8px;"><div class="section-title" style="font-size:15px;">Signal Delivery</div></div>
+        <div class="card">
+          <div class="card-label">Your Delivery Info</div>
+          <div class="input-wrap" style="margin-bottom:0;">
+            <label class="input-label">Telegram Chat ID (linked)</label>
+            <input class="input" type="text" id="saas-tgid-display" readonly style="color:var(--muted);">
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-label">Your Branded ID</div>
+          <div id="saas-branded-id" style="font-family:monospace;font-size:14px;color:var(--gold);word-break:break-all;margin-bottom:10px;">—</div>
+          <div style="font-size:11px;color:var(--muted);">Use this ID when paying via Paystack for instant plan activation. Send it with payment proof to @ThirtyxSaas for PayPal/USDC payments.</div>
+        </div>
+      </div>
+
+      <!-- ── BaaS Panel ── -->
+      <div class="setup-panel" id="panel-baas">
+        <div class="section-head"><div class="section-title">BaaS Setup</div><div class="section-sub">3 types</div></div>
+
+        <!-- Type selector -->
+        <div style="padding:0 16px 12px;">
+          <div class="segment" style="margin-bottom:0;">
+            <button class="seg-btn active" id="baas-t1-btn" onclick="switchBaasType(1)">Type 1</button>
+            <button class="seg-btn" id="baas-t2-btn" onclick="switchBaasType(2)">Type 2</button>
+            <button class="seg-btn" id="baas-t3-btn" onclick="switchBaasType(3)">Type 3</button>
+          </div>
+        </div>
+
+        <!-- Type 1 -->
+        <div id="baas-type-1">
+          <div class="card">
+            <div class="card-label">Type 1 — Direct Signal Receiver</div>
+            <div class="info-box" style="margin:0 0 12px;">
+              <strong>How it works:</strong> You receive signals directly into your own Telegram bot. Your bot is powered by the 30xTech engine — signals are pushed to your bot's chat as they fire, with no white-labelling or reselling.
+            </div>
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div><div class="step-title">Subscribe to a BaaS Plan</div><div class="step-desc">Choose any BaaS Signals plan from the Plans tab. Pay via Paystack (instant) or PayPal/USDC and send proof to @ThirtyxSaas.</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div><div class="step-title">Create Your Bot</div><div class="step-desc">Message @BotFather on Telegram → /newbot → follow prompts → copy your bot token.</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div><div class="step-title">Send Bot Token to Admin</div><div class="step-desc">Admin runs: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas token &lt;your_uid&gt; &lt;bot_token&gt;</code><br>Then: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas chat &lt;your_uid&gt; &lt;chat_id&gt;</code></div></div>
+            </div>
+            <div class="step-card" style="border-bottom:none;">
+              <div class="step-num">4</div>
+              <div><div class="step-title">Go Live</div><div class="step-desc">Signals will be delivered directly to your bot's chat as they fire. No further setup needed.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type 2 -->
+        <div id="baas-type-2" style="display:none;">
+          <div class="card">
+            <div class="card-label">Type 2 — WL + CopyTrade + Resell</div>
+            <div class="info-box" style="margin:0 0 12px;">
+              <strong>How it works:</strong> Your own bot receives signals AND mirrors trades directly to your exchange account (CopyTrade). You can also resell signal access from your bot to your own subscribers.
+            </div>
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div><div class="step-title">Subscribe to WL + CopyTrade Plan</div><div class="step-desc">Choose <strong>WL + CopyTrade — Full</strong> or <strong>CopyTrade — Signals Mirror</strong> from the Plans tab. Paystack activates instantly.</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div><div class="step-title">Create Your Bot via @BotFather</div><div class="step-desc">Get your bot token → send to admin via: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas token &lt;uid&gt; &lt;token&gt;</code><br>Then set your chat: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas chat &lt;uid&gt; &lt;chat_id&gt;</code></div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div><div class="step-title">Connect Exchange for CopyTrade</div><div class="step-desc">Admin runs: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas ctkeys &lt;uid&gt; &lt;exchange&gt; &lt;api_key&gt; &lt;api_secret&gt;</code><br>Supported: Bybit, Bitget, Binance, OKX, Kraken, MEXC</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">4</div>
+              <div><div class="step-title">Configure & Consent</div><div class="step-desc">Admin sets market type: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas ctconfig &lt;uid&gt; market_type spot</code><br>Then confirms consent: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas ctconsent &lt;uid&gt;</code></div></div>
+            </div>
+            <div class="step-card" style="border-bottom:none;">
+              <div class="step-num">5</div>
+              <div><div class="step-title">Resell to Your Subscribers</div><div class="step-desc">Your bot can resell signal subscriptions to your own users using the built-in WL user management system. Admin sets up: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas synccommands</code> on your bot.</div></div>
+            </div>
+          </div>
+
+          <div class="section-head" style="padding-top:8px;"><div class="section-title" style="font-size:15px;">Exchange (CopyTrade)</div></div>
+          <div class="exchange-grid">
+            <div class="exchange-btn selected" onclick="selectExchange(this)"><div class="exchange-btn-name">Binance</div><div class="exchange-btn-sub">Spot + Futures</div></div>
+            <div class="exchange-btn" onclick="selectExchange(this)"><div class="exchange-btn-name">Bybit</div><div class="exchange-btn-sub">Spot + Futures</div></div>
+            <div class="exchange-btn" onclick="selectExchange(this)"><div class="exchange-btn-name">Bitget</div><div class="exchange-btn-sub">Spot + Futures</div></div>
+            <div class="exchange-btn" onclick="selectExchange(this)"><div class="exchange-btn-name">OKX</div><div class="exchange-btn-sub">Spot + Futures</div></div>
+          </div>
+          <div class="card">
+            <div class="card-label">Exchange API Credentials (CopyTrade)</div>
+            <div class="input-wrap"><label class="input-label">API Key</label><input class="input" type="text" placeholder="Enter your API key"></div>
+            <div class="input-wrap" style="margin-bottom:0;"><label class="input-label">API Secret</label><input class="input" type="password" placeholder="Enter your API secret"></div>
+          </div>
+          <div class="card" style="margin-bottom:8px;">
+            <button class="btn btn-gold">Save & Send to Admin</button>
+            <p class="disclaimer" style="padding:10px 0 0;text-align:left;">API credentials are used solely for CopyTrade execution. We never execute trades beyond your agreed max position size.</p>
+          </div>
+        </div>
+
+        <!-- Type 3 -->
+        <div id="baas-type-3" style="display:none;">
+          <div class="card">
+            <div class="card-label">Type 3 — Full WL: Signals + Index + Articles</div>
+            <div class="info-box" style="margin:0 0 12px;">
+              <strong>How it works:</strong> You get up to 3 separate branded Telegram bots — one for signals, one for index confluence, one for market articles. Each bot is fully white-labelled under your brand and auto-delivers to your subscribers.
+            </div>
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div><div class="step-title">Subscribe to WL Full Plan</div><div class="step-desc">Choose <strong>WL — Full Premium</strong> or <strong>WL — Lifetime</strong> from the Plans tab for all 3 bots (Bot1+Bot2+Bot4).</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div><div class="step-title">Create 3 Bots via @BotFather</div><div class="step-desc">Create a bot for each service: Signals bot, Index bot, Articles bot. Send each token to admin for the relevant bot service.</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div><div class="step-title">Admin Registers Each Bot</div><div class="step-desc">Admin runs for each: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas token &lt;uid&gt; &lt;token&gt;</code><br><code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas chat &lt;uid&gt; &lt;chat_id&gt;</code><br>Each service (Bot1/Bot2/Bot4) is routed to the correct WL bot.</div></div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">4</div>
+              <div><div class="step-title">Sync Commands</div><div class="step-desc">Admin runs: <code style="font-family:monospace;font-size:11px;color:var(--gold);">/baas synccommands</code><br>This registers all slash commands on your branded bots so your subscribers can use /plans, /myplan, /myid etc.</div></div>
+            </div>
+            <div class="step-card" style="border-bottom:none;">
+              <div class="step-num">5</div>
+              <div><div class="step-title">Go Live — All 3 Bots</div><div class="step-desc">Signals, index confluence, and market articles will auto-deliver to your subscribers via your branded bots. You manage your own subscriber list.</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE ═══════════════════════════════════ -->
+  <div class="screen" id="screen-profile">
+    <div class="topbar">
+      <div><div class="topbar-logo">Account</div><div class="topbar-sub">Your profile</div></div>
+      <button class="topbar-exit" onclick="closeAppPortal()" title="Back to site">&#10005;</button>
+    </div>
+    <div class="scroll-content">
+      <div style="padding:22px 16px 12px;text-align:center;">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-name" id="profile-name">—</div>
+        <div class="profile-plan" id="profile-plan">—</div>
+        <div class="profile-id"   id="profile-tgid">—</div>
+      </div>
+      <div class="card card-sm">
+        <div class="menu-item" onclick="openDetail('detail-personal')">
+          <div class="menu-item-left">
+            <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Personal Details
+          </div>
+          <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="menu-item" onclick="navigate('plans')">
+          <div class="menu-item-left">
+            <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            Subscription &amp; Billing
+          </div>
+          <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="menu-item" onclick="navigate('setup')">
+          <div class="menu-item-left">
+            <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            Bot &amp; Exchange Settings
+          </div>
+          <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="menu-item" onclick="openDetail('detail-notif')">
+          <div class="menu-item-left">
+            <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notification Preferences
+          </div>
+          <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="menu-item" onclick="openDetail('detail-support')">
+          <div class="menu-item-left">
+            <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Help &amp; Support
+          </div>
+          <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+      <div style="padding:8px 16px 0;">
+        <button class="btn btn-outline" style="color:var(--red);border-color:rgba(231,76,60,.3);" onclick="doSignOut()">Sign Out</button>
+      </div>
+      <div class="disclaimer" style="margin-top:16px;">30xTech Research · Version 2.0.0<br>© 2025 30xTech Research. All rights reserved.</div>
+    </div>
+  </div>
+
+  <!-- ══ NAV ═══════════════════════════════════════ -->
+  <nav class="nav" id="bottom-nav">
+    <button class="nav-item active" onclick="navigate('home')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Signals
+    </button>
+    <button class="nav-item" onclick="navigate('confluence')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Updates
+    </button>
+    <button class="nav-item" onclick="navigate('articles')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Research
+    </button>
+    <button class="nav-item" onclick="navigate('plans')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      Plans
+    </button>
+    <button class="nav-item" onclick="navigate('profile')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Profile
+    </button>
+  </nav>
+</div>
+
+<!-- ══ DETAIL: PERSONAL DETAILS ══════════════════ -->
+<div class="detail-screen" id="detail-personal">
+  <div class="detail-topbar">
+    <div class="back-btn" onclick="closeDetail('detail-personal')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </div>
+    <div class="detail-title">Personal Details</div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Profile Information</div>
+    <div class="input-wrap">
+      <label class="input-label">Display Name</label>
+      <input class="input" type="text" id="pd-name" placeholder="Your name">
+    </div>
+    <div class="input-wrap">
+      <label class="input-label">Telegram Chat ID</label>
+      <input class="input" type="text" id="pd-tgid" readonly style="color:var(--muted);">
+    </div>
+    <div class="input-wrap">
+      <label class="input-label">Current Plan</label>
+      <input class="input" type="text" id="pd-plan" readonly style="color:var(--muted);">
+    </div>
+    <div class="input-wrap">
+      <label class="input-label">Role</label>
+      <input class="input" type="text" id="pd-role" readonly style="color:var(--muted);">
+    </div>
+    <div class="input-wrap" id="pd-expires-wrap">
+      <label class="input-label">Plan Expires</label>
+      <input class="input" type="text" id="pd-expires" readonly style="color:var(--muted);">
+    </div>
+    <div class="input-wrap">
+      <label class="input-label">Branded ID (Paystack reference)</label>
+      <input class="input" type="text" id="pd-brandedid" readonly style="color:var(--gold);font-family:monospace;">
+    </div>
+  </div>
+  <div style="padding:0 16px 32px;">
+    <div class="info-box">
+      To update your name or details, contact <strong>@ThirtyxSaas</strong> on Telegram.
+    </div>
   </div>
 </div>
 
-<div id="dash-page">
-  <div class="dash-header">
-    <div class="dash-title"><em>30&times;</em> BOT DASHBOARD</div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <div class="dash-badge"><span class="dot-live"></span>Live Bot Feed</div>
-      <span id="dash-lastupdate" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--grey);">Connecting...</span>
-      <button class="dash-logout" id="dash-logout-btn">&#128274; LOCK</button>
+<!-- ══ DETAIL: NOTIFICATION PREFERENCES ══════════ -->
+<div class="detail-screen" id="detail-notif">
+  <div class="detail-topbar">
+    <div class="back-btn" onclick="closeDetail('detail-notif')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </div>
+    <div class="detail-title">Notification Preferences</div>
   </div>
-  <div class="dash-status">
-    <div class="stat-box"><div class="stat-lbl">Open Positions</div><div class="stat-val y" id="stat-active">--</div></div>
-    <div class="stat-box"><div class="stat-lbl">Signals Today</div><div class="stat-val" id="stat-today">--</div></div>
-    <div class="stat-box"><div class="stat-lbl">T8 Trades Today</div><div class="stat-val" style="color:var(--cyan);" id="stat-t8today">--</div></div>
-    <div class="stat-box"><div class="stat-lbl">Open P&amp;L</div><div class="stat-val" id="stat-pnl">--</div></div>
-    <div class="stat-box"><div class="stat-lbl">Last Signal</div><div class="stat-val g" id="stat-lastsig" style="font-size:14px;">--</div></div>
-    <div class="stat-box"><div class="stat-lbl">Bot Status</div><div class="stat-val g" id="stat-status" style="font-size:14px;">STANDBY</div></div>
-  </div>
-  <div class="dash-grid">
-    <div>
-      <div class="feed-head">Live Signal Feed</div>
-      <div id="signal-feed"><div class="feed-loading"><div class="spin"></div>&nbsp;Connecting to bot&hellip;</div></div>
+  <div class="form-section">
+    <div class="form-section-title">Telegram Bot Delivery</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+      All notifications are delivered via your subscribed Telegram bot. Adjust which types of messages you receive below.
     </div>
-    <div>
-      <div class="pos-panel">
-        <div class="pos-head"><span>Active Positions</span><span id="pos-count" style="color:var(--gold);">0</span></div>
-        <div id="positions-list"><div class="feed-empty" style="font-size:10px;">No open positions</div></div>
-      </div>
-      <div class="setup-panel">
-        <div class="setup-panel-head">// Firebase Config</div>
-        <div class="setup-note">
-          <strong>Database:</strong> x-dashboard-b1098<br>
-          <strong>Region:</strong> europe-west1<br>
-          <strong>Status:</strong> <span style="color:var(--green)">Connected</span>
+    <div class="card" style="margin:0 0 14px;">
+      <div class="notif-row">
+        <div class="notif-info">
+          <div class="notif-label">Signal Alerts</div>
+          <div class="notif-desc">New trade signals from Bot2</div>
         </div>
+        <label class="toggle"><input type="checkbox" checked id="notif-signals"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="notif-row">
+        <div class="notif-info">
+          <div class="notif-label">Index Confluence</div>
+          <div class="notif-desc">Multi-timeframe index updates from Bot1</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked id="notif-index"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="notif-row">
+        <div class="notif-info">
+          <div class="notif-label">Market Updates</div>
+          <div class="notif-desc">Hourly verified market data from Bot4</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked id="notif-articles"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="notif-row" style="border-bottom:none;">
+        <div class="notif-info">
+          <div class="notif-label">Position Closed Alerts</div>
+          <div class="notif-desc">Notify when a signal closes with PnL</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked id="notif-closed"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Note:</strong> Notification preferences here are for your reference. To mute specific bots, use the mute/unmute function within the Telegram bot itself.
+    </div>
+    <button class="btn btn-gold mt-12" onclick="saveNotifPrefs()">Save Preferences</button>
+  </div>
+</div>
+
+<!-- ══ DETAIL: HELP & SUPPORT ════════════════════ -->
+<div class="detail-screen" id="detail-support">
+  <div class="detail-topbar">
+    <div class="back-btn" onclick="closeDetail('detail-support')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </div>
+    <div class="detail-title">Help &amp; Support</div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Contact & Resources</div>
+
+    <div class="card" style="margin:0 0 12px;">
+      <div class="notif-row">
+        <div class="notif-info">
+          <div class="notif-label">Support — @ThirtyxSaas</div>
+          <div class="notif-desc">Main contact for billing, plan activation, and general support</div>
+        </div>
+        <a href="https://t.me/ThirtyxSaas" target="_blank" class="btn btn-gold btn-sm" style="width:auto;flex-shrink:0;">Open</a>
+      </div>
+      <div class="notif-row" style="border-bottom:none;">
+        <div class="notif-info">
+          <div class="notif-label">Ping Admin</div>
+          <div class="notif-desc">After payment — send /ping to your bot to notify admin</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);font-family:monospace;">/ping</div>
+      </div>
+    </div>
+
+    <div class="form-section-title">Commands Reference</div>
+    <div class="card" style="margin:0 0 12px;">
+      <div style="font-size:12px;color:var(--muted);line-height:2;">
+        <div><span style="color:var(--gold);font-family:monospace;">/plans</span> — View all plans with payment links</div>
+        <div><span style="color:var(--gold);font-family:monospace;">/myplan</span> — Check your current plan &amp; expiry</div>
+        <div><span style="color:var(--gold);font-family:monospace;">/myid</span> — View your Telegram &amp; Branded ID</div>
+        <div><span style="color:var(--gold);font-family:monospace;">/ping</span> — Alert admin after payment</div>
+        <div><span style="color:var(--gold);font-family:monospace;">/menu</span> — Open the bot menu</div>
+      </div>
+    </div>
+
+    <div class="form-section-title">Payment Methods</div>
+    <div class="card" style="margin:0 0 12px;">
+      <div style="font-size:12px;color:var(--muted);line-height:2;">
+        <div>💳 <strong style="color:var(--text);">Paystack</strong> — Instant auto-activation ✅</div>
+        <div>🅿️ <strong style="color:var(--text);">PayPal</strong> — Manual activation, send proof to @ThirtyxSaas</div>
+        <div>💎 <strong style="color:var(--text);">USDC (TRC20)</strong> — <span style="font-family:monospace;font-size:11px;">TXyL39t6E8dzX9jTgvZUZREoXCu3rK94aP</span></div>
+      </div>
+    </div>
+
+    <div class="form-section-title">FAQ</div>
+    <div class="card" style="margin:0 0 32px;">
+      <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+        <div style="margin-bottom:10px;"><strong style="color:var(--text);">How do I get access after payment?</strong><br>Via Paystack: instant. Via PayPal/USDC: send screenshot + your Telegram ID to @ThirtyxSaas.</div>
+        <div style="margin-bottom:10px;"><strong style="color:var(--text);">What is BaaS?</strong><br>Bot-as-a-Service — we power your own branded Telegram bot with our signal engine under your brand name.</div>
+        <div style="margin-bottom:10px;"><strong style="color:var(--text);">What is CopyTrade?</strong><br>Our engine mirrors live signals directly to your exchange account via your API keys.</div>
+        <div><strong style="color:var(--text);">Where are signals sent?</strong><br>Directly to your Telegram via your subscribed bot (Bot1, Bot2, or Bot4 depending on plan).</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-var DASH_PIN='UTE30X2024';
-var FIREBASE_URL='https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app';
-var _unlocked=false,_pollTimer=null,_cachedSignals=[],_cachedPositions={};
 
-function showDashLock(){
-  var mm=document.getElementById('mobile-menu');
-  if(mm){mm.style.display='none';}
-  var hb=document.getElementById('hamburger');
-  if(hb){hb.innerHTML='&#9776;';}
-  document.body.style.overflow='';
-  document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='none';});
-  document.getElementById('dash-page').style.display='none';
-  document.getElementById('dash-lock').style.display='flex';
-  history.pushState({dashLock:true}, '', window.location.href);
-  setTimeout(function(){var p=document.getElementById('lock-pin');if(p)p.focus();},150);
+// ═══════════════════════════════════════════════════
+// FIREBASE CONFIG
+// ═══════════════════════════════════════════════════
+const FB_URL    = 'https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app';
+const FB_SECRET = 'HtSaOvwz7W9HzLzbnFcufeBZECKoez995SehKNKP';
+const USDC_ADDR = 'TXyL39t6E8dzX9jTgvZUZREoXCu3rK94aP';
+const PAYSTACK_KEY = 'sk_test_6a93c0d04533049b3adecea111627d5dfcf848d7';
+const GBP_TO_NGN   = 2000;
+// Bot5 (super admin) token — used to send OTPs and recovery passwords via Telegram
+const BOT5_TOKEN = '8174818224:AAHclqmV4t1TWFZFiZfRG9I_F6lXjE4wPo8';
+const BOT2_TOKEN = '8635047321:AAHszfF7JFWdH3C8YV4BoJ4wQ6UeQVhnjQo';
+
+function fbUrl(p){return `${FB_URL}/${p}.json?auth=${FB_SECRET}`;}
+async function fbGet(p){const r=await fetch(fbUrl(p));if(!r.ok)throw new Error('FB '+r.status);return r.json();}
+async function fbSet(p,data){const r=await fetch(fbUrl(p),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('FB '+r.status);return r.json();}
+async function fbPatch(p,data){const r=await fetch(fbUrl(p),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('FB '+r.status);return r.json();}
+
+// Send a message via a Telegram bot
+async function tgSend(token, chatId, text) {
+  const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({chat_id: chatId, text, parse_mode: 'Markdown'})
+  });
+  return r.json();
 }
 
-function checkPin(){
-  var pin=document.getElementById('lock-pin').value.trim();
-  if(pin===DASH_PIN){
-    document.getElementById('dash-lock').style.display='none';
-    document.getElementById('dash-page').style.display='block';
-    _unlocked=true;
-    startDashboard();
-  } else {
-    var inp=document.getElementById('lock-pin');
-    inp.classList.add('err');
-    document.getElementById('lock-err').style.display='block';
-    setTimeout(function(){inp.classList.remove('err');},400);
-    inp.value='';
-    inp.focus();
+// Generate a 6-digit OTP
+function genOtp() { return String(Math.floor(100000 + Math.random() * 900000)); }
+
+// Generate a random 12-char temp password
+function genTempPw() {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$';
+  let pw = '';
+  for (let i = 0; i < 12; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+  return pw;
+}
+
+// Simple SHA-256 hash for passwords (stored in Firebase)
+async function hashPw(pw) {
+  const data = new TextEncoder().encode('30xTech_pw_v1_' + pw);
+  const buf  = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Branded ID generation (mirrors bot logic)
+async function genBrandedId(uid) {
+  const data = new TextEncoder().encode(`30xTech_v2_${uid}`);
+  const buf  = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,8);
+}
+
+// OTP temp store (in-memory, expires in 10 min)
+const _otpStore = {}; // { tgId: { otp, expires, data } }
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function setAuthMode(mode) {
+  // Hide all steps
+  ['step-signin','step-signin-otp','step-register','step-register-otp','step-recover'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  clearAuthMessages();
+  // Activate tab
+  ['signin','register','recover'].forEach(m=>{
+    document.getElementById('tab-'+m)?.classList.toggle('active', m===mode);
+  });
+  // Show step
+  if (mode === 'signin')    document.getElementById('step-signin').style.display = '';
+  if (mode === 'register')  document.getElementById('step-register').style.display = '';
+  if (mode === 'recover')   document.getElementById('step-recover').style.display = '';
+}
+
+function showAuthStep(stepId) {
+  ['step-signin','step-signin-otp','step-register','step-register-otp','step-recover'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === stepId) ? '' : 'none';
+  });
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.classList.add('show');
+  document.getElementById('auth-info').style.display = 'none';
+}
+function showAuthSuccess(msg) {
+  const el = document.getElementById('auth-info');
+  el.innerHTML = msg; el.style.display = 'block';
+  document.getElementById('auth-error').classList.remove('show');
+}
+function clearAuthMessages() {
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-info').style.display = 'none';
+}
+
+function setBtnLoading(btnId, lblId, loading, defaultLabel='Continue') {
+  const btn = document.getElementById(btnId);
+  const lbl = document.getElementById(lblId);
+  if (!btn || !lbl) return;
+  btn.disabled = loading;
+  lbl.innerHTML = loading
+    ? '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0 auto;"></div>'
+    : defaultLabel;
+}
+
+function togglePwVis(inputId, btnId) {
+  const inp  = document.getElementById(inputId);
+  const show = inp.type === 'password';
+  inp.type   = show ? 'text' : 'password';
+  document.getElementById(btnId).querySelector('svg').innerHTML = show
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+// ── SIGN IN ───────────────────────────────────────────────────────────────────
+let _pendingSignIn = null; // { uid, name, role, plan, plan_type, expires, brandedId }
+
+async function startSignIn() {
+  const tgId = document.getElementById('si-tgid').value.trim();
+  const pw   = document.getElementById('si-pw').value;
+  clearAuthMessages();
+
+  if (!tgId || isNaN(Number(tgId))) { showAuthError('Please enter a valid Telegram Chat ID.'); return; }
+  if (!pw) { showAuthError('Please enter your password.'); return; }
+
+  setBtnLoading('si-btn','si-btn-lbl', true);
+
+  try {
+    // 1. Check user exists in admin/users
+    const users = await fbGet('admin/users');
+    const uid   = String(tgId);
+    const udata = users?.[uid];
+    if (!udata) throw new Error('NOT_FOUND');
+
+    // 2. Check password hash
+    const hash = await hashPw(pw);
+    const stored = await fbGet(`app_accounts/${uid}/pw_hash`).catch(()=>null);
+    if (!stored || stored !== hash) throw new Error('BAD_PW');
+
+    // 3. Generate OTP and send via Bot2 (or Bot5 as fallback)
+    const otp       = genOtp();
+    const expires   = Date.now() + 10 * 60 * 1000; // 10 min
+    const brandedId = await genBrandedId(uid);
+    _pendingSignIn  = { tgId: uid, name: udata.name||`User ${uid}`, role: udata.role||'user', plan: udata.plan||'', plan_type: udata.plan_type||'', expires: udata.expires||null, brandedId };
+    _otpStore[uid]  = { otp, expires, type: 'signin' };
+
+    const token = BOT2_TOKEN; // Use Bot2 so user recognises sender
+    const msg = `*30×Tech Research — Sign In OTP*\n\nYour one-time passcode is:\n\`${otp}\`\n\nThis code expires in *10 minutes*.\nIf you did not request this, ignore this message.`;
+    const tgResult = await tgSend(token, uid, msg);
+    if (!tgResult.ok) throw new Error('TG_FAIL');
+
+    setBtnLoading('si-btn','si-btn-lbl', false, 'Continue');
+    showAuthStep('step-signin-otp');
+    showAuthSuccess('OTP sent to your Telegram. Check your messages from the bot.');
+
+  } catch(e) {
+    setBtnLoading('si-btn','si-btn-lbl', false, 'Continue');
+    if (e.message === 'NOT_FOUND') showAuthError('Telegram ID not found. Contact @ThirtyxSaas to get access.');
+    else if (e.message === 'BAD_PW') showAuthError('Incorrect password. Use Recover to reset it.');
+    else if (e.message === 'TG_FAIL') showAuthError('Could not send OTP to your Telegram. Make sure you have started the bot first.');
+    else showAuthError('Connection error. Please try again.');
   }
 }
 
-function lockDash(){
-  _unlocked=false;
-  if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}
-  document.getElementById('dash-lock').style.display='none';
-  document.getElementById('dash-page').style.display='none';
-  document.querySelectorAll('section,footer,.ticker-wrap').forEach(function(el){el.style.display='';});
-  window.scrollTo(0,0);
+async function verifySignInOtp() {
+  const otp = document.getElementById('si-otp').value.trim();
+  clearAuthMessages();
+  if (!otp || otp.length < 6) { showAuthError('Please enter the 6-digit OTP.'); return; }
+  if (!_pendingSignIn) { showAuthError('Session expired. Please start again.'); setAuthMode('signin'); return; }
+
+  const uid    = _pendingSignIn.tgId;
+  const stored = _otpStore[uid];
+  if (!stored || stored.type !== 'signin') { showAuthError('OTP not found. Try signing in again.'); return; }
+  if (Date.now() > stored.expires) { showAuthError('OTP expired. Please sign in again.'); delete _otpStore[uid]; setAuthMode('signin'); return; }
+  if (otp !== stored.otp) { showAuthError('Incorrect OTP. Please check your Telegram and try again.'); return; }
+
+  setBtnLoading('si-otp-btn','si-otp-btn-lbl', true);
+  delete _otpStore[uid];
+
+  // Login success
+  currentUser = { ..._pendingSignIn };
+  _pendingSignIn = null;
+
+  // Update last login time
+  fbPatch(`app_accounts/${uid}`, { last_login: Math.floor(Date.now()/1000) }).catch(()=>{});
+
+  setBtnLoading('si-otp-btn','si-otp-btn-lbl', false, 'Verify & Sign In');
+  onLoginSuccess();
 }
 
-window.addEventListener('popstate', function(e){
-  var lock = document.getElementById('dash-lock');
-  if(lock && lock.style.display === 'flex'){lockDash();}
-});
+// ── REGISTER ──────────────────────────────────────────────────────────────────
+let _pendingRegister = null; // { uid, pwHash }
 
-document.addEventListener('DOMContentLoaded',function(){
-  var pinEl=document.getElementById('lock-pin');
-  if(pinEl){pinEl.addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});}
-  var btnEl=document.getElementById('lock-btn-el');
-  if(btnEl){btnEl.addEventListener('click',checkPin);}
-  var logoutEl=document.getElementById('dash-logout-btn');
-  if(logoutEl){logoutEl.addEventListener('click',lockDash);}
-});
+async function startRegister() {
+  const tgId = document.getElementById('reg-tgid').value.trim();
+  const pw1  = document.getElementById('reg-pw').value;
+  const pw2  = document.getElementById('reg-pw2').value;
+  clearAuthMessages();
 
-function startDashboard(){fetchData();_pollTimer=setInterval(fetchData,8000);}
+  if (!tgId || isNaN(Number(tgId))) { showAuthError('Please enter a valid Telegram Chat ID.'); return; }
+  if (pw1.length < 8) { showAuthError('Password must be at least 8 characters.'); return; }
+  if (pw1 !== pw2) { showAuthError('Passwords do not match.'); return; }
 
-function fetchData(){
-  var base=FIREBASE_URL.replace(/\/$/,'');
-  fetch(base+'/signals.json?limitToLast=100')
-    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-    .then(function(data){
-      if(data&&typeof data==='object'&&!Array.isArray(data)){
-        _cachedSignals=Object.values(data).filter(function(s){return s&&typeof s==='object';}).sort(function(a,b){return(b.ts||0)-(a.ts||0);});
-      } else {_cachedSignals=[];}
-      renderFeed(_cachedSignals);
-      updateStats(_cachedSignals,_cachedPositions);
-      document.getElementById('dash-lastupdate').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      document.getElementById('stat-status').textContent='ONLINE';
-      document.getElementById('stat-status').style.color='var(--green)';
-    })
-    .catch(function(err){
-      console.error(err);
-      document.getElementById('stat-status').textContent='OFFLINE';
-      document.getElementById('stat-status').style.color='var(--red)';
+  setBtnLoading('reg-btn','reg-btn-lbl', true, 'Send OTP to Telegram');
+
+  try {
+    // 1. Must exist in admin/users (admin must have registered them)
+    const users = await fbGet('admin/users');
+    const uid   = String(tgId);
+    const udata = users?.[uid];
+    if (!udata) throw new Error('NOT_FOUND');
+
+    // 2. Check if account already created
+    const existing = await fbGet(`app_accounts/${uid}/created`).catch(()=>null);
+    if (existing) throw new Error('ALREADY_EXISTS');
+
+    // 3. Hash password and store pending
+    const pwHash = await hashPw(pw1);
+    _pendingRegister = { uid, pwHash };
+
+    // 4. Generate OTP
+    const otp     = genOtp();
+    const expires = Date.now() + 10 * 60 * 1000;
+    _otpStore[uid] = { otp, expires, type: 'register' };
+
+    const msg = `*30×Tech Research — Account Creation OTP*\n\nYour verification code is:\n\`${otp}\`\n\nEnter this code to complete your account setup.\nExpires in *10 minutes*.`;
+    const tgResult = await tgSend(BOT2_TOKEN, uid, msg);
+    if (!tgResult.ok) throw new Error('TG_FAIL');
+
+    setBtnLoading('reg-btn','reg-btn-lbl', false, 'Send OTP to Telegram');
+    showAuthStep('step-register-otp');
+    showAuthSuccess('OTP sent to your Telegram. Check your messages from the bot.');
+
+  } catch(e) {
+    setBtnLoading('reg-btn','reg-btn-lbl', false, 'Send OTP to Telegram');
+    if (e.message === 'NOT_FOUND') showAuthError('Telegram ID not registered as a subscriber. Contact @ThirtyxSaas to get access first.');
+    else if (e.message === 'ALREADY_EXISTS') showAuthError('An account already exists for this Telegram ID. Use Sign In or Recover Password.');
+    else if (e.message === 'TG_FAIL') showAuthError('Could not send OTP. Make sure you have started the bot on Telegram first (@Thirtyxpremiumsignalsbot).');
+    else showAuthError('Connection error. Please try again.');
+  }
+}
+
+async function verifyRegisterOtp() {
+  const otp = document.getElementById('reg-otp').value.trim();
+  clearAuthMessages();
+  if (!otp || otp.length < 6) { showAuthError('Please enter the 6-digit OTP.'); return; }
+  if (!_pendingRegister) { showAuthError('Session expired. Please start again.'); setAuthMode('register'); return; }
+
+  const uid    = _pendingRegister.uid;
+  const stored = _otpStore[uid];
+  if (!stored || stored.type !== 'register') { showAuthError('OTP not found. Try again.'); return; }
+  if (Date.now() > stored.expires) { showAuthError('OTP expired. Please try again.'); delete _otpStore[uid]; setAuthMode('register'); return; }
+  if (otp !== stored.otp) { showAuthError('Incorrect OTP. Please check your Telegram.'); return; }
+
+  setBtnLoading('reg-otp-btn','reg-otp-btn-lbl', true);
+  delete _otpStore[uid];
+
+  try {
+    // Save account to Firebase: app_accounts/{uid}
+    const brandedId = await genBrandedId(uid);
+    await fbSet(`app_accounts/${uid}`, {
+      pw_hash: _pendingRegister.pwHash,
+      created: Math.floor(Date.now()/1000),
+      last_login: null,
     });
-  fetch(base+'/positions.json')
-    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
-    .then(function(data){
-      _cachedPositions=(data&&typeof data==='object'&&!Array.isArray(data))?data:{};
-      renderPositions(_cachedPositions);
-      updateStats(_cachedSignals,_cachedPositions);
-    })
-    .catch(function(err){console.error(err);});
-}
+    _pendingRegister = null;
 
-function renderFeed(signals){
-  var feed=document.getElementById('signal-feed');
-  if(!signals||signals.length===0){feed.innerHTML='<div class="feed-empty">No signals yet \u2014 bot will push here automatically.</div>';return;}
-  feed.innerHTML=signals.map(buildCard).join('');
-}
+    // Confirm to user via Telegram
+    const msg = `*30×Tech Research — Account Created*\n\nYour account has been successfully created.\nBranded ID: \`${brandedId}\`\n\nYou can now sign in to the research portal.`;
+    tgSend(BOT2_TOKEN, uid, msg).catch(()=>{});
 
-function buildCard(s){
-  var dir=(s.direction||'').toUpperCase();
-  var isBuy=dir==='BUY'||dir==='LONG';
-  var isClosed=s.status==='CLOSED'||s.status==='closed';
-  var isT8=parseInt(s.tier||0)===8;
-  var cardCls='feed-card '+(isClosed?'closed-card':(isBuy?'buy-card':'sell-card'))+(isT8?' t8-card':'');
-  var dirCls='fc-dir '+(isClosed?'closed':(isBuy?'buy':'sell'));
-  var dirLbl=isClosed?'&#9632; CLOSED':(isBuy?'&#9650; BUY':'&#9660; SELL');
-  var ts=s.ts?new Date(s.ts*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'--';
-  var date=s.ts?new Date(s.ts*1000).toLocaleDateString([],{month:'short',day:'numeric'}):'';
-  var sym=(s.symbol||'???').replace('USDT','');
-  var pnl=(s.pnl!==undefined&&isClosed)?'<span class="fc-pnl '+(parseFloat(s.pnl)>=0?'pos':'neg')+'">'+(parseFloat(s.pnl)>=0?'+':'')+parseFloat(s.pnl).toFixed(2)+'%</span>':'';
-  var confBadge=isT8&&s.confidence?'<span style="font-size:8px;color:var(--gold);padding:1px 5px;border:1px solid rgba(240,192,64,0.3);">conf '+s.confidence+'/10</span>':'';
-  var ai=s.ai_confirm?'<span style="color:var(--cyan);font-size:9px;">&#11041; '+s.ai_confirm+'</span>':'';
-  var mtf=s.mtf_votes?'<div class="fc-row"><span class="fk">MTF GATE</span><span class="fv" style="color:var(--cyan);">'+s.mtf_votes+'</span></div>':'';
-  var ichi=s.ichi_bias?'<div class="fc-row"><span class="fk">ICHIMOKU</span><span class="fv g">'+s.ichi_bias+'</span></div>':'';
-  var vwap=s.vwap?'<div class="fc-row"><span class="fk">VWAP</span><span class="fv g">'+fp(s.vwap)+'</span></div>':'';
-  var liqAdj=s.liq_adjusted?'<div class="fc-row" style="grid-column:1/-1;"><span class="fk">SL/TP</span><span class="fv" style="color:var(--cyan);">&#10003; Liq-adjusted</span></div>':'';
-  var cotSnip='';
-  if(isT8&&s.cot&&typeof s.cot==='string'){
-    var snippet=s.cot.length>80?s.cot.slice(0,80)+'…':s.cot;
-    cotSnip='<div style="margin-top:8px;padding:8px 10px;background:rgba(232,184,75,0.04);border-left:2px solid var(--cyan);font-size:9px;color:var(--grey);line-height:1.5;font-style:italic;">'+snippet+'</div>';
-  }
-  return '<div class="'+cardCls+'">'
-    +'<div class="fc-top"><div>'
-    +'<div class="fc-sym">'+sym+(isT8?' <span style="font-size:10px;color:var(--cyan);">T8</span>':'')+'</div>'
-    +'<div class="fc-meta">'+(s.tf||'--')+' &middot; T'+(s.tier||'?')+' &middot; '+date+' '+ts+'</div>'
-    +'</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
-    +'<div class="'+dirCls+'">'+dirLbl+'</div>'+pnl+'</div></div>'
-    +(confBadge?'<div style="display:flex;gap:5px;margin-bottom:8px;">'+confBadge+'</div>':'')
-    +'<div class="fc-rows">'
-    +'<div class="fc-row"><span class="fk">ENTRY</span><span class="fv y">'+fp(s.entry)+'</span></div>'
-    +'<div class="fc-row"><span class="fk">STOP</span><span class="fv r">'+fp(s.sl)+'</span></div>'
-    +'<div class="fc-row"><span class="fk">TP</span><span class="fv g">'+fp(s.tp)+'</span></div>'
-    +'<div class="fc-row"><span class="fk">RR</span><span class="fv g">'+(s.rr?'1:'+parseFloat(s.rr).toFixed(2):'--')+'</span></div>'
-    +(s.ema_signal?'<div class="fc-row"><span class="fk">EMA</span><span class="fv g">'+s.ema_signal+'</span></div>':'')
-    +(s.index_gate?'<div class="fc-row"><span class="fk">INDEX</span><span class="fv g">'+s.index_gate+'</span></div>':'')
-    +mtf+ichi+vwap+liqAdj
-    +'</div>'
-    +cotSnip
-    +'<div class="fc-foot"><span>'+(s.status?s.status.toUpperCase():'ACTIVE')+'</span>'+ai+'</div>'
-    +'</div>';
-}
+    setBtnLoading('reg-otp-btn','reg-otp-btn-lbl', false, 'Verify & Create Account');
+    showAuthSuccess('Account created successfully! You can now sign in.');
+    setTimeout(()=>setAuthMode('signin'), 2000);
 
-function renderPositions(data){
-  var list=document.getElementById('positions-list');
-  var count=document.getElementById('pos-count');
-  var keys=Object.keys(data||{});
-  count.textContent=keys.length;
-  if(keys.length===0){list.innerHTML='<div class="feed-empty" style="font-size:10px;">No open positions</div>';return;}
-  list.innerHTML=keys.map(function(k){
-    var p=data[k];
-    var isLong=(p.direction||'').toUpperCase()==='BUY'||(p.direction||'').toUpperCase()==='LONG';
-    var pnl=p.unrealised_pnl!==undefined
-      ?'<div class="pc-row"><span class="pc-k">P&L</span><span class="pc-v '+(parseFloat(p.unrealised_pnl)>=0?'g':'r')+'">'+(parseFloat(p.unrealised_pnl)>=0?'+':'')+parseFloat(p.unrealised_pnl).toFixed(2)+'%</span></div>'
-      :'';
-    var trail=p.trail_stop!==undefined
-      ?'<div class="pc-row"><span class="pc-k">Trail</span><span class="pc-v" style="color:var(--cyan);">'+fp(p.trail_stop)+'</span></div>'
-      :'';
-    return '<div class="pos-card '+(isLong?'long':'short')+'">'
-      +'<div class="pc-sym">'+(p.symbol||k).replace('USDT','')+'</div>'
-      +'<div class="pc-row"><span class="pc-k">Entry</span><span class="pc-v y">'+fp(p.entry)+'</span></div>'
-      +'<div class="pc-row"><span class="pc-k">SL</span><span class="pc-v r">'+fp(p.sl)+'</span></div>'
-      +'<div class="pc-row"><span class="pc-k">TP</span><span class="pc-v g">'+fp(p.tp)+'</span></div>'
-      +trail+pnl
-      +'<div class="pc-row"><span class="pc-k">Tier</span><span class="pc-v">T'+(p.tier||'?')+' &middot; '+(p.tf||'--')+'</span></div>'
-      +'</div>';
-  }).join('');
-}
-
-function updateStats(signals,positions){
-  var posCount=Object.keys(positions||{}).length;
-  document.getElementById('stat-active').textContent=posCount;
-  var now=Math.floor(Date.now()/1000);
-  var dayStart=now-(now%86400);
-  var todaySignals=(signals||[]).filter(function(s){return s.ts&&s.ts>=dayStart;});
-  document.getElementById('stat-today').textContent=todaySignals.length;
-  var t8today=todaySignals.filter(function(s){return parseInt(s.tier||0)===8;}).length;
-  var t8el=document.getElementById('stat-t8today');
-  if(t8el)t8el.textContent=t8today;
-  if(signals&&signals.length>0){
-    var last=signals[0];
-    document.getElementById('stat-lastsig').textContent=(last.symbol||'?').replace('USDT','')+'T'+(last.tier||'?');
-  }
-  var pnls=Object.values(positions||{}).map(function(p){return parseFloat(p.unrealised_pnl||0);}).filter(function(v){return!isNaN(v);});
-  if(pnls.length>0){
-    var total=pnls.reduce(function(a,b){return a+b;},0);
-    var el=document.getElementById('stat-pnl');
-    el.textContent=(total>=0?'+':'')+total.toFixed(2)+'%';
-    el.className='stat-val '+(total>=0?'g':'r');
+  } catch(e) {
+    setBtnLoading('reg-otp-btn','reg-otp-btn-lbl', false, 'Verify & Create Account');
+    showAuthError('Failed to save account. Please try again or contact @ThirtyxSaas.');
   }
 }
 
-function fp(v){
-  if(v===undefined||v===null||v==='')return'--';
-  var n=parseFloat(v);
-  if(isNaN(n))return String(v);
-  if(n>=1000)return'$'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-  if(n>=1)return'$'+n.toFixed(4);
-  return'$'+n.toFixed(6);
+// ── RECOVER PASSWORD ──────────────────────────────────────────────────────────
+async function startRecover() {
+  const tgId = document.getElementById('rec-tgid').value.trim();
+  clearAuthMessages();
+  if (!tgId || isNaN(Number(tgId))) { showAuthError('Please enter a valid Telegram Chat ID.'); return; }
+
+  setBtnLoading('rec-btn','rec-btn-lbl', true, 'Send Recovery Code');
+
+  try {
+    const uid = String(tgId);
+
+    // 1. Must exist in admin/users
+    const users = await fbGet('admin/users');
+    if (!users?.[uid]) throw new Error('NOT_FOUND');
+
+    // 2. Must have an app account
+    const acct = await fbGet(`app_accounts/${uid}`).catch(()=>null);
+    if (!acct?.pw_hash) throw new Error('NO_ACCOUNT');
+
+    // 3. Generate new temp password
+    const tempPw   = genTempPw();
+    const newHash  = await hashPw(tempPw);
+
+    // 4. Save new hash
+    await fbPatch(`app_accounts/${uid}`, { pw_hash: newHash, pw_temp: true });
+
+    // 5. Send via Bot2
+    const msg = `*30×Tech Research — Password Recovery*\n\nYour new temporary password is:\n\`${tempPw}\`\n\nPlease sign in with this password and change it by creating a new account password.\n\n_Do not share this password with anyone._`;
+    const tgResult = await tgSend(BOT2_TOKEN, uid, msg);
+    if (!tgResult.ok) throw new Error('TG_FAIL');
+
+    setBtnLoading('rec-btn','rec-btn-lbl', false, 'Send Recovery Code');
+    showAuthSuccess('A new temporary password has been sent to your Telegram. Use it to sign in.');
+
+  } catch(e) {
+    setBtnLoading('rec-btn','rec-btn-lbl', false, 'Send Recovery Code');
+    if (e.message === 'NOT_FOUND') showAuthError('Telegram ID not found. Contact @ThirtyxSaas.');
+    else if (e.message === 'NO_ACCOUNT') showAuthError('No account found for this ID. Use Create Account first.');
+    else if (e.message === 'TG_FAIL') showAuthError('Could not send to Telegram. Make sure you have started the bot.');
+    else showAuthError('Connection error. Please try again.');
+  }
 }
+
+// ── LOGIN SUCCESS ─────────────────────────────────────────────────────────────
+function onLoginSuccess() {
+  document.getElementById('bottom-nav').classList.add('visible');
+  navigate('home');
+  loadSignals();
+  loadMarketUpdates();
+  loadArticles();
+  renderSaasPlans();
+  renderBaasPlans();
+  loadNotifPrefs();
+
+  // Populate profile fields
+  const u = currentUser;
+  const initials = u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+  document.getElementById('profile-avatar').textContent = initials;
+  document.getElementById('profile-name').textContent   = u.name;
+  document.getElementById('profile-plan').textContent   = getPlanLabel();
+  document.getElementById('profile-tgid').textContent   = `Telegram ID: ${u.tgId}`;
+  document.getElementById('pd-name').value     = u.name;
+  document.getElementById('pd-tgid').value     = u.tgId;
+  document.getElementById('pd-plan').value     = getPlanLabel();
+  document.getElementById('pd-role').value     = u.role;
+  document.getElementById('pd-brandedid').value= u.brandedId;
+  if (u.expires) {
+    document.getElementById('pd-expires').value = new Date(Number(u.expires)*1000).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  } else {
+    document.getElementById('pd-expires').value = 'Lifetime / Not set';
+  }
+  document.getElementById('saas-tgid-display').value = u.tgId;
+  document.getElementById('saas-branded-id').textContent = u.brandedId;
+}
+
+function doSignOut() {
+  currentUser = null;
+  document.getElementById('bottom-nav').classList.remove('visible');
+  ['si-tgid','si-pw','reg-tgid','reg-pw','reg-pw2','rec-tgid'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  ['si-otp','reg-otp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['signals-container','confluence-container','articles-container'].forEach(id=>{
+    document.getElementById(id).innerHTML='<div class="loading-wrap"><div class="spinner"></div> Loading…</div>';
+  });
+  clearAuthMessages();
+  setAuthMode('signin');
+  showScreen('screen-auth');
+}
+
+// keyboard shortcuts
+// Key listeners — deferred so DOM is ready
+function _initAuthListeners() {
+  var pairs = [['si-tgid','si-pw',null],['si-pw',null,'startSignIn'],['si-otp',null,'verifySignInOtp'],
+               ['reg-pw','reg-pw2',null],['reg-pw2',null,'startRegister'],['reg-otp',null,'verifyRegisterOtp'],
+               ['rec-tgid',null,'startRecover']];
+  pairs.forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;
+    el.addEventListener('keydown',function(e){if(e.key!=='Enter')return;
+      if(p[1]){var n=document.getElementById(p[1]);if(n)n.focus();}
+      else if(p[2]&&window[p[2]])window[p[2]]();});
+  });
+}
+// Run when portal opens
+var _authListenersInit = false;
+var _origOpenPortal = window.openAppPortal;
+window._initAuthOnOpen = function() { if(!_authListenersInit){_initAuthListeners();_authListenersInit=true;} };
+
+// ═══════════════════════════════════════════════════
+// PLANS DICTS — mirrors bot PLANS + BAAS_PLANS
+// ═══════════════════════════════════════════════════
+const SAAS_PLANS = {
+  bot2:          { label:'Signals Monthly',      price:'£149', priceRaw:'149', period:'/mo', type:'monthly',  bots:[2],    pp:'https://www.paypal.com/ncp/payment/LTR3J533Y5ERS', features:['All order flow signals — all markets','Spot & futures signal delivery','Real-time Telegram delivery (Bot2)','Signal open/close with entry, SL, TP, R:R'] },
+  bot1_bot4:     { label:'Index + Articles',     price:'£49',  priceRaw:'49',  period:'/mo', type:'monthly',  bots:[1,4],  pp:'https://www.paypal.com/ncp/payment/HJZEWPNV4GYAW', features:['Index confluence dashboard (Bot1)','Hourly verified market updates (Bot4)','Telegram delivery on both bots','Spot & macro market coverage'] },
+  bot1_bot2_bot4:{ label:'Full Premium Monthly', price:'£299', priceRaw:'299', period:'/mo', type:'monthly',  bots:[1,2,4],pp:'https://www.paypal.com/ncp/payment/WVBLCRQ5BSF38', features:['All order flow signals','Index confluence dashboard','Hourly market updates','Priority Telegram delivery on all bots','Exchange API connection support'] },
+  bot4:          { label:'Articles Only',        price:'£450', priceRaw:'450', period:'',    type:'onetime',  bots:[4],    pp:'https://www.paypal.com/ncp/payment/TQB2KETT5T28Q', features:['Lifetime hourly market updates via Bot4','Verified template-based price & bias data','Telegram delivery','Macro, crypto, equities, metals coverage'] },
+  all:           { label:'All Bots — Lifetime',  price:'£1,420',priceRaw:'1420',period:'',  type:'onetime',  bots:[1,2,4],pp:'https://www.paypal.com/ncp/payment/ADP4U9NME53NU',features:['Lifetime access — all 3 bots','All signals, confluence & market updates','Priority support via @ThirtyxSaas','All future bot updates included'] },
+};
+
+const BAAS_PLANS = {
+  baas_signals:     { label:'WL — Signals',           price:'£299', priceRaw:'299', period:'/mo', bots:[2],    modes:['wl'],       pp:'https://www.paypal.com/ncp/payment/VE3GH6GXS96SW', features:['White-label Telegram signal bot','All order flow signals under your brand','Direct delivery to your subscribers','Full Bot2 engine'] },
+  baas_indexes:     { label:'WL — Index Confluence',  price:'£149', priceRaw:'149', period:'/mo', bots:[1],    modes:['wl'],       pp:'https://www.paypal.com/ncp/payment/YJ5NF7WALVEHJ', features:['White-label index confluence bot','Multi-timeframe index readings','Telegram delivery to your audience','Full Bot1 engine'] },
+  baas_articles:    { label:'WL — Market Articles',   price:'£149', priceRaw:'149', period:'/mo', bots:[4],    modes:['wl'],       pp:'https://www.paypal.com/ncp/payment/4JLH9R65UMJ5U', features:['White-label market updates bot','Hourly verified data — your brand','Macro, crypto, equities, metals','Full Bot4 engine'] },
+  baas_idx_articles:{ label:'WL — Index + Articles',  price:'£249', priceRaw:'249', period:'/mo', bots:[1,4],  modes:['wl'],       pp:'https://www.paypal.com/ncp/payment/96TUFK4CWZJXW', features:['Index confluence + market updates','Two white-label bots under your brand','Combined Bot1 + Bot4 engine'] },
+  baas_full:        { label:'WL — Full Premium',       price:'£549', priceRaw:'549', period:'/mo', bots:[1,2,4],modes:['wl'],      pp:'https://www.paypal.com/ncp/payment/LFMFPA6842T8S', features:['All 3 bots white-labelled','Signals, confluence & market updates','Full Bot1 + Bot2 + Bot4 engine','Priority setup support'] },
+  baas_ct_signals:  { label:'CopyTrade — Signals',    price:'£199', priceRaw:'199', period:'/mo', bots:[2],    modes:['ct'],       pp:'https://www.paypal.com/ncp/payment/WCH7J4JP7NDK6', features:['Signals mirrored to your exchange','Automated trade execution via API','Configurable max position size','Bybit, Bitget, Binance, OKX, MEXC'] },
+  baas_full_ct:     { label:'WL + CopyTrade — Full',  price:'£699', priceRaw:'699', period:'/mo', bots:[1,2,4],modes:['wl','ct'],  pp:'https://www.paypal.com/ncp/payment/YDAEKZLZ6TP96', features:['White-label all 3 bots + CopyTrade','Full signal engine + auto-execution','Ultimate BaaS package'] },
+  baas_lifetime:    { label:'WL — Lifetime',           price:'£2,999',priceRaw:'2999',period:'',  bots:[1,2,4],modes:['wl'],       pp:'https://www.paypal.com/ncp/payment/Q5DAUEPLQVFSU', features:['Lifetime white-label access','All 3 bots — signals, confluence, updates','No monthly fees ever','All future updates included'] },
+};
+
+const OTHER_SERVICES = [
+  { key:'zoom_session',   label:'Zoom Visual Session',       desc:'3 months intensive',  price:'£799',  priceRaw:'799',  pp:'https://www.paypal.com/ncp/payment/M7D9GECA4A4H8' },
+  { key:'analyst_weekday',label:'Market Analyst — Weekdays', desc:'Daily analysis',       price:'£90',   priceRaw:'90',   pp:'https://www.paypal.com/ncp/payment/XDB3CUUNQBEGA' },
+  { key:'analyst_weekend',label:'Market Analyst — Weekends', desc:'Weekend coverage',     price:'£50',   priceRaw:'50',   pp:'https://www.paypal.com/ncp/payment/XQHVH3YUUTWK6' },
+];
+
+const BOT_ACCESS = {
+  1: new Set(['bot1','bot1_bot4','bot1_bot2_bot4','all']),
+  2: new Set(['bot2','bot1_bot2_bot4','all']),
+  4: new Set(['bot4','bot1_bot4','bot1_bot2_bot4','all']),
+};
+
+// Full index list from IDX_SYMBOLS + IDX_LABELS in bot
+const ALL_INDICES = [
+  // Crypto
+  { key:'CMC20',   name:'CMC20',    label:'Crypto Top 20',    cat:'Crypto',       val:74, bull:true  },
+  // Equities
+  { key:'SPX',     name:'S&P 500',  label:'S&P 500',          cat:'Equities',     val:68, bull:true  },
+  { key:'NDX',     name:'NDX',      label:'Nasdaq 100',        cat:'Equities',     val:71, bull:true  },
+  { key:'RUT',     name:'RUT',      label:'Russell 2000',      cat:'Equities',     val:44, bull:false },
+  // Sector ETFs
+  { key:'XLE',     name:'XLE',      label:'Energy',            cat:'Sectors',      val:52, bull:true  },
+  { key:'XLF',     name:'XLF',      label:'Financials',        cat:'Sectors',      val:60, bull:true  },
+  { key:'S5REAS',  name:'S5REAS',   label:'Real Estate',       cat:'Sectors',      val:40, bull:false },
+  { key:'S5TELS',  name:'S5TELS',   label:'Comms Services',    cat:'Sectors',      val:55, bull:true  },
+  { key:'XME',     name:'XME',      label:'Mining',            cat:'Sectors',      val:63, bull:true  },
+  // Macro / Rates / FX
+  { key:'DXY',     name:'DXY',      label:'Dollar Index',      cat:'Macro',        val:35, bull:false },
+  { key:'TNX',     name:'TNX',      label:'10Y Yield',         cat:'Macro',        val:58, bull:true  },
+  { key:'TLT',     name:'TLT',      label:'20Y Bond ETF',      cat:'Macro',        val:42, bull:false },
+  // Volatility
+  { key:'VIX',     name:'VIX',      label:'VIX Fear Index',    cat:'Volatility',   val:29, bull:false },
+  { key:'VVIX',    name:'VVIX',     label:'Vol-of-Vol',        cat:'Volatility',   val:32, bull:false },
+  // Commodities
+  { key:'GLD',     name:'GLD',      label:'Gold ETF',          cat:'Commodities',  val:66, bull:true  },
+  { key:'USO',     name:'USO',      label:'Oil ETF',           cat:'Commodities',  val:48, bull:false },
+  { key:'UNG',     name:'UNG',      label:'Nat Gas ETF',       cat:'Commodities',  val:38, bull:false },
+  { key:'SPGSCI',  name:'SPGSCI',   label:'Commodities Index', cat:'Commodities',  val:51, bull:true  },
+];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let currentUser = null;
+
+function userHasBot(n) {
+  if (!currentUser) return false;
+  if (['owner','admin'].includes(currentUser.role)) return true;
+  const p = currentUser.plan || '';
+  if (!p) return false;
+  if (currentUser.expires) {
+    const exp = Number(currentUser.expires);
+    if (!isNaN(exp) && exp > 0 && Date.now()/1000 > exp) return false;
+  }
+  return BOT_ACCESS[n]?.has(p);
+}
+
+function getPlanLabel() {
+  if (!currentUser) return '—';
+  if (currentUser.role === 'owner') return 'Owner';
+  if (currentUser.role === 'admin') return 'Admin';
+  return SAAS_PLANS[currentUser.plan]?.label || BAAS_PLANS[currentUser.plan]?.label || (currentUser.plan || 'No Active Plan');
+}
+
+async function genBrandedId(uid) {
+  const data = new TextEncoder().encode(`30xTech_v2_${uid}`);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hex  = Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+  return hex.slice(0,8);
+}
+
+// togglePw() replaced by togglePwVis(inputId, btnId) for multi-field support
+
+// ═══════════════════════════════════════════════════
+// AUTH — legacy stubs (real auth is startSignIn / doSignOut above)
+// ═══════════════════════════════════════════════════
+// doLogin removed — replaced by startSignIn() + OTP flow
+
+// ═══════════════════════════════════════════════════
+// SIGNALS
+// ═══════════════════════════════════════════════════
+async function loadSignals() {
+  const cont  = document.getElementById('signals-container');
+  const count = document.getElementById('signals-count');
+
+  if (!userHasBot(2)) {
+    cont.innerHTML = lockedHTML('Signals Locked', 'Upgrade to <strong>Signals Monthly</strong> or a full bundle plan to unlock live trading signals.');
+    count.textContent = 'Upgrade to unlock'; return;
+  }
+
+  try {
+    const data = await fbGet('signals');
+    if (!data) { cont.innerHTML = '<div class="empty-state">No signals yet.</div>'; return; }
+    const sigs = Object.entries(data).map(([k,v])=>({...v,_key:k})).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,25);
+    count.textContent = `${sigs.filter(s=>s.status==='ACTIVE').length} active · ${sigs.length} total`;
+    cont.innerHTML = sigs.map(s => {
+      const dir = (s.direction||'').toUpperCase();
+      const stat= (s.status||'ACTIVE').toUpperCase();
+      const ts  = s.ts ? fmtTs(s.ts) : '—';
+      const pill= stat==='ACTIVE'?'status-active':stat==='PENDING'?'status-pending':'status-closed';
+      const pnl = (s.pnl!=null)?`<div style="font-size:12px;margin-top:6px;">PnL: <span style="color:${s.pnl>=0?'var(--green)':'var(--red)'};font-weight:600;">${s.pnl>=0?'+':''}${(s.pnl*100).toFixed(2)}%</span></div>`:'';
+      const meta= [s.ema_signal?`EMA: ${s.ema_signal}`:'',s.index_gate?`Gate: ${s.index_gate}`:''].filter(Boolean).join(' · ');
+      return `<div class="signal-card">
+        <div class="signal-header">
+          <div><div class="signal-symbol">${s.symbol||'—'}</div><span style="font-size:10px;color:var(--muted);">${s.tf||'—'} · T${s.tier||'?'}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+            <div class="signal-dir ${dir==='LONG'?'long':'short'}">${dir}</div>
+            <span class="status-pill ${pill}">${stat}</span>
+          </div>
+        </div>
+        <div class="signal-meta">
+          <div><div class="sf-label">Entry</div><div class="sf-val">${s.entry?'$'+Number(s.entry).toLocaleString():'—'}</div></div>
+          <div><div class="sf-label">Stop</div><div class="sf-val">${s.sl?'$'+Number(s.sl).toLocaleString():'—'}</div></div>
+          <div><div class="sf-label">Target</div><div class="sf-val">${s.tp?'$'+Number(s.tp).toLocaleString():'—'}</div></div>
+          <div><div class="sf-label">R:R</div><div class="sf-val text-gold">${s.rr?s.rr+'R':'—'}</div></div>
+        </div>
+        ${pnl}
+        <div class="signal-time">${meta?meta+' · ':''}${ts}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state">Unable to load signals.<br><span style="font-size:11px;">${e.message}</span></div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// MARKET UPDATES — full index list from bot
+// ═══════════════════════════════════════════════════
+async function loadMarketUpdates() {
+  const cont = document.getElementById('confluence-container');
+  if (!userHasBot(1) && !userHasBot(2)) {
+    cont.innerHTML = lockedHTML('Market Updates Locked', 'Upgrade to any plan to access live market price & bias data.'); return;
+  }
+
+  try {
+    const [positions, symbols] = await Promise.all([
+      fbGet('positions').catch(()=>null),
+      fbGet('admin/symbols').catch(()=>null),
+    ]);
+
+    let html = '';
+
+    // Live positions
+    if (positions && Object.keys(positions).length) {
+      const entries = Object.entries(positions);
+      html += `<div class="section-head"><div class="section-title">Open Positions</div><div class="section-sub">${entries.length} live</div></div>
+        <div class="card">${entries.map(([sym,p])=>{
+          const dir=(p.direction||'').toUpperCase(), pnl=p.unrealised_pnl;
+          return `<div class="price-row">
+            <div><span class="price-sym">${sym}</span><span style="font-size:10px;color:var(--muted);margin-left:6px;">${p.tf||''} T${p.tier||'?'}</span></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="signal-dir ${dir==='LONG'?'long':'short'}" style="font-size:9px;">${dir}</span>
+              ${pnl!=null?`<span style="font-size:12px;font-weight:600;color:${pnl>=0?'var(--green)':'var(--red)'};">${pnl>=0?'+':''}${(pnl*100).toFixed(2)}%</span>`:''}
+            </div>
+          </div>`;
+        }).join('')}</div>`;
+    }
+
+    // Group ALL_INDICES by category
+    const cats = {};
+    ALL_INDICES.forEach(idx => {
+      if (!cats[idx.cat]) cats[idx.cat] = [];
+      cats[idx.cat].push(idx);
+    });
+
+    html += `<div class="section-head"><div class="section-title">Index Confluence</div><div class="section-sub">4H · 1D · 1W</div></div>
+      <div style="padding:0 16px 8px;">
+        <div class="idx-legend">
+          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--green);"></div>BULLISH &gt; 50</div>
+          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:var(--red);"></div>BEARISH &lt; 50</div>
+          <div class="idx-legend-item"><div class="idx-legend-dot" style="background:#555;"></div>NEUTRAL = 50</div>
+        </div>
+      </div>`;
+    Object.entries(cats).forEach(([cat, items]) => {
+      html += `<div class="card" style="margin-bottom:10px;">
+        <div class="card-label">${cat}</div>
+        ${items.map(idx => idxRow(idx.name, idx.label, idx.val, idx.bull)).join('')}
+      </div>`;
+    });
+
+    // Tracked symbols from Firebase
+    if (symbols?.list?.length) {
+      html += `<div class="section-head"><div class="section-title">Tracked Symbols</div><div class="section-sub">${symbols.list.length}</div></div>
+        <div class="card"><div style="display:flex;flex-wrap:wrap;gap:7px;">
+          ${symbols.list.map(s=>`<span style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:600;">${s}</span>`).join('')}
+        </div></div>`;
+    }
+
+    cont.innerHTML = html;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state">Unable to load market data.<br><span style="font-size:11px;">${e.message}</span></div>`;
+  }
+}
+
+function idxRow(name, label, val, bull) {
+  const c = bull ? 'var(--green)' : 'var(--red)';
+  return `<div class="idx-row">
+    <div class="idx-name">${name}</div>
+    <div class="idx-label">${label}</div>
+    <div class="idx-bar-wrap"><div class="idx-bar ${bull?'bull':'bear'}" style="width:${val}%"></div></div>
+    <div class="idx-val" style="color:${c};">${val}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// RESEARCH (Bot4 market updates)
+// ═══════════════════════════════════════════════════
+async function loadArticles() {
+  const cont = document.getElementById('articles-container');
+  if (!userHasBot(4)) {
+    cont.innerHTML = lockedHTML('Research Locked', 'Upgrade to <strong>Articles Only</strong>, <strong>Index + Articles</strong>, or a full plan to access verified market updates.'); return;
+  }
+  try {
+    const data = await fbGet('articles').catch(()=>null);
+    if (!data) { cont.innerHTML = fallbackUpdates(); return; }
+    const items = Object.entries(data).map(([k,v])=>({...v,_key:k})).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,10);
+    if (!items.length) { cont.innerHTML = fallbackUpdates(); return; }
+    cont.innerHTML = items.map(a => {
+      const ts = a.ts ? fmtTs(a.ts) : 'Latest';
+      const cat= (a.category||a.tag||'Update').toUpperCase();
+      const tagClass = {CRYPTO:'tag-crypto',MACRO:'tag-macro',STOCKS:'tag-stocks',EQUITIES:'tag-stocks',FX:'tag-fx',METALS:'tag-metals'}[cat]||'tag-crypto';
+      return `<div class="update-card">
+        <div class="update-header"><span class="tag ${tagClass}">${cat}</span><div class="update-ts">${ts}</div></div>
+        ${a.bias_crypto||a.bias_stocks?`<div style="margin-bottom:8px;">
+          ${a.bias_crypto?`<div class="bias-row"><div class="bias-dot ${a.bias_crypto==='BULLISH'?'bias-bull':'bias-bear'}"></div>Crypto: <strong style="margin-left:4px;color:${a.bias_crypto==='BULLISH'?'var(--green)':'var(--red)'};">${a.bias_crypto}</strong></div>`:''}
+          ${a.bias_stocks?`<div class="bias-row"><div class="bias-dot ${a.bias_stocks==='BULLISH'?'bias-bull':'bias-bear'}"></div>Stocks: <strong style="margin-left:4px;color:${a.bias_stocks==='BULLISH'?'var(--green)':'var(--red)'};">${a.bias_stocks}</strong></div>`:''}
+        </div>`:''}
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">${a.title||a.headline||'Market Update'}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">${a.body||a.excerpt||a.text||''}</div>
+        ${a.warn?`<div style="font-size:11px;color:var(--red);margin-top:8px;">Watch: ${a.warn}</div>`:''}
+        ${a.prices?buildPriceList(a.prices):''}
+      </div>`;
+    }).join('');
+  } catch(e) { cont.innerHTML = fallbackUpdates(); }
+}
+
+function buildPriceList(prices) {
+  if (!Array.isArray(prices)) return '';
+  return `<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+    <div class="card-label" style="margin-bottom:6px;">LIVE PRICES</div>
+    ${prices.map(p=>`<div class="price-row"><span class="price-sym">${p.label||p.sym||''}</span><span class="price-val">${p.price||p.px||''}</span></div>`).join('')}
+  </div>`;
+}
+
+function fallbackUpdates() {
+  return [
+    {cat:'CRYPTO',cls:'tag-crypto',title:'Bitcoin & Crypto Market Update',body:'Crypto indices trending with order flow bias confirmed. Watch key support/resistance on BTC/USDT and ETH/USDT. MFI readings suggest continued buyer momentum.'},
+    {cat:'MACRO', cls:'tag-macro', title:'DXY Weakness — Risk-On Rotation',body:'Dollar index continues softening from multi-month highs. Capital rotation toward higher-beta risk assets confirmed. Bullish bias on crypto and emerging market proxies.'},
+    {cat:'STOCKS',cls:'tag-stocks',title:'Equities — NASDAQ Holds Support',body:'NDX maintained its 20-week EMA for the third consecutive week. Options positioning suggests muted volatility expectations heading into earnings season.'},
+    {cat:'METALS',cls:'tag-metals',title:'Gold & Commodities Update',body:'XAUUSD cleared key resistance on strong volume. GLD ETF confirming bullish bias. Oil ETF (USO) and natural gas (UNG) watching for directional momentum.'},
+  ].map(a=>`<div class="update-card">
+    <div class="update-header"><span class="tag ${a.cls}">${a.cat}</span><div class="update-ts">Latest · Verified Data</div></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:6px;">${a.title}</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;">${a.body}</div>
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// PLANS — no emojis, auto Paystack links
+// ═══════════════════════════════════════════════════
+async function renderSaasPlans() {
+  const cont    = document.getElementById('saas-plans-container');
+  const userPlan= currentUser?.plan || '';
+  const pub     = currentUser?.brandedId || '';
+  const email   = `user_${currentUser?.tgId}@30xtech.com`;
+
+  const planOrder = ['bot2','bot1_bot4','bot1_bot2_bot4','bot4','all'];
+  let html = '';
+
+  for (const key of planOrder) {
+    const p = SAAS_PLANS[key]; if (!p) continue;
+    const isCurrent = userPlan === key;
+    const isFeat    = key === 'bot1_bot2_bot4';
+    const botStr    = p.bots.map(b=>`Bot${b}`).join(' + ');
+    const psLink    = await generatePaystackLink(key, p.price, email, pub);
+    const priceDisp = p.price.replace(',','');
+
+    html += `<div class="plan-card ${isFeat?'featured':''}">
+      <div class="plan-name">${p.label}${isCurrent?'<span class="plan-badge">Active</span>':''}</div>
+      <div class="plan-price">${priceDisp}<span style="font-size:14px;color:var(--muted);">${p.period}</span></div>
+      <div class="plan-period">${p.type==='monthly'?'Monthly · cancel anytime':'One-time · lifetime access'} · ${botStr}</div>
+      <ul class="plan-features">${p.features.map(f=>`<li class="plan-feature"><span class="plan-fi text-gold">›</span>${f}</li>`).join('')}</ul>
+      ${isCurrent
+        ? `<button class="btn btn-outline" disabled>Current Plan</button>`
+        : `<div class="pay-row">
+            <a href="${p.pp}" target="_blank" class="pay-btn pp">PayPal</a>
+            ${psLink?`<a href="${psLink}" target="_blank" class="pay-btn ps">Paystack</a>`:`<button class="pay-btn ps" onclick="alert('Contact @ThirtyxSaas for Paystack link')">Paystack</button>`}
+            <button class="pay-btn cr" onclick="showCrypto('${key}','${p.price}')">USDC</button>
+          </div>`}
+    </div>`;
+  }
+  cont.innerHTML = html;
+}
+
+async function renderBaasPlans() {
+  const cont    = document.getElementById('baas-plans-container');
+  const userPlan= currentUser?.plan || '';
+  const pub     = currentUser?.brandedId || '';
+  const email   = `user_${currentUser?.tgId}@30xtech.com`;
+
+  const planOrder = ['baas_signals','baas_indexes','baas_articles','baas_idx_articles','baas_full','baas_ct_signals','baas_full_ct','baas_lifetime'];
+  let html = '';
+
+  for (const key of planOrder) {
+    const p = BAAS_PLANS[key]; if (!p) continue;
+    const isCurrent = userPlan === key;
+    const botStr    = p.bots.map(b=>`Bot${b}`).join('+');
+    const modeStr   = p.modes.map(m=>m.toUpperCase()).join('+');
+    const isOT      = !p.period;
+    const psLink    = await generatePaystackLink(key, p.price, email, pub);
+    const priceDisp = p.price.replace(',','');
+
+    html += `<div class="plan-card baas">
+      <div class="plan-name">${p.label}${isCurrent?'<span class="plan-badge plan-badge-blue">Active</span>':''}</div>
+      <div class="plan-price">${priceDisp}<span style="font-size:14px;color:var(--muted);">${p.period}</span></div>
+      <div class="plan-period">${isOT?'One-time · lifetime access':'Monthly subscription'} · ${botStr} · ${modeStr}</div>
+      <ul class="plan-features">${p.features.map(f=>`<li class="plan-feature"><span class="plan-fi" style="color:var(--blue);">›</span>${f}</li>`).join('')}</ul>
+      ${isCurrent
+        ? `<button class="btn btn-outline" disabled>Current Plan</button>`
+        : `<div class="pay-row">
+            <a href="${p.pp}" target="_blank" class="pay-btn pp">PayPal</a>
+            ${psLink?`<a href="${psLink}" target="_blank" class="pay-btn ps">Paystack</a>`:`<button class="pay-btn ps" onclick="alert('Contact @ThirtyxSaas for Paystack link')">Paystack</button>`}
+            <button class="pay-btn cr" onclick="showCrypto('${key}','${p.price}')">USDC</button>
+          </div>`}
+    </div>`;
+  }
+  cont.innerHTML = html;
+
+  // Render other services with Paystack links too
+  const svcCont = document.querySelector('.card[data-services]');
+  if (svcCont) await renderOtherServices();
+}
+
+async function renderOtherServices() {
+  const email = `user_${currentUser?.tgId}@30xtech.com`;
+  const pub   = currentUser?.brandedId || '';
+  const rows  = document.querySelectorAll('.svc-row');
+  for (const row of rows) {
+    const key = row.dataset.key;
+    const svc = OTHER_SERVICES.find(s=>s.key===key);
+    if (!svc) continue;
+    const psLink = await generatePaystackLink(key, svc.price, email, pub);
+    const btn = row.querySelector('.svc-ps-btn');
+    if (btn && psLink) { btn.href = psLink; btn.textContent = 'Paystack'; }
+  }
+}
+
+function showCrypto(planKey, price) {
+  alert(`USDC (TRC20) Payment\n\nAddress:\n${USDC_ADDR}\n\nAmount: ${price}\n\nAfter payment, send your screenshot + Telegram ID to @ThirtyxSaas on Telegram.`);
+}
+
+// ═══════════════════════════════════════════════════
+// PAYSTACK LINK GENERATOR
+// ═══════════════════════════════════════════════════
+async function generatePaystackLink(planKey, priceStr, email, ref) {
+  try {
+    const rawPrice = priceStr.replace(/[£,]/g,'').trim();
+    const amountNgn = Math.round(parseFloat(rawPrice) * GBP_TO_NGN * 100); // kobo
+    const reference = `30XT_${ref||'guest'}_${planKey}_${Date.now()}`;
+    const r = await fetch('https://api.paystack.co/transaction/initialize', {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+PAYSTACK_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({ email: email||'customer@30xtech.com', amount: amountNgn, reference, currency:'NGN',
+        metadata:{ plan:planKey, branded_id:ref||'', source:'web_portal' }
+      })
+    });
+    const d = await r.json();
+    return d?.data?.authorization_url || null;
+  } catch(e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION & UI
+// ═══════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('#app-portal .screen').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+function navigate(tab) { showScreen('screen-'+tab); updateNav(tab); }
+function updateNav(tab) {
+  const tabs = ['home','confluence','articles','plans','profile'];
+  document.querySelectorAll('#bottom-nav .nav-item').forEach((el,i)=>el.classList.toggle('active',tabs[i]===tab));
+}
+function openDetail(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+function closeDetail(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+
+function switchSetupTab(tab) {
+  ['saas','baas'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+function switchBaasType(n) {
+  [1,2,3].forEach(i=>{
+    document.getElementById(`baas-t${i}-btn`).classList.toggle('active', i===n);
+    const el = document.getElementById(`baas-type-${i}`);
+    if (el) el.style.display = (i===n) ? '' : 'none';
+  });
+}
+
+function selectExchange(el) {
+  document.querySelectorAll('.exchange-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function saveNotifPrefs() {
+  const prefs = {
+    signals:  document.getElementById('notif-signals').checked,
+    index:    document.getElementById('notif-index').checked,
+    articles: document.getElementById('notif-articles').checked,
+    closed:   document.getElementById('notif-closed').checked,
+  };
+  if (currentUser) localStorage.setItem('30xt_notif_'+currentUser.tgId, JSON.stringify(prefs));
+  closeDetail('detail-notif');
+  const t = document.createElement('div');
+  t.textContent = 'Preferences saved';
+  Object.assign(t.style, {position:'fixed',bottom:'100px',left:'50%',transform:'translateX(-50%)',background:'var(--card)',border:'1px solid var(--border)',borderRadius:'8px',padding:'10px 16px',fontSize:'13px',zIndex:'999',color:'var(--green)'});
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2000);
+}
+
+function loadNotifPrefs() {
+  if (!currentUser) return;
+  const prefs = JSON.parse(localStorage.getItem('30xt_notif_'+currentUser.tgId)||'{}');
+  if (prefs.signals  !== undefined) document.getElementById('notif-signals').checked  = prefs.signals;
+  if (prefs.index    !== undefined) document.getElementById('notif-index').checked    = prefs.index;
+  if (prefs.articles !== undefined) document.getElementById('notif-articles').checked = prefs.articles;
+  if (prefs.closed   !== undefined) document.getElementById('notif-closed').checked   = prefs.closed;
+}
+
+function lockedHTML(title, text) {
+  return `<div class="locked-overlay">
+    <div class="locked-icon">—</div>
+    <div class="locked-title">${title}</div>
+    <div class="locked-text">${text}</div>
+    <button class="btn btn-gold" style="max-width:200px;margin:0 auto;" onclick="navigate('plans')">View Plans</button>
+  </div>`;
+}
+
+function fmtTs(ts) {
+  return new Date(ts*1000).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'UTC'})+' UTC';
+}
+
 </script>
-
+</div>
+</div>
+<script>
+function openAppPortal(){
+  if(window._initAuthOnOpen)window._initAuthOnOpen();
+  var mm=document.getElementById("mobile-menu");if(mm)mm.style.display="none";
+  var hb=document.getElementById("hamburger");if(hb)hb.innerHTML="&#9776;";
+  document.body.style.overflow="hidden";
+  document.getElementById("app-portal").classList.add("open");
+  history.pushState({appPortal:true},"",window.location.href);
+}
+function closeAppPortal(){
+  document.body.style.overflow="";
+  document.getElementById("app-portal").classList.remove("open");
+  var nav=document.getElementById("bottom-nav");if(nav)nav.classList.remove("visible");
+  document.querySelectorAll("#app-portal .screen").forEach(function(s){s.classList.remove("active");});
+  var auth=document.getElementById("screen-auth");if(auth)auth.classList.add("active");
+  if(typeof setAuthMode==="function")setAuthMode("signin");
+  if(typeof clearAuthMessages==="function")clearAuthMessages();
+}
+window.addEventListener("popstate",function(){
+  var p=document.getElementById("app-portal");
+  if(p&&p.classList.contains("open"))closeAppPortal();
+});
+</script>
 <!-- LIVE TICKER SCRIPT -->
 <script>
 (function(){
@@ -1382,8 +2986,6 @@ function fp(v){
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){fetchAll();setInterval(fetchAll,60000);});}else{fetchAll();setInterval(fetchAll,60000);}
 })();
 </script>
-
-
 
 <!-- AI CHAT WIDGET -->
 <button id="ai-chat-btn" onclick="toggleChat()" aria-label="Open AI Assistant" title="Ask 30X AI Assistant">
