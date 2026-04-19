@@ -2541,6 +2541,8 @@ function onLoginSuccess() {
   loadNotifPrefs();
   // Start live polling loops
   startLivePolling();
+  // Show PWA install banner after login
+  showPwaBannerIfNeeded();
 
   // Populate profile fields
   const u = currentUser;
@@ -3756,77 +3758,56 @@ document.addEventListener('visibilitychange', function() {
 
 <script>
 // ── PWA Install Prompt ──────────────────────────────────────────
+var _pwaDeferredPrompt = null;
+var _pwaShown = false;
+
+// Capture native browser install prompt early (before user interaction)
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _pwaDeferredPrompt = e;
+});
+
+// Called from onLoginSuccess() — shows banner 3s after login
+function showPwaBannerIfNeeded() {
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  if (window.navigator.standalone === true) return;
+  if (sessionStorage.getItem('pwa-dismissed')) return;
+  if (_pwaShown) return;
+  _pwaShown = true;
+  var banner = document.getElementById('pwa-banner');
+  setTimeout(function() {
+    if (banner) banner.classList.add('show');
+  }, 3000);
+}
+
 (function() {
-  let _deferredPrompt = null;
-  const banner     = document.getElementById('pwa-banner');
-  const installBtn = document.getElementById('pwa-install-btn');
-  const closeBtn   = document.getElementById('pwa-close-btn');
+  var banner     = document.getElementById('pwa-banner');
+  var installBtn = document.getElementById('pwa-install-btn');
+  var closeBtn   = document.getElementById('pwa-close-btn');
 
-  // Already installed in standalone mode — hide everything
-  if (window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true) {
-    if (banner) banner.style.display = 'none';
-    return;
-  }
-
-  // Already dismissed this session
-  const dismissed = sessionStorage.getItem('pwa-dismissed');
-
-  // Catch the browser's native install prompt
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    _deferredPrompt = e;
-    if (!dismissed) {
-      setTimeout(function() {
-        if (banner) banner.classList.add('show');
-      }, 4000);
-    }
-  });
-
-  // Install button clicked
   if (installBtn) {
-    installBtn.addEventListener('click', async function() {
-      if (_deferredPrompt) {
-        // Native install prompt available
+    installBtn.addEventListener('click', function() {
+      if (_pwaDeferredPrompt) {
         banner.classList.remove('show');
-        _deferredPrompt.prompt();
-        const { outcome } = await _deferredPrompt.userChoice;
-        _deferredPrompt = null;
+        _pwaDeferredPrompt.prompt();
+        _pwaDeferredPrompt.userChoice.then(function() { _pwaDeferredPrompt = null; });
       } else {
-        // Fallback — show instructions for iOS / unsupported browsers
         banner.classList.remove('show');
-        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
         if (isIOS) {
-          alert('To install:
-1. Tap the Share button (box with arrow)
-2. Scroll down and tap "Add to Home Screen"
-3. Tap "Add"');
+          alert('Install on iPhone/iPad:\n\n1. Tap the Share button at the bottom\n2. Tap "Add to Home Screen"\n3. Tap "Add"');
         } else {
-          alert('To install:
-1. Tap the menu (3 dots) in your browser
-2. Tap "Add to Home Screen" or "Install App"
-3. Tap "Install"');
+          alert('Install the app:\n\n1. Tap the browser menu (3 dots)\n2. Tap "Add to Home Screen" or "Install App"\n3. Tap "Install"');
         }
       }
     });
   }
 
-  // Dismiss button
   if (closeBtn) {
     closeBtn.addEventListener('click', function() {
-      banner.classList.remove('show');
+      if (banner) banner.classList.remove('show');
       sessionStorage.setItem('pwa-dismissed', '1');
     });
-  }
-
-  // Fallback: show banner after 6s regardless of beforeinstallprompt
-  // (covers iOS Safari which never fires beforeinstallprompt)
-  if (!dismissed) {
-    setTimeout(function() {
-      if (banner && !banner.classList.contains('show')) {
-        banner.classList.add('show');
-      }
-    }, 6000);
   }
 })();
 
