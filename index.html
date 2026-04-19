@@ -412,6 +412,7 @@ h1{opacity:1 !important;}
   background:#111114;border-top:1px solid #1f3350;
   padding:14px 18px;display:none;align-items:center;gap:14px;
   animation:slideUp 0.3s ease;font-family:'DM Sans',sans-serif;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.5);
 }
 #pwa-banner.show{display:flex;}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
@@ -419,10 +420,52 @@ h1{opacity:1 !important;}
 .pwa-text{flex:1;min-width:0;}
 .pwa-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;}
 .pwa-sub{font-size:11px;color:var(--grey);line-height:1.4;}
-.pwa-btn-install{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:10px 18px;cursor:pointer;flex-shrink:0;transition:background .2s;white-space:nowrap;}
+.pwa-btn-install{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:10px 18px;cursor:pointer;flex-shrink:0;transition:background .2s;white-space:nowrap;border-radius:6px;}
 .pwa-btn-install:hover{background:var(--gold2);}
-.pwa-btn-close{background:none;border:1px solid var(--border2);color:var(--grey);font-size:16px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,color .2s;}
+.pwa-btn-close{background:none;border:1px solid var(--border2);color:var(--grey);font-size:16px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,color .2s;border-radius:50%;}
 .pwa-btn-close:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── iOS Install Guide Modal ── */
+#ios-guide{
+  display:none;position:fixed;inset:0;z-index:9998;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;
+}
+#ios-guide.show{display:flex;}
+.ios-guide-box{
+  background:#111114;border:1px solid #1f3350;
+  border-radius:20px 20px 0 0;padding:24px 20px 40px;
+  width:100%;max-width:420px;
+  animation:slideUp 0.3s ease;
+}
+.ios-guide-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);margin-bottom:6px;text-align:center;}
+.ios-guide-sub{font-size:13px;color:var(--grey);text-align:center;margin-bottom:24px;line-height:1.5;}
+.ios-step{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+.ios-step-num{width:28px;height:28px;background:var(--gold);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.ios-step-text{font-size:14px;color:var(--white);line-height:1.5;}
+.ios-step-text span{color:var(--gold);}
+.ios-step-icon{font-size:20px;margin-left:4px;vertical-align:middle;}
+.ios-arrow{text-align:center;margin-top:20px;}
+.ios-arrow-line{display:inline-block;width:2px;height:40px;background:var(--gold);border-radius:2px;position:relative;margin:0 auto;}
+.ios-arrow-head{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:12px solid var(--gold);margin:0 auto;}
+.ios-close-btn{width:100%;margin-top:20px;background:none;border:1px solid #232329;color:var(--grey);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px;cursor:pointer;border-radius:8px;transition:border-color .2s,color .2s;}
+.ios-close-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── Push Notification Permission Banner ── */
+#notif-banner{
+  display:none;position:fixed;top:0;left:0;right:0;z-index:8998;
+  background:#0b1626;border-bottom:1px solid #1f3350;
+  padding:12px 16px;align-items:center;gap:12px;
+  animation:slideDown 0.3s ease;font-family:'DM Sans',sans-serif;
+}
+#notif-banner.show{display:flex;}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:none}}
+.notif-bell{font-size:22px;flex-shrink:0;}
+.notif-banner-text{flex:1;min-width:0;}
+.notif-banner-title{font-size:13px;font-weight:600;color:var(--white);}
+.notif-banner-sub{font-size:11px;color:var(--grey);}
+.notif-btn-allow{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:8px 14px;cursor:pointer;flex-shrink:0;border-radius:5px;white-space:nowrap;}
+.notif-btn-later{background:none;border:none;color:var(--grey);font-size:20px;cursor:pointer;flex-shrink:0;padding:2px 4px;}
 </style>
 <style id="app-portal-css">
 /* ══ PORTAL — full viewport takeover ══ */
@@ -2543,6 +2586,8 @@ function onLoginSuccess() {
   startLivePolling();
   // Show PWA install banner after login
   showPwaBannerIfNeeded();
+  // Ask for push notification permission 8s after login
+  showNotifBannerIfNeeded();
 
   // Populate profile fields
   const u = currentUser;
@@ -2796,6 +2841,8 @@ async function loadSignals(silent = false) {
     if (count) count.textContent = `${activeCount} active · ${sigs.length} total`;
     const updEl = document.getElementById('signals-last-upd');
     if (updEl) updEl.textContent = 'Refreshed ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    // Push notification if new signal detected
+    if (silent) maybeNotifyNewSignal(sigs);
 
     cont.innerHTML = sigs.map(s => {
       const dir  = (s.direction||'').toUpperCase();
@@ -3043,6 +3090,8 @@ async function loadArticles(silent = false) {
       const _nextMs = new Date(_now.getTime() + POLL_ARTICLES);
       artNext.textContent = 'Next: ' + _nextMs.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     }
+    // Push notification if new article detected
+    if (silent) maybeNotifyNewArticle(items);
 
     cont.innerHTML = items.map(a => {
       const ts  = a.ts ? fmtTs(a.ts) : 'Latest';
@@ -3746,58 +3795,151 @@ document.addEventListener('visibilitychange', function() {
 </script>
 
 <!-- ── PWA Install Banner ── -->
+<!-- ── PWA Install Banner (Android / Chrome) ── -->
 <div id="pwa-banner">
   <div class="pwa-icon">30×</div>
   <div class="pwa-text">
     <div class="pwa-title">Install 30×Tech Research</div>
-    <div class="pwa-sub">Add to home screen — live signals &amp; offline access</div>
+    <div class="pwa-sub">Live signals &amp; alerts on your home screen</div>
   </div>
   <button class="pwa-btn-install" id="pwa-install-btn">Install</button>
   <button class="pwa-btn-close" id="pwa-close-btn">&#10005;</button>
 </div>
 
-<script>
-// ── PWA Install Prompt ──────────────────────────────────────────
-var _pwaDeferredPrompt = null;
-var _pwaShown = false;
+<!-- ── iOS Install Guide Modal ── -->
+<div id="ios-guide">
+  <div class="ios-guide-box">
+    <div class="ios-guide-title">Install 30×Tech Research</div>
+    <div class="ios-guide-sub">Add to your home screen for instant access to live signals</div>
+    <div class="ios-step">
+      <div class="ios-step-num">1</div>
+      <div class="ios-step-text">Tap the <span>Share</span> button <span class="ios-step-icon">&#11121;</span> at the bottom of your browser</div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">2</div>
+      <div class="ios-step-text">Scroll down and tap <span>"Add to Home Screen"</span> &#10133;</div>
+    </div>
+    <div class="ios-step">
+      <div class="ios-step-num">3</div>
+      <div class="ios-step-text">Tap <span>"Add"</span> in the top right — done!</div>
+    </div>
+    <div class="ios-arrow">
+      <div class="ios-arrow-line"></div>
+      <div class="ios-arrow-head"></div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--grey);margin-top:10px;">Arrow points to the Share button below</div>
+    <button class="ios-close-btn" id="ios-guide-close">Got it &#10005;</button>
+  </div>
+</div>
 
-// Capture native browser install prompt early (before user interaction)
+<!-- ── Push Notification Permission Banner ── -->
+<div id="notif-banner">
+  <div class="notif-bell">&#128276;</div>
+  <div class="notif-banner-text">
+    <div class="notif-banner-title">Get instant signal alerts</div>
+    <div class="notif-banner-sub">Allow notifications to be alerted when new signals fire</div>
+  </div>
+  <button class="notif-btn-allow" id="notif-allow-btn">Allow</button>
+  <button class="notif-btn-later" id="notif-later-btn">&#10005;</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// PWA INSTALL + PUSH NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+var _pwaDeferredPrompt = null;
+var _pwaShown    = false;
+var _notifShown  = false;
+var _isIOS       = /iphone|ipad|ipod/i.test(navigator.userAgent);
+var _isSafari    = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+// ── Capture native install prompt early ──
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   _pwaDeferredPrompt = e;
 });
 
-// Called from onLoginSuccess() — shows banner 3s after login
+// ── Detect app already installed ──
+function _isPwaInstalled() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true;
+}
+
+// ── Show install banner (called from onLoginSuccess) ──
 function showPwaBannerIfNeeded() {
-  if (window.matchMedia('(display-mode: standalone)').matches) return;
-  if (window.navigator.standalone === true) return;
+  if (_isPwaInstalled()) return;
   if (sessionStorage.getItem('pwa-dismissed')) return;
   if (_pwaShown) return;
   _pwaShown = true;
-  var banner = document.getElementById('pwa-banner');
+
   setTimeout(function() {
-    if (banner) banner.classList.add('show');
+    if (_isIOS && _isSafari) {
+      // iOS Safari — show visual guide modal
+      var guide = document.getElementById('ios-guide');
+      if (guide) guide.classList.add('show');
+    } else if (_pwaDeferredPrompt) {
+      // Android/Chrome — show install banner
+      var banner = document.getElementById('pwa-banner');
+      if (banner) banner.classList.add('show');
+    } else {
+      // Other browsers — show install banner with manual instructions fallback
+      var banner = document.getElementById('pwa-banner');
+      if (banner) banner.classList.add('show');
+    }
   }, 3000);
 }
 
-(function() {
-  var banner     = document.getElementById('pwa-banner');
-  var installBtn = document.getElementById('pwa-install-btn');
-  var closeBtn   = document.getElementById('pwa-close-btn');
+// ── Show notification permission (called 8s after login) ──
+function showNotifBannerIfNeeded() {
+  if (_notifShown) return;
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') return;
+  if (Notification.permission === 'denied') return;
+  if (sessionStorage.getItem('notif-dismissed')) return;
+  _notifShown = true;
 
+  setTimeout(function() {
+    var banner = document.getElementById('notif-banner');
+    if (banner) banner.classList.add('show');
+  }, 8000);
+}
+
+// ── Install banner buttons ──
+(function() {
+  // PWA banner — Android/Chrome
+  var pwaBanner     = document.getElementById('pwa-banner');
+  var installBtn    = document.getElementById('pwa-install-btn');
+  var closeBtn      = document.getElementById('pwa-close-btn');
+  // iOS guide modal
+  var iosGuide      = document.getElementById('ios-guide');
+  var iosCloseBtn   = document.getElementById('ios-guide-close');
+  // Notification banner
+  var notifBanner   = document.getElementById('notif-banner');
+  var notifAllow    = document.getElementById('notif-allow-btn');
+  var notifLater    = document.getElementById('notif-later-btn');
+
+  // ── Android/Chrome install ──
   if (installBtn) {
     installBtn.addEventListener('click', function() {
       if (_pwaDeferredPrompt) {
-        banner.classList.remove('show');
+        if (pwaBanner) pwaBanner.classList.remove('show');
         _pwaDeferredPrompt.prompt();
-        _pwaDeferredPrompt.userChoice.then(function() { _pwaDeferredPrompt = null; });
+        _pwaDeferredPrompt.userChoice.then(function(choice) {
+          if (choice.outcome === 'accepted') {
+            console.log('[PWA] Installed');
+            // Request notifications right after install
+            setTimeout(requestNotifPermission, 2000);
+          }
+          _pwaDeferredPrompt = null;
+        });
       } else {
-        banner.classList.remove('show');
-        var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-        if (isIOS) {
-          alert('Install on iPhone/iPad:\n\n1. Tap the Share button at the bottom\n2. Tap "Add to Home Screen"\n3. Tap "Add"');
+        // No native prompt — show manual instructions
+        if (pwaBanner) pwaBanner.classList.remove('show');
+        if (_isIOS) {
+          var g = document.getElementById('ios-guide');
+          if (g) g.classList.add('show');
         } else {
-          alert('Install the app:\n\n1. Tap the browser menu (3 dots)\n2. Tap "Add to Home Screen" or "Install App"\n3. Tap "Install"');
+          alert('To install:\n\n1. Tap the browser menu (3 dots top-right)\n2. Tap "Add to Home Screen" or "Install App"\n3. Tap "Install"');
         }
       }
     });
@@ -3805,11 +3947,127 @@ function showPwaBannerIfNeeded() {
 
   if (closeBtn) {
     closeBtn.addEventListener('click', function() {
-      if (banner) banner.classList.remove('show');
+      if (pwaBanner) pwaBanner.classList.remove('show');
       sessionStorage.setItem('pwa-dismissed', '1');
     });
   }
+
+  // ── iOS guide close ──
+  if (iosCloseBtn) {
+    iosCloseBtn.addEventListener('click', function() {
+      if (iosGuide) iosGuide.classList.remove('show');
+      sessionStorage.setItem('pwa-dismissed', '1');
+    });
+  }
+  // Tap outside iOS guide to close
+  if (iosGuide) {
+    iosGuide.addEventListener('click', function(e) {
+      if (e.target === iosGuide) {
+        iosGuide.classList.remove('show');
+        sessionStorage.setItem('pwa-dismissed', '1');
+      }
+    });
+  }
+
+  // ── Notification allow ──
+  if (notifAllow) {
+    notifAllow.addEventListener('click', function() {
+      if (notifBanner) notifBanner.classList.remove('show');
+      requestNotifPermission();
+    });
+  }
+
+  if (notifLater) {
+    notifLater.addEventListener('click', function() {
+      if (notifBanner) notifBanner.classList.remove('show');
+      sessionStorage.setItem('notif-dismissed', '1');
+    });
+  }
 })();
+
+// ═══════════════════════════════════════════════════════════
+// PUSH NOTIFICATIONS
+// Uses the Web Notifications API (no server/VAPID needed).
+// Works when the app is OPEN or installed as a PWA.
+// Fires when Firebase data changes (new signal detected).
+// ═══════════════════════════════════════════════════════════
+
+function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(function(permission) {
+    if (permission === 'granted') {
+      console.log('[Notif] Permission granted');
+      // Send a welcome notification
+      sendNotification(
+        '30xTech Research',
+        'Notifications enabled! You will be alerted when new signals fire.',
+        { icon: _30xNotifIcon(), tag: 'welcome' }
+      );
+    }
+  });
+}
+
+function sendNotification(title, body, opts) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  try {
+    var n = new Notification(title, Object.assign({
+      body: body,
+      icon: _30xNotifIcon(),
+      badge: _30xNotifIcon(),
+      vibrate: [200, 100, 200],
+      requireInteraction: false,
+    }, opts || {}));
+    n.onclick = function() {
+      window.focus();
+      n.close();
+    };
+  } catch(e) {
+    console.log('[Notif] Error:', e);
+  }
+}
+
+function _30xNotifIcon() {
+  // SVG data URI icon for notifications
+  return "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%2309090b'/><text x='50%25' y='58%25' text-anchor='middle' dominant-baseline='middle' font-size='52' font-family='Georgia,serif' fill='%23c9a84c'>30</text></svg>";
+}
+
+// ── Signal notification — called when new signal detected ──
+var _lastNotifSigKey = null;
+function maybeNotifyNewSignal(sigs) {
+  if (Notification.permission !== 'granted') return;
+  if (!sigs || !sigs.length) return;
+  // Most recent active signal
+  var latest = sigs.find(function(s) { return (s.status||'').toUpperCase() === 'ACTIVE'; });
+  if (!latest) return;
+  var key = latest._key || (latest.symbol + '_' + latest.ts);
+  if (key === _lastNotifSigKey) return; // already notified
+  _lastNotifSigKey = key;
+  var dir  = (latest.direction||'').toUpperCase();
+  var sym  = latest.symbol || '—';
+  var tier = latest.tier || '?';
+  sendNotification(
+    (dir === 'LONG' ? '📈' : '📉') + ' New Signal: ' + sym,
+    (dir === 'LONG' ? 'BUY' : 'SELL') + ' · T' + tier + ' · Entry: ' + (latest.entry ? '$' + Number(latest.entry).toLocaleString() : '—'),
+    { tag: 'signal-' + key, renotify: true }
+  );
+}
+
+// ── Article notification — called when new article detected ──
+var _lastNotifArtTs = 0;
+function maybeNotifyNewArticle(items) {
+  if (Notification.permission !== 'granted') return;
+  if (!items || !items.length) return;
+  var latest = items[0];
+  if (!latest || !latest.ts) return;
+  if (latest.ts <= _lastNotifArtTs) return;
+  _lastNotifArtTs = latest.ts;
+  sendNotification(
+    '30xTech Market Update',
+    'New market update available — tap to view',
+    { tag: 'article-' + latest.ts, renotify: false }
+  );
+}
 
 // ── Service Worker — enables offline & installability ──────────
 if ('serviceWorker' in navigator) {
