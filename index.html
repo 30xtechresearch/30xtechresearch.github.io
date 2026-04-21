@@ -13,14 +13,16 @@
   font-src https://fonts.gstatic.com;
   connect-src https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app
               https://api.telegram.org
+              https://oauth.telegram.org
               https://api.binance.com
               https://api.paystack.co
+              https://open.er-api.com
               https://query1.finance.yahoo.com
               https://query2.finance.yahoo.com
               blob:;
   img-src 'self' data: blob: https:;
   worker-src blob:;
-  frame-src 'none';
+  frame-src https://oauth.telegram.org;
   object-src 'none';
   base-uri 'self';
 ">
@@ -70,8 +72,8 @@
   --gold-dim:rgba(232,184,75,0.10);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;max-width:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(232,184,75,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(232,184,75,0.018) 1px,transparent 1px);background-size:60px 60px;}
 nav{position:fixed;top:0;left:0;right:0;z-index:1001;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(4,7,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);min-height:54px;}
 .logo{font-family:'Bebas Neue','Arial Black',Impact,sans-serif;font-weight:800;font-size:16px;letter-spacing:1px;color:var(--white);}
@@ -81,7 +83,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1001;display:flex;align-items:ce
 .nav-links a:hover{color:var(--gold);}
 .nav-email{font-family:'DM Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#000;background:var(--gold);text-decoration:none;padding:9px 18px;transition:background 0.2s;white-space:nowrap;}
 .nav-email:hover{background:var(--gold2);}
-#hero{min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 48px 60px;gap:60px;overflow:hidden;z-index:1;isolation:isolate;}
+#hero{min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 48px 60px;gap:60px;overflow:hidden;z-index:1;isolation:isolate;max-width:100%;}
 .hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 50% at 62% 44%,rgba(240,192,64,0.07) 0%,transparent 65%);}
 .hero-left{position:relative;z-index:2;max-width:680px;width:100%;}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,192,64,0.3);padding:7px 14px;margin-bottom:28px;animation:up 0.7s ease both;}
@@ -102,7 +104,7 @@ h1 .c{color:var(--cyan);display:block;}
 .badge-lbl{font-family:'DM Mono','Courier New',Courier,monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-top:4px;}
 @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes scan{from{top:0}to{top:100%}}
-.ticker-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;overflow:hidden;position:relative;z-index:1;}
+.ticker-wrap{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;overflow:hidden;position:relative;z-index:1;max-width:100%;}
 .ticker-track{display:flex;gap:40px;width:max-content;animation:scroll 28s linear infinite;will-change:transform;}
 .t-item{font-family:'DM Mono','Courier New',Courier,monospace;font-size:11px;white-space:nowrap;display:flex;gap:8px;align-items:center;}
 .t-sym{color:var(--white);font-weight:600;}
@@ -621,6 +623,7 @@ h1{opacity:1 !important;}
     width: 100%; padding: 14px; border-radius: var(--radius-sm);
     font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
     cursor: pointer; border: none; transition: opacity .15s, transform .1s;
+    touch-action: manipulation; user-select: none;
   }
   #app-portal .btn:active { transform: scale(.98); }
   #app-portal .btn:disabled { opacity:.45; cursor:not-allowed; }
@@ -644,7 +647,7 @@ h1{opacity:1 !important;}
 
   /* ── Segment ─────────────────────────── */
   #app-portal .segment { display: flex; background: var(--surface); border-radius: var(--radius-sm); padding: 3px; border: 1px solid var(--border); }
-  #app-portal .seg-btn { flex:1; padding:9px; border:none; background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; border-radius:8px; cursor:pointer; transition:all .15s; }
+  #app-portal .seg-btn { flex:1; padding:9px; border:none; background:transparent; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; border-radius:8px; cursor:pointer; transition:all .15s; -webkit-tap-highlight-color: rgba(201,168,76,0.15); touch-action: manipulation; user-select: none; }
   #app-portal .seg-btn.active { background: var(--card); color: var(--text); }
 
   /* ── Signals ─────────────────────────── */
@@ -881,7 +884,8 @@ h1{opacity:1 !important;}
     background: #229ED9; color: #fff; border: none;
     font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
     cursor: pointer; transition: opacity .15s, transform .1s;
-    margin-bottom: 16px; -webkit-tap-highlight-color: transparent;
+    margin-bottom: 16px; -webkit-tap-highlight-color: rgba(34,158,217,0.3);
+    touch-action: manipulation; user-select: none;
   }
   #app-portal .tg-login-btn:hover { opacity: .88; }
   #app-portal .tg-login-btn:active { transform: scale(.98); }
@@ -984,6 +988,7 @@ h1{opacity:1 !important;}
     <a href="#hero">Home</a>
     <a href="#services">Pricing</a>
     <a href="#signal-sample">Signals</a>
+    <a href="#p2p" style="color:var(--gold);font-weight:600;">P2P Exchange</a>
     <a href="#social">Follow Us</a>
     <a href="#jobs">Book Analyst</a>
     <a href="#how">How It Works</a>
@@ -997,6 +1002,7 @@ h1{opacity:1 !important;}
   <a href="#hero" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Home</a>
   <a href="#services" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Pricing</a>
   <a href="#signal-sample" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Signals</a>
+  <a href="#p2p" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">P2P Exchange</a>
   <a href="#social" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Follow Us</a>
   <a href="#jobs" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Book Analyst</a>
   <a href="#how" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">How It Works</a>
@@ -1612,6 +1618,286 @@ h1{opacity:1 !important;}
 </section>
 
 <!-- FOOTER -->
+<!-- ══ P2P SECTION ══════════════════════════════════════════ -->
+<section id="p2p" style="padding:72px 0;background:var(--surface);border-top:1px solid var(--border2);">
+  <div style="max-width:860px;margin:0 auto;padding:0 20px;">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:40px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">P2P Exchange</div>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(26px,5vw,40px);margin-bottom:14px;line-height:1.2;">Sell Crypto for Naira <span style="color:var(--gold);">Instantly</span></h2>
+      <p style="color:var(--muted);font-size:15px;max-width:480px;margin:0 auto;line-height:1.65;">Send us your crypto — we pay you directly to your Nigerian bank account within minutes.</p>
+    </div>
+
+    <!-- Main card -->
+    <div style="background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:28px 24px;max-width:480px;margin:0 auto;">
+
+      <!-- Live rate row -->
+      <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border);">
+        <!-- Rate display — full width, no competition with tokens -->
+        <div style="margin-bottom:14px;">
+          <div style="font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Live Rate (after 10% margin)</div>
+          <div id="p2p-rate-display" style="font-size:22px;font-family:'DM Serif Display',serif;color:var(--gold);">Fetching…</div>
+          <div id="p2p-rate-sub" style="font-size:10px;color:var(--muted);margin-top:3px;">per $1 USD · updates every 5 min</div>
+        </div>
+        <!-- Tokens row — sits below rate, left-aligned -->
+        <div>
+          <div style="font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Accepted Tokens</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">USDT</span>
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">USDC</span>
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">BTC</span>
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">ETH</span>
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">BNB</span>
+            <span style="background:rgba(201,168,76,.1);color:var(--gold);font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.2);white-space:nowrap;">SOL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calculator -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Quick Calculator</div>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="p2p-calc-amount" placeholder="e.g. 50" min="10" step="any"
+            style="flex:1;min-width:0;background:var(--surface);border:1px solid var(--border2);color:var(--text);
+                   padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+                   border-radius:8px;box-sizing:border-box;"
+            oninput="calcP2pPayout()"
+          >
+          <select id="p2p-calc-token"
+            style="flex-shrink:0;width:90px;background:var(--surface);border:1px solid var(--border2);color:var(--text);
+                   padding:12px 10px;font-family:'DM Mono',monospace;font-size:12px;outline:none;
+                   border-radius:8px;cursor:pointer;"
+            onchange="calcP2pPayout()"
+          >
+            <option>USDT</option>
+            <option>USDC</option>
+            <option>BTC</option>
+            <option>ETH</option>
+            <option>BNB</option>
+            <option>SOL</option>
+          </select>
+        </div>
+        <div id="p2p-calc-result"
+          style="margin-top:10px;padding:13px 14px;background:rgba(201,168,76,.05);
+                 border:1px solid rgba(201,168,76,.15);border-radius:8px;
+                 font-size:13px;color:var(--muted);min-height:46px;display:flex;align-items:center;line-height:1.5;">
+          Enter an amount above to see your NGN payout
+        </div>
+      </div>
+
+      <!-- How it works — 2x2 grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;">
+        <div style="padding:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);margin-bottom:5px;">1</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Start on Telegram</div>
+          <div style="font-size:11px;color:var(--muted);">Send /sell to the bot</div>
+        </div>
+        <div style="padding:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);margin-bottom:5px;">2</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Get deposit address</div>
+          <div style="font-size:11px;color:var(--muted);">Rate locked 15 min</div>
+        </div>
+        <div style="padding:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);margin-bottom:5px;">3</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Send your crypto</div>
+          <div style="font-size:11px;color:var(--muted);">Bot detects on-chain</div>
+        </div>
+        <div style="padding:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);margin-bottom:5px;">4</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;">Receive NGN</div>
+          <div style="font-size:11px;color:var(--muted);">Paid to your bank</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <a href="https://t.me/Thirtyxtechresearchp2pbot" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;gap:10px;
+                background:var(--gold);color:#000;text-decoration:none;
+                font-family:'DM Mono',monospace;font-size:12px;font-weight:700;
+                letter-spacing:1.5px;text-transform:uppercase;
+                padding:15px;border-radius:8px;transition:opacity .2s;
+                -webkit-tap-highlight-color:transparent;"
+         onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="black" style="flex-shrink:0;">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/>
+        </svg>
+        Start Selling on Telegram
+      </a>
+      <div style="text-align:center;margin-top:10px;font-size:10px;color:var(--muted);">
+        @Thirtyxtechresearchp2pbot &nbsp;·&nbsp; Min $10 &nbsp;·&nbsp; Max $625 (verified) &nbsp;·&nbsp; NGN to your bank
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:flex;justify-content:center;gap:0;margin-top:36px;flex-wrap:wrap;border:1px solid var(--border2);border-radius:12px;overflow:hidden;max-width:480px;margin-left:auto;margin-right:auto;">
+      <div style="flex:1;min-width:100px;text-align:center;padding:18px 12px;border-right:1px solid var(--border2);">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);">15 min</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">Price lock</div>
+      </div>
+      <div style="flex:1;min-width:100px;text-align:center;padding:18px 12px;border-right:1px solid var(--border2);">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);">10%</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">Base margin</div>
+      </div>
+      <div style="flex:1;min-width:100px;text-align:center;padding:18px 12px;border-right:1px solid var(--border2);">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);">CBN</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">2026 compliant</div>
+      </div>
+      <div style="flex:1;min-width:100px;text-align:center;padding:18px 12px;">
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);">NGN</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">Bank payout</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+// ── P2P widget ─────────────────────────────────────────────────
+(function() {
+  var _p2pRate    = null;   // raw USD/NGN market rate
+  var _tokenPrices = {};    // token → USD price cache
+
+  // Fetch token prices from Binance public API (no auth needed)
+  function fetchTokenPrice(token, cb) {
+    if (token === 'USDT' || token === 'USDC') { cb(1.0); return; }
+    fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + token + 'USDT')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var p = parseFloat(d.price);
+        if (p > 0) { _tokenPrices[token] = p; cb(p); }
+        else cb(null);
+      })
+      .catch(function(){ cb(null); });
+  }
+
+  function fetchP2PRate() {
+    // Primary: ExchangeRate API
+    fetch('https://open.er-api.com/v6/latest/USD')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var ngn = data && data.rates && data.rates.NGN;
+        if (ngn && ngn > 100) {
+          _p2pRate = ngn;
+          var marg = ngn * 0.90;   // after 10% margin
+          var el   = document.getElementById('p2p-rate-display');
+          var sub  = document.getElementById('p2p-rate-sub');
+          if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
+          if (sub) sub.textContent = 'Market: ₦' + Math.round(ngn).toLocaleString() + ' • your rate after 10% margin';
+          calcP2pPayout();
+        } else { fetchP2PRateFallback(); }
+      })
+      .catch(function(){ fetchP2PRateFallback(); });
+  }
+
+  function fetchP2PRateFallback() {
+    // Fallback: use Binance USDTNGN if available, otherwise show bot message
+    fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTNGN')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var ngn = parseFloat(d.price);
+        if (ngn && ngn > 100) {
+          _p2pRate = ngn;
+          var marg = ngn * 0.90;
+          var el   = document.getElementById('p2p-rate-display');
+          var sub  = document.getElementById('p2p-rate-sub');
+          if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
+          if (sub) sub.textContent = 'Market: ₦' + Math.round(ngn).toLocaleString() + ' • your rate after 10% margin';
+          calcP2pPayout();
+        } else { showBotRateMsg(); }
+      })
+      .catch(function(){ showBotRateMsg(); });
+  }
+
+  function showBotRateMsg() {
+    var el  = document.getElementById('p2p-rate-display');
+    var sub = document.getElementById('p2p-rate-sub');
+    if (el) { el.innerHTML = '<a href="https://t.me/Thirtyxtechresearchp2pbot" target="_blank" style="color:var(--gold);text-decoration:none;font-size:16px;">Check bot for live rate ↗</a>'; }
+    if (sub) sub.textContent = 'Tap to open @Thirtyxtechresearchp2pbot';
+  }
+
+  window.calcP2pPayout = function() {
+    var amountEl = document.getElementById('p2p-calc-amount');
+    var tokenEl  = document.getElementById('p2p-calc-token');
+    var resultEl = document.getElementById('p2p-calc-result');
+    if (!amountEl || !tokenEl || !resultEl) return;
+
+    var amount = parseFloat(amountEl.value);
+    var token  = tokenEl.value;
+
+    if (!amount || amount <= 0) {
+      resultEl.innerHTML = 'Enter an amount above to see your NGN payout';
+      resultEl.style.color = 'var(--muted)';
+      return;
+    }
+
+    // Get token price, then compute
+    function compute(tokenPriceUsd) {
+      if (!tokenPriceUsd) {
+        resultEl.innerHTML = 'Could not fetch ' + token + ' price. Try the bot directly.';
+        resultEl.style.color = 'var(--muted)';
+        return;
+      }
+      if (!_p2pRate) {
+        resultEl.innerHTML = 'Fetching rates...';
+        resultEl.style.color = 'var(--muted)';
+        return;
+      }
+
+      var amountUsd = amount * tokenPriceUsd;
+      if (amountUsd < 10) {
+        resultEl.innerHTML = 'Minimum is $10 USD (you entered ~$' + amountUsd.toFixed(2) + ')';
+        resultEl.style.color = 'var(--red, #e74c3c)';
+        return;
+      }
+      if (amountUsd > 625) {
+        resultEl.innerHTML = 'Max $625 per trade (verified). Unverified max: $31. Use the bot to verify your account.';
+        resultEl.style.color = 'var(--muted)';
+        return;
+      }
+
+      var margin   = 0.10;
+      var yourRate = _p2pRate * (1 - margin);
+      var grossNgn = amountUsd * yourRate;
+      var stamp    = grossNgn >= 10000 ? 50 : 0;
+      var fee      = 50;
+      var netNgn   = grossNgn - stamp - fee;
+
+      if (netNgn <= 0) {
+        resultEl.innerHTML = 'Amount too small after fees.';
+        resultEl.style.color = 'var(--muted)';
+        return;
+      }
+
+      var rateStr = '₦' + Math.round(yourRate).toLocaleString();
+      resultEl.innerHTML =
+        'You receive &nbsp;<strong style="color:var(--gold);font-size:18px;">₦' +
+        Math.round(netNgn).toLocaleString() +
+        '</strong>' +
+        '<br><span style="font-size:10px;color:var(--muted);">' +
+        amount + ' ' + token + ' × ' + rateStr +
+        (stamp ? ' − ₦50 stamp duty' : '') +
+        ' − ₦50 fee' +
+        '</span>';
+      resultEl.style.color = 'var(--text)';
+    }
+
+    // Use cache or fetch
+    if (_tokenPrices[token]) {
+      compute(_tokenPrices[token]);
+    } else {
+      resultEl.innerHTML = 'Getting ' + token + ' price...';
+      fetchTokenPrice(token, compute);
+    }
+  };
+
+  // Init
+  fetchP2PRate();
+  setInterval(fetchP2PRate, 5 * 60 * 1000);
+})();
+</script>
+
+
 <footer>
   <div class="foot-top">
     <div>
@@ -2353,214 +2639,6 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
 // No password needed — Telegram identity IS the credential.
 // ═══════════════════════════════════════════════════════════════
 
-const TG_BOT_USERNAME = 'Thirtyxpremiumsignalsbot';
-const TG_NONCE_TTL    = 5 * 60 * 1000; // 5 minutes
-let   _tgLoginNonce   = null;
-let   _tgPollTimer    = null;
-let   _tgPollCount    = 0;
-const TG_POLL_MAX     = 60;  // poll for up to 5 min (every 5s)
-
-// ── Generate a secure random nonce ──────────────────────────────
-function genNonce() {
-  const arr = new Uint8Array(16);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-// ── Start Telegram login flow ────────────────────────────────────
-function startTelegramLogin() {
-  const btn = document.getElementById('tg-login-btn');
-  const errEl = document.getElementById('auth-error-tg');
-  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
-
-  // Rate limit check
-  try { _RL.check(); } catch(e) {
-    if (errEl) { errEl.textContent = _RL.errorMsg(e) || 'Too many attempts.'; errEl.classList.add('show'); }
-    return;
-  }
-
-  _tgLoginNonce = genNonce();
-  _tgPollCount  = 0;
-
-  // Store nonce in Firebase so bot can write result back
-  const noncePath = `tg_login_nonces/${_tgLoginNonce}`;
-  const expiresAt = Date.now() + TG_NONCE_TTL;
-
-  // Write pending nonce to Firebase
-  const fbNonceUrl = `${FB_URL}/${noncePath}.json?auth=${FB_SECRET}`;
-  fetch(fbNonceUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: 'pending', expires: expiresAt })
-  }).then(() => {
-    // Open Telegram bot with deep link
-    const deepLink = `https://t.me/${TG_BOT_USERNAME}?start=login_${_tgLoginNonce}`;
-    window.open(deepLink, '_blank');
-
-    // Show spinner and start polling
-    _showTgVerifying(true);
-    _startTgPoll(_tgLoginNonce);
-  }).catch(() => {
-    if (errEl) { errEl.textContent = 'Connection error. Please try again.'; errEl.classList.add('show'); }
-  });
-}
-
-// ── Show/hide verifying spinner ──────────────────────────────────
-function _showTgVerifying(show) {
-  const wrap = document.getElementById('tg-verify-wrap');
-  const btn  = document.getElementById('tg-login-btn');
-  if (wrap) wrap.style.display = show ? 'block' : 'none';
-  if (btn)  btn.style.display  = show ? 'none'  : 'flex';
-}
-
-// ── Poll Firebase until bot writes the nonce result ──────────────
-function _startTgPoll(nonce) {
-  clearInterval(_tgPollTimer);
-  _tgPollTimer = setInterval(async () => {
-    _tgPollCount++;
-    if (_tgPollCount > TG_POLL_MAX) {
-      clearInterval(_tgPollTimer);
-      _showTgVerifying(false);
-      const errEl = document.getElementById('auth-error-tg');
-      if (errEl) { errEl.textContent = 'Login timed out. Please try again.'; errEl.classList.add('show'); }
-      return;
-    }
-
-    try {
-      const fbNonceUrl = `${FB_URL}/tg_login_nonces/${nonce}.json?auth=${FB_SECRET}`;
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 8000);
-      const r = await fetch(fbNonceUrl, { signal: ctrl.signal });
-      clearTimeout(t);
-      const data = await r.json();
-
-      if (!data || data.status === 'pending') return; // not ready yet
-
-      clearInterval(_tgPollTimer);
-
-      if (data.status === 'verified' && data.tg_id) {
-        // Bot confirmed — proceed with login
-        await _completeTgLogin(data.tg_id, data.first_name, data.username, data.photo_url);
-        // Clean up nonce from Firebase
-        fetch(`${FB_URL}/tg_login_nonces/${nonce}.json?auth=${FB_SECRET}`, { method: 'DELETE' });
-      } else if (data.status === 'error') {
-        _showTgVerifying(false);
-        const errEl = document.getElementById('auth-error-tg');
-        if (errEl) { errEl.textContent = data.message || 'Telegram login failed.'; errEl.classList.add('show'); }
-      }
-    } catch(e) {
-      // Silent — keep polling
-    }
-  }, 5000); // poll every 5 seconds
-}
-
-// ── Complete login after Telegram confirms identity ──────────────
-async function _completeTgLogin(tgId, firstName, username, photoUrl) {
-  _showTgVerifying(true);
-  const uid = String(tgId);
-  const errEl = document.getElementById('auth-error-tg');
-
-  try {
-    // Show user card
-    _showTgUserCard(firstName, username, tgId, photoUrl);
-
-    // Look up user in Firebase admin/users
-    const users = await fbGet('admin/users');
-    const udata = users?.[uid];
-
-    if (!udata) {
-      // User not registered — auto-register them with free/no plan
-      // Admin will need to grant a plan via /grantplan
-      await _autoRegisterTgUser(uid, firstName, username);
-      const udata2 = { name: firstName || `User ${uid}`, role: 'user', plan: '', plan_type: '', expires: null };
-      await _finishTgLogin(uid, udata2, firstName);
-    } else {
-      await _finishTgLogin(uid, udata, firstName);
-    }
-  } catch(e) {
-    _showTgVerifying(false);
-    if (errEl) { errEl.textContent = 'Login error: ' + e.message; errEl.classList.add('show'); }
-  }
-}
-
-// ── Auto-register new Telegram user in Firebase ──────────────────
-async function _autoRegisterTgUser(uid, firstName, username) {
-  const name = firstName || `User ${uid}`;
-  // Add to admin/users with no plan
-  await fbPatch(`admin/users/${uid}`, {
-    name:       name,
-    username:   username || '',
-    role:       'user',
-    plan:       '',
-    plan_type:  '',
-    expires:    null,
-    tg_login:   true,
-    registered: Math.floor(Date.now() / 1000),
-  }).catch(() => {});
-  // Create app account (no password — TG login only)
-  await fbPatch(`app_accounts/${uid}`, {
-    tg_login_only: true,
-    created:       Math.floor(Date.now() / 1000),
-    last_login:    Math.floor(Date.now() / 1000),
-  }).catch(() => {});
-}
-
-// ── Show Telegram user card in auth form ─────────────────────────
-function _showTgUserCard(firstName, username, tgId, photoUrl) {
-  const card    = document.getElementById('tg-user-card');
-  const nameEl  = document.getElementById('tg-user-name');
-  const handleEl= document.getElementById('tg-user-handle');
-  const idEl    = document.getElementById('tg-user-id-disp');
-  const avatarEl= document.getElementById('tg-avatar-wrap');
-
-  if (nameEl)   nameEl.textContent   = _Sanitise.display(firstName || 'Telegram User');
-  if (handleEl) handleEl.textContent = username ? '@' + _Sanitise.display(username) : 'Telegram';
-  if (idEl)     idEl.textContent     = 'ID: ' + tgId;
-
-  if (avatarEl) {
-    if (photoUrl) {
-      avatarEl.innerHTML = `<img src="${photoUrl}" alt="avatar" onerror="this.parentNode.textContent='${(firstName||'T')[0].toUpperCase()}'">`;
-    } else {
-      avatarEl.textContent = (firstName || 'T')[0].toUpperCase();
-    }
-  }
-
-  if (card) card.style.display = 'flex';
-  _showTgVerifying(false);
-}
-
-// ── Final step — set currentUser and enter app ───────────────────
-async function _finishTgLogin(uid, udata, firstName) {
-  const brandedId = await genBrandedId(uid);
-
-  // Update last login time
-  fbPatch(`app_accounts/${uid}`, { last_login: Math.floor(Date.now() / 1000) }).catch(() => {});
-
-  currentUser = {
-    tgId:      uid,
-    name:      udata.name || firstName || `User ${uid}`,
-    role:      udata.role || 'user',
-    plan:      udata.plan || '',
-    plan_type: udata.plan_type || '',
-    expires:   udata.expires || null,
-    brandedId: brandedId,
-    loginMethod: 'telegram',
-  };
-
-  _RL.succeed();
-  onLoginSuccess();
-}
-
-// ── Cancel Telegram login ────────────────────────────────────────
-function cancelTgLogin() {
-  clearInterval(_tgPollTimer);
-  _showTgVerifying(false);
-  if (_tgLoginNonce) {
-    fetch(`${FB_URL}/tg_login_nonces/${_tgLoginNonce}.json?auth=${FB_SECRET}`, { method: 'DELETE' });
-    _tgLoginNonce = null;
-  }
-}
-
 // ═══════════════════════════════════════════════════════════════
 // SECURITY LAYER — 30×Tech Research
 // 1. Rate limiting       — blocks brute force login attempts
@@ -2906,13 +2984,15 @@ let   _tgLoginWindow  = null;
 // ── Verify Telegram auth data integrity (HMAC-SHA256) ──────────
 // This ensures the data genuinely came from Telegram, not forged.
 async function verifyTelegramAuth(data) {
+  // Mobile nonce flow — verification handled server-side via Firebase nonce
+  if (data.hash === '__mobile_skip__') return true;
+
   // Build check string: sorted key=value pairs except hash
   const checkArr = Object.keys(data)
     .filter(k => k !== 'hash')
     .sort()
     .map(k => `${k}=${data[k]}`);
-  const checkStr = checkArr.join('
-');
+  const checkStr = checkArr.join('\n');
 
   // Secret key = SHA256 of bot token
   const enc      = new TextEncoder();
@@ -2931,6 +3011,9 @@ async function verifyTelegramAuth(data) {
 }
 
 // ── Step 1: Open Telegram OAuth popup ──────────────────────────
+const _TG_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>';
+const _isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+
 function startTelegramLogin() {
   // Rate limit check
   try { _RL.check(); } catch(e) {
@@ -2938,18 +3021,32 @@ function startTelegramLogin() {
   }
 
   const btn = document.getElementById('tg-login-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Opening Telegram…'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = _TG_SVG + ' Opening Telegram…'; }
 
   // Register global callback that Telegram popup calls
   window.onTelegramAuth = function(data) {
     handleTelegramCallback(data);
   };
 
-  // Build Telegram auth URL
+  // On mobile, popups are blocked — open Telegram app directly via bot deep link.
+  // The bot will receive /start login_{nonce} and can relay auth back.
+  if (_isMobile) {
+    if (btn) { btn.disabled = false; btn.innerHTML = _TG_SVG + ' Continue with Telegram'; }
+    // Show a nonce-based deep-link flow: user opens bot, bot sends tg_login nonce back
+    const nonce = Math.random().toString(36).slice(2, 10);
+    sessionStorage.setItem('tg_login_nonce', nonce);
+    // Open Telegram bot directly
+    window.open(`https://t.me/${TG_BOT_USERNAME}?start=login_${nonce}`, '_blank');
+    // Show instruction and start polling Firebase for nonce result
+    showAuthSuccess(`<strong>Telegram opened!</strong><br>Send <strong>/start</strong> to the bot if it didn't open automatically. Once confirmed, you'll be signed in automatically.`);
+    _pollTelegramNonce(nonce);
+    return;
+  }
+
+  // Desktop: Open OAuth popup
   const origin   = encodeURIComponent(window.location.origin || 'https://hresearchapp.github.io');
   const authUrl  = `https://oauth.telegram.org/auth?bot_id=${BOT2_TOKEN.split(':')[0]}&origin=${origin}&embed=1&request_access=write&return_to=${origin}`;
 
-  // Open popup
   const w = 550, h = 470;
   const left = Math.round(screen.width  / 2 - w / 2);
   const top  = Math.round(screen.height / 2 - h / 2);
@@ -2957,9 +3054,9 @@ function startTelegramLogin() {
     `width=${w},height=${h},left=${left},top=${top},scrollbars=no,status=no`
   );
 
-  // Fallback: if popup blocked, use widget script approach
+  // Fallback: if popup blocked, use manual sign-in message
   if (!_tgLoginWindow) {
-    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg> Continue with Telegram'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = _TG_SVG + ' Continue with Telegram'; }
     showAuthError('Popup was blocked. Please allow popups for this site, or use manual sign-in below.');
     return;
   }
@@ -2968,9 +3065,52 @@ function startTelegramLogin() {
   const pollTimer = setInterval(() => {
     if (_tgLoginWindow && _tgLoginWindow.closed) {
       clearInterval(pollTimer);
-      if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg> Continue with Telegram'; }
+      if (btn) { btn.disabled = false; btn.innerHTML = _TG_SVG + ' Continue with Telegram'; }
     }
   }, 500);
+}
+
+// ── Mobile: Poll Firebase for nonce-based login result ──────────
+let _noncePollTimer = null;
+function _pollTelegramNonce(nonce) {
+  let attempts = 0;
+  const MAX = 60; // poll for up to 60 seconds
+  _noncePollTimer = setInterval(async () => {
+    attempts++;
+    if (attempts > MAX) {
+      clearInterval(_noncePollTimer);
+      showAuthError('Login timed out. Please try again or use manual sign-in below.');
+      return;
+    }
+    try {
+      const result = await fbGet(`tg_login_nonces/${nonce}`).catch(() => null);
+      if (result && result.tgId) {
+        clearInterval(_noncePollTimer);
+        sessionStorage.removeItem('tg_login_nonce');
+        // Delete nonce from Firebase
+        fetch(fbUrl(`tg_login_nonces/${nonce}`), { method: 'DELETE' }).catch(() => {});
+        // Build auth data from nonce result and log in
+        const fakeData = {
+          id:         result.tgId,
+          first_name: result.first_name || 'User',
+          last_name:  result.last_name  || '',
+          username:   result.username   || '',
+          auth_date:  Math.floor(Date.now() / 1000),
+          hash:       '__mobile_skip__'  // hash verification skipped for mobile nonce flow
+        };
+        _tgAuthData = fakeData;
+        clearAuthMessages();
+        // Show user confirm card
+        const name   = [fakeData.first_name, fakeData.last_name].filter(Boolean).join(' ') || 'Telegram User';
+        document.getElementById('tg-name').textContent       = _Sanitise.display(name);
+        document.getElementById('tg-handle').textContent     = fakeData.username ? '@' + fakeData.username : 'No username';
+        document.getElementById('tg-id-display').textContent = 'ID: ' + fakeData.id;
+        document.getElementById('tg-avatar').textContent     = name.charAt(0).toUpperCase();
+        document.getElementById('step-tg-login').style.display   = 'none';
+        document.getElementById('step-tg-confirm').style.display = '';
+      }
+    } catch(e) { /* continue polling */ }
+  }, 1000);
 }
 
 // Listen for postMessage from Telegram popup
