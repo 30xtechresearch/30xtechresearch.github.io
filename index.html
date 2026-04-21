@@ -1783,7 +1783,7 @@ h1{opacity:1 !important;}
           var el   = document.getElementById('p2p-rate-display');
           var sub  = document.getElementById('p2p-rate-sub');
           if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
-          if (sub) sub.textContent = 'Market: ₦' + Math.round(ngn).toLocaleString() + ' • your rate after 10% margin';
+          if (sub) sub.textContent = 'Market rate: ₦' + Math.round(ngn).toLocaleString() + ' · updates every 5 min';
           calcP2pPayout();
         } else { fetchP2PRateFallback(); }
       })
@@ -1802,7 +1802,7 @@ h1{opacity:1 !important;}
           var el   = document.getElementById('p2p-rate-display');
           var sub  = document.getElementById('p2p-rate-sub');
           if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
-          if (sub) sub.textContent = 'Market: ₦' + Math.round(ngn).toLocaleString() + ' • your rate after 10% margin';
+          if (sub) sub.textContent = 'Market rate: ₦' + Math.round(ngn).toLocaleString() + ' · updates every 5 min';
           calcP2pPayout();
         } else { showBotRateMsg(); }
       })
