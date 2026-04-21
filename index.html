@@ -848,12 +848,65 @@ h1{opacity:1 !important;}
   /* ── Auth ────────────────────────────── */
   #app-portal .auth-hero { padding: 24px 20px 20px; text-align: center; }
   #app-portal .auth-wordmark { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--gold); margin-bottom: 4px; white-space: nowrap; letter-spacing: -0.3px; }
+
+  /* ── Telegram Login ── */
+  #app-portal .tg-login-divider { display:flex; align-items:center; gap:10px; margin:18px 0; }
+  #app-portal .tg-login-divider::before,
+  #app-portal .tg-login-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  #app-portal .tg-login-divider span { font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; letter-spacing:1px; white-space:nowrap; }
+  #app-portal .tg-login-btn { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; padding:14px; background:#229ED9; border:none; border-radius:var(--radius-sm); cursor:pointer; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:#fff; transition:opacity .15s; margin-bottom:6px; }
+  #app-portal .tg-login-btn:hover { opacity:.88; }
+  #app-portal .tg-login-btn:disabled { opacity:.45; cursor:not-allowed; }
+  #app-portal .tg-login-btn svg { flex-shrink:0; }
+  #app-portal .tg-login-note { font-size:10px; color:var(--muted); text-align:center; margin-bottom:4px; line-height:1.5; }
+
+  /* ── Telegram user preview card (shown after TG auth) ── */
+  #app-portal .tg-user-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; display:flex; align-items:center; gap:14px; }
+  #app-portal .tg-user-avatar { width:48px; height:48px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:#09090b; flex-shrink:0; overflow:hidden; }
+  #app-portal .tg-user-avatar img { width:100%; height:100%; object-fit:cover; }
+  #app-portal .tg-user-name { font-size:15px; font-weight:600; color:var(--text); }
+  #app-portal .tg-user-handle { font-size:12px; color:var(--muted); margin-top:2px; }
+  #app-portal .tg-user-id { font-size:10px; color:var(--gold); font-family:'DM Mono',monospace; margin-top:3px; letter-spacing:.5px; }
   #app-portal .auth-tagline { font-size: 13px; color: var(--muted); }
   #app-portal .auth-form { padding: 0 20px; }
   #app-portal .auth-info { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 15px; margin-bottom: 16px; font-size: 12px; color: var(--muted); line-height: 1.6; }
   #app-portal .auth-info strong { color: var(--text); }
   #app-portal .auth-error { background: rgba(231,76,60,.08); border: 1px solid rgba(231,76,60,.2); border-radius: var(--radius-sm); padding: 11px 14px; margin-bottom: 12px; font-size: 12px; color: var(--red); display: none; }
   #app-portal .auth-error.show { display: block; }
+
+  /* ── Telegram Login Button ── */
+  #app-portal .tg-login-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 14px; border-radius: var(--radius-sm);
+    background: #229ED9; color: #fff; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: opacity .15s, transform .1s;
+    margin-bottom: 16px; -webkit-tap-highlight-color: transparent;
+  }
+  #app-portal .tg-login-btn:hover { opacity: .88; }
+  #app-portal .tg-login-btn:active { transform: scale(.98); }
+  #app-portal .tg-login-btn svg { flex-shrink: 0; }
+  #app-portal .auth-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px; color: var(--muted); font-size: 11px;
+    font-family: 'DM Mono', monospace; letter-spacing: 1px; text-transform: uppercase;
+  }
+  #app-portal .auth-divider::before,
+  #app-portal .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  #app-portal .tg-user-card {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(34,158,217,.08); border: 1px solid rgba(34,158,217,.25);
+    border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 16px;
+  }
+  #app-portal .tg-user-avatar {
+    width: 40px; height: 40px; border-radius: 50%; background: #229ED9;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px; overflow: hidden;
+  }
+  #app-portal .tg-user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  #app-portal .tg-user-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  #app-portal .tg-user-handle { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  #app-portal .tg-user-id { font-size: 10px; color: #229ED9; font-family: monospace; margin-top: 2px; }
 
   /* ── Setup ───────────────────────────── */
   #app-portal .setup-tab-bar { display: flex; padding: 14px 16px 0; gap: 8px; }
@@ -1639,6 +1692,35 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
       </div>
       <div class="auth-form">
 
+        <!-- ══ TELEGRAM LOGIN (primary method) ══ -->
+        <div id="step-tg-login">
+          <button class="tg-login-btn" id="tg-login-btn" onclick="startTelegramLogin()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg>
+            Continue with Telegram
+          </button>
+          <div class="tg-login-note">Tap above — Telegram will open to confirm your identity.<br>Your chat ID is detected automatically.</div>
+        </div>
+
+        <!-- ── Telegram user confirm card (shown after OAuth) ── -->
+        <div id="step-tg-confirm" style="display:none;">
+          <div class="tg-user-card" id="tg-user-card">
+            <div class="tg-user-avatar" id="tg-avatar">?</div>
+            <div>
+              <div class="tg-user-name" id="tg-name">—</div>
+              <div class="tg-user-handle" id="tg-handle">—</div>
+              <div class="tg-user-id" id="tg-id-display">—</div>
+            </div>
+          </div>
+          <button class="btn btn-gold" id="tg-confirm-btn" onclick="confirmTelegramLogin()">
+            <span id="tg-confirm-lbl">Sign In as This User</span>
+          </button>
+          <button class="btn btn-outline mt-8" onclick="resetTelegramLogin()" style="margin-top:8px;">
+            Not you? Use a different account
+          </button>
+        </div>
+
+        <div class="tg-login-divider"><span>or sign in manually</span></div>
+
         <!-- ── Mode tabs ── -->
         <div class="segment" style="margin-bottom:20px;" id="auth-mode-tabs">
           <button class="seg-btn active" id="tab-signin"   onclick="setAuthMode('signin')">Sign In</button>
@@ -2260,6 +2342,226 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
 // FIREBASE CONFIG
 // ═══════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════
+// TELEGRAM LOGIN — OAuth via Bot Widget
+// Bot: @Thirtyxpremiumsignalsbot
+// Flow:
+//   1. User taps "Continue with Telegram"
+//   2. Opens t.me/Thirtyxpremiumsignalsbot?start=login_{nonce}
+//   3. Bot sends nonce back via Firebase: tg_login_nonces/{nonce}
+//   4. Web polls Firebase for the nonce result (user's tgId)
+//   5. Web looks up plan in admin/users and logs in
+// No password needed — Telegram identity IS the credential.
+// ═══════════════════════════════════════════════════════════════
+
+const TG_BOT_USERNAME = 'Thirtyxpremiumsignalsbot';
+const TG_NONCE_TTL    = 5 * 60 * 1000; // 5 minutes
+let   _tgLoginNonce   = null;
+let   _tgPollTimer    = null;
+let   _tgPollCount    = 0;
+const TG_POLL_MAX     = 60;  // poll for up to 5 min (every 5s)
+
+// ── Generate a secure random nonce ──────────────────────────────
+function genNonce() {
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Start Telegram login flow ────────────────────────────────────
+function startTelegramLogin() {
+  const btn = document.getElementById('tg-login-btn');
+  const errEl = document.getElementById('auth-error-tg');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  // Rate limit check
+  try { _RL.check(); } catch(e) {
+    if (errEl) { errEl.textContent = _RL.errorMsg(e) || 'Too many attempts.'; errEl.classList.add('show'); }
+    return;
+  }
+
+  _tgLoginNonce = genNonce();
+  _tgPollCount  = 0;
+
+  // Store nonce in Firebase so bot can write result back
+  const noncePath = `tg_login_nonces/${_tgLoginNonce}`;
+  const expiresAt = Date.now() + TG_NONCE_TTL;
+
+  // Write pending nonce to Firebase
+  const fbNonceUrl = `${FB_URL}/${noncePath}.json?auth=${FB_SECRET}`;
+  fetch(fbNonceUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'pending', expires: expiresAt })
+  }).then(() => {
+    // Open Telegram bot with deep link
+    const deepLink = `https://t.me/${TG_BOT_USERNAME}?start=login_${_tgLoginNonce}`;
+    window.open(deepLink, '_blank');
+
+    // Show spinner and start polling
+    _showTgVerifying(true);
+    _startTgPoll(_tgLoginNonce);
+  }).catch(() => {
+    if (errEl) { errEl.textContent = 'Connection error. Please try again.'; errEl.classList.add('show'); }
+  });
+}
+
+// ── Show/hide verifying spinner ──────────────────────────────────
+function _showTgVerifying(show) {
+  const wrap = document.getElementById('tg-verify-wrap');
+  const btn  = document.getElementById('tg-login-btn');
+  if (wrap) wrap.style.display = show ? 'block' : 'none';
+  if (btn)  btn.style.display  = show ? 'none'  : 'flex';
+}
+
+// ── Poll Firebase until bot writes the nonce result ──────────────
+function _startTgPoll(nonce) {
+  clearInterval(_tgPollTimer);
+  _tgPollTimer = setInterval(async () => {
+    _tgPollCount++;
+    if (_tgPollCount > TG_POLL_MAX) {
+      clearInterval(_tgPollTimer);
+      _showTgVerifying(false);
+      const errEl = document.getElementById('auth-error-tg');
+      if (errEl) { errEl.textContent = 'Login timed out. Please try again.'; errEl.classList.add('show'); }
+      return;
+    }
+
+    try {
+      const fbNonceUrl = `${FB_URL}/tg_login_nonces/${nonce}.json?auth=${FB_SECRET}`;
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      const r = await fetch(fbNonceUrl, { signal: ctrl.signal });
+      clearTimeout(t);
+      const data = await r.json();
+
+      if (!data || data.status === 'pending') return; // not ready yet
+
+      clearInterval(_tgPollTimer);
+
+      if (data.status === 'verified' && data.tg_id) {
+        // Bot confirmed — proceed with login
+        await _completeTgLogin(data.tg_id, data.first_name, data.username, data.photo_url);
+        // Clean up nonce from Firebase
+        fetch(`${FB_URL}/tg_login_nonces/${nonce}.json?auth=${FB_SECRET}`, { method: 'DELETE' });
+      } else if (data.status === 'error') {
+        _showTgVerifying(false);
+        const errEl = document.getElementById('auth-error-tg');
+        if (errEl) { errEl.textContent = data.message || 'Telegram login failed.'; errEl.classList.add('show'); }
+      }
+    } catch(e) {
+      // Silent — keep polling
+    }
+  }, 5000); // poll every 5 seconds
+}
+
+// ── Complete login after Telegram confirms identity ──────────────
+async function _completeTgLogin(tgId, firstName, username, photoUrl) {
+  _showTgVerifying(true);
+  const uid = String(tgId);
+  const errEl = document.getElementById('auth-error-tg');
+
+  try {
+    // Show user card
+    _showTgUserCard(firstName, username, tgId, photoUrl);
+
+    // Look up user in Firebase admin/users
+    const users = await fbGet('admin/users');
+    const udata = users?.[uid];
+
+    if (!udata) {
+      // User not registered — auto-register them with free/no plan
+      // Admin will need to grant a plan via /grantplan
+      await _autoRegisterTgUser(uid, firstName, username);
+      const udata2 = { name: firstName || `User ${uid}`, role: 'user', plan: '', plan_type: '', expires: null };
+      await _finishTgLogin(uid, udata2, firstName);
+    } else {
+      await _finishTgLogin(uid, udata, firstName);
+    }
+  } catch(e) {
+    _showTgVerifying(false);
+    if (errEl) { errEl.textContent = 'Login error: ' + e.message; errEl.classList.add('show'); }
+  }
+}
+
+// ── Auto-register new Telegram user in Firebase ──────────────────
+async function _autoRegisterTgUser(uid, firstName, username) {
+  const name = firstName || `User ${uid}`;
+  // Add to admin/users with no plan
+  await fbPatch(`admin/users/${uid}`, {
+    name:       name,
+    username:   username || '',
+    role:       'user',
+    plan:       '',
+    plan_type:  '',
+    expires:    null,
+    tg_login:   true,
+    registered: Math.floor(Date.now() / 1000),
+  }).catch(() => {});
+  // Create app account (no password — TG login only)
+  await fbPatch(`app_accounts/${uid}`, {
+    tg_login_only: true,
+    created:       Math.floor(Date.now() / 1000),
+    last_login:    Math.floor(Date.now() / 1000),
+  }).catch(() => {});
+}
+
+// ── Show Telegram user card in auth form ─────────────────────────
+function _showTgUserCard(firstName, username, tgId, photoUrl) {
+  const card    = document.getElementById('tg-user-card');
+  const nameEl  = document.getElementById('tg-user-name');
+  const handleEl= document.getElementById('tg-user-handle');
+  const idEl    = document.getElementById('tg-user-id-disp');
+  const avatarEl= document.getElementById('tg-avatar-wrap');
+
+  if (nameEl)   nameEl.textContent   = _Sanitise.display(firstName || 'Telegram User');
+  if (handleEl) handleEl.textContent = username ? '@' + _Sanitise.display(username) : 'Telegram';
+  if (idEl)     idEl.textContent     = 'ID: ' + tgId;
+
+  if (avatarEl) {
+    if (photoUrl) {
+      avatarEl.innerHTML = `<img src="${photoUrl}" alt="avatar" onerror="this.parentNode.textContent='${(firstName||'T')[0].toUpperCase()}'">`;
+    } else {
+      avatarEl.textContent = (firstName || 'T')[0].toUpperCase();
+    }
+  }
+
+  if (card) card.style.display = 'flex';
+  _showTgVerifying(false);
+}
+
+// ── Final step — set currentUser and enter app ───────────────────
+async function _finishTgLogin(uid, udata, firstName) {
+  const brandedId = await genBrandedId(uid);
+
+  // Update last login time
+  fbPatch(`app_accounts/${uid}`, { last_login: Math.floor(Date.now() / 1000) }).catch(() => {});
+
+  currentUser = {
+    tgId:      uid,
+    name:      udata.name || firstName || `User ${uid}`,
+    role:      udata.role || 'user',
+    plan:      udata.plan || '',
+    plan_type: udata.plan_type || '',
+    expires:   udata.expires || null,
+    brandedId: brandedId,
+    loginMethod: 'telegram',
+  };
+
+  _RL.succeed();
+  onLoginSuccess();
+}
+
+// ── Cancel Telegram login ────────────────────────────────────────
+function cancelTgLogin() {
+  clearInterval(_tgPollTimer);
+  _showTgVerifying(false);
+  if (_tgLoginNonce) {
+    fetch(`${FB_URL}/tg_login_nonces/${_tgLoginNonce}.json?auth=${FB_SECRET}`, { method: 'DELETE' });
+    _tgLoginNonce = null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // SECURITY LAYER — 30×Tech Research
 // 1. Rate limiting       — blocks brute force login attempts
 // 2. Input sanitisation  — validates all user inputs
@@ -2584,6 +2886,261 @@ function togglePwVis(inputId, btnId) {
     : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
 }
 
+// ═══════════════════════════════════════════════════════════════
+// TELEGRAM LOGIN WIDGET
+// Uses Telegram's OAuth flow via a popup window.
+// Bot: @Thirtyxpremiumsignalsbot
+// Flow:
+//   1. Open telegram.org/auth popup
+//   2. User taps Confirm in Telegram app
+//   3. Telegram redirects back with signed data
+//   4. We verify the hash client-side (HMAC-SHA256)
+//   5. Look up plan in Firebase by tgId
+//   6. Auto-login — no password needed
+// ═══════════════════════════════════════════════════════════════
+
+const TG_BOT_USERNAME = 'Thirtyxpremiumsignalsbot';
+let   _tgAuthData     = null;  // holds verified Telegram data
+let   _tgLoginWindow  = null;
+
+// ── Verify Telegram auth data integrity (HMAC-SHA256) ──────────
+// This ensures the data genuinely came from Telegram, not forged.
+async function verifyTelegramAuth(data) {
+  // Build check string: sorted key=value pairs except hash
+  const checkArr = Object.keys(data)
+    .filter(k => k !== 'hash')
+    .sort()
+    .map(k => `${k}=${data[k]}`);
+  const checkStr = checkArr.join('
+');
+
+  // Secret key = SHA256 of bot token
+  const enc      = new TextEncoder();
+  const keyData  = await crypto.subtle.digest('SHA-256', enc.encode(BOT2_TOKEN));
+  const hmacKey  = await crypto.subtle.importKey('raw', keyData, { name:'HMAC', hash:'SHA-256' }, false, ['sign']);
+  const sigBuf   = await crypto.subtle.sign('HMAC', hmacKey, enc.encode(checkStr));
+  const sigHex   = Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+  if (sigHex !== data.hash) throw new Error('TG_HASH_INVALID');
+
+  // Check data is not stale (reject if older than 10 minutes)
+  const age = Math.floor(Date.now() / 1000) - Number(data.auth_date);
+  if (age > 600) throw new Error('TG_DATA_STALE');
+
+  return true;
+}
+
+// ── Step 1: Open Telegram OAuth popup ──────────────────────────
+function startTelegramLogin() {
+  // Rate limit check
+  try { _RL.check(); } catch(e) {
+    showAuthError(_RL.errorMsg(e) || 'Too many attempts.'); return;
+  }
+
+  const btn = document.getElementById('tg-login-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Opening Telegram…'; }
+
+  // Register global callback that Telegram popup calls
+  window.onTelegramAuth = function(data) {
+    handleTelegramCallback(data);
+  };
+
+  // Build Telegram auth URL
+  const origin   = encodeURIComponent(window.location.origin || 'https://hresearchapp.github.io');
+  const authUrl  = `https://oauth.telegram.org/auth?bot_id=${BOT2_TOKEN.split(':')[0]}&origin=${origin}&embed=1&request_access=write&return_to=${origin}`;
+
+  // Open popup
+  const w = 550, h = 470;
+  const left = Math.round(screen.width  / 2 - w / 2);
+  const top  = Math.round(screen.height / 2 - h / 2);
+  _tgLoginWindow = window.open(authUrl, 'TelegramLogin',
+    `width=${w},height=${h},left=${left},top=${top},scrollbars=no,status=no`
+  );
+
+  // Fallback: if popup blocked, use widget script approach
+  if (!_tgLoginWindow) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg> Continue with Telegram'; }
+    showAuthError('Popup was blocked. Please allow popups for this site, or use manual sign-in below.');
+    return;
+  }
+
+  // Poll for popup close
+  const pollTimer = setInterval(() => {
+    if (_tgLoginWindow && _tgLoginWindow.closed) {
+      clearInterval(pollTimer);
+      if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg> Continue with Telegram'; }
+    }
+  }, 500);
+}
+
+// Listen for postMessage from Telegram popup
+window.addEventListener('message', function(e) {
+  if (!e.data || typeof e.data !== 'object') return;
+  if (e.data.event !== 'auth_result') return;
+  if (_tgLoginWindow) { try { _tgLoginWindow.close(); } catch(x){} }
+  handleTelegramCallback(e.data);
+});
+
+// ── Step 2: Handle Telegram callback ───────────────────────────
+async function handleTelegramCallback(data) {
+  const btn = document.getElementById('tg-login-btn');
+  clearAuthMessages();
+
+  if (!data || !data.id) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.67l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.958.889z"/></svg> Continue with Telegram'; }
+    showAuthError('Telegram login was cancelled or failed. Please try again.');
+    return;
+  }
+
+  try {
+    // Verify the data hash
+    await verifyTelegramAuth(data);
+
+    // Store verified data
+    _tgAuthData = data;
+
+    // Show user confirmation card
+    const name   = [data.first_name, data.last_name].filter(Boolean).join(' ') || 'Telegram User';
+    const handle = data.username ? '@' + data.username : 'No username';
+    const uid    = String(data.id);
+
+    document.getElementById('tg-name').textContent      = _Sanitise.display(name);
+    document.getElementById('tg-handle').textContent    = _Sanitise.display(handle);
+    document.getElementById('tg-id-display').textContent = 'ID: ' + uid;
+
+    // Avatar
+    const avatar = document.getElementById('tg-avatar');
+    if (data.photo_url) {
+      avatar.innerHTML = `<img src="${data.photo_url}" alt="avatar" onerror="this.parentNode.textContent='${name.charAt(0).toUpperCase()}'">`;
+    } else {
+      avatar.textContent = name.charAt(0).toUpperCase();
+    }
+
+    // Hide TG login button, show confirm card
+    document.getElementById('step-tg-login').style.display   = 'none';
+    document.getElementById('step-tg-confirm').style.display = '';
+
+    if (btn) { btn.disabled = false; }
+
+  } catch(e) {
+    if (btn) { btn.disabled = false; }
+    if (e.message === 'TG_HASH_INVALID') showAuthError('Telegram verification failed — data may have been tampered. Please try again.');
+    else if (e.message === 'TG_DATA_STALE') showAuthError('Login data expired. Please try again.');
+    else showAuthError('Telegram login error. Please try again or use manual sign-in.');
+  }
+}
+
+// ── Step 3: Confirm and auto-login ─────────────────────────────
+async function confirmTelegramLogin() {
+  if (!_tgAuthData) return;
+  clearAuthMessages();
+
+  setBtnLoading('tg-confirm-btn', 'tg-confirm-lbl', true, 'Sign In as This User');
+
+  const uid  = String(_tgAuthData.id);
+  const name = [_tgAuthData.first_name, _tgAuthData.last_name].filter(Boolean).join(' ') || 'Telegram User';
+
+  try {
+    // 1. Check if user exists in admin/users (registered by admin)
+    const users = await fbGet('admin/users');
+    const udata = users?.[uid];
+
+    if (!udata) {
+      // Not registered — check if they have an app account
+      const acct = await fbGet(`app_accounts/${uid}`).catch(() => null);
+      if (!acct) {
+        // Brand new user — create a pending account and notify admin
+        await fbSet(`app_accounts/${uid}`, {
+          tg_name:      name,
+          tg_username:  _tgAuthData.username || '',
+          tg_photo:     _tgAuthData.photo_url || '',
+          created:      Math.floor(Date.now() / 1000),
+          login_method: 'telegram',
+          last_login:   Math.floor(Date.now() / 1000),
+          pw_hash:      null,
+        });
+        // Notify admin via Bot5
+        const adminMsg = `*30xTech — New Telegram Login*
+
+User: *${name}*
+Username: @${_tgAuthData.username || 'none'}
+Telegram ID: \`${uid}\`
+
+Not yet in admin/users. Grant plan with:
+\`/grantplan ${uid} <plan>\``;
+        tgSend(BOT5_TOKEN, Object.keys(await fbGet('admin/users').catch(()=>({})))[0]||'', adminMsg).catch(() => {});
+
+        setBtnLoading('tg-confirm-btn', 'tg-confirm-lbl', false, 'Sign In as This User');
+        showAuthError('Welcome! Your account has been noted. Contact @ThirtyxSaas on Telegram to get your plan activated.');
+        return;
+      }
+
+      // Has account but not in admin/users — give limited access
+      const brandedId = await genBrandedId(uid);
+      currentUser = {
+        tgId:      uid,
+        name:      acct.tg_name || name,
+        role:      'user',
+        plan:      acct.plan || '',
+        plan_type: '',
+        expires:   acct.expires || null,
+        brandedId,
+        loginMethod: 'telegram',
+        tgPhoto:   _tgAuthData.photo_url || '',
+      };
+    } else {
+      // Registered user — use their full profile
+      const brandedId = await genBrandedId(uid);
+      currentUser = {
+        tgId:      uid,
+        name:      udata.name || name,
+        role:      udata.role || 'user',
+        plan:      udata.plan || '',
+        plan_type: udata.plan_type || '',
+        expires:   udata.expires || null,
+        brandedId,
+        loginMethod: 'telegram',
+        tgPhoto:   _tgAuthData.photo_url || '',
+      };
+    }
+
+    // Update last login + store TG metadata in Firebase
+    fbPatch(`app_accounts/${uid}`, {
+      last_login:   Math.floor(Date.now() / 1000),
+      login_method: 'telegram',
+      tg_name:      name,
+      tg_username:  _tgAuthData.username || '',
+      tg_photo:     _tgAuthData.photo_url || '',
+    }).catch(() => {});
+
+    _tgAuthData = null;
+    setBtnLoading('tg-confirm-btn', 'tg-confirm-lbl', false, 'Sign In as This User');
+    onLoginSuccess();
+
+  } catch(e) {
+    setBtnLoading('tg-confirm-btn', 'tg-confirm-lbl', false, 'Sign In as This User');
+    if (e.message && e.message.startsWith('RATE_LIMIT')) showAuthError(_RL.errorMsg(e));
+    else showAuthError('Login failed. Please try again or use manual sign-in.');
+  }
+}
+
+// ── Reset Telegram login ────────────────────────────────────────
+function resetTelegramLogin() {
+  _tgAuthData = null;
+  document.getElementById('step-tg-login').style.display   = '';
+  document.getElementById('step-tg-confirm').style.display = 'none';
+  clearAuthMessages();
+}
+
+// ── Update profile avatar to show TG photo if available ─────────
+function updateProfileWithTelegramData() {
+  if (!currentUser || !currentUser.tgPhoto) return;
+  const avatar = document.getElementById('profile-avatar');
+  if (avatar) {
+    avatar.innerHTML = `<img src="${currentUser.tgPhoto}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentNode.textContent='${(currentUser.name||'?').charAt(0).toUpperCase()}'">`;
+  }
+}
+
 // ── SIGN IN ───────────────────────────────────────────────────────────────────
 let _pendingSignIn = null; // { uid, name, role, plan, plan_type, expires, brandedId }
 
@@ -2859,6 +3416,8 @@ function onLoginSuccess() {
   const u = currentUser;
   const initials = u.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
   document.getElementById('profile-avatar').textContent = initials;
+  // If logged in via Telegram, show their profile photo
+  if (u.tgPhoto) updateProfileWithTelegramData();
   document.getElementById('profile-name').textContent   = u.name;
   document.getElementById('profile-plan').textContent   = getPlanLabel();
   document.getElementById('profile-tgid').textContent   = `Telegram ID: ${u.tgId}`;
