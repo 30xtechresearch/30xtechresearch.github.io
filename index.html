@@ -19,7 +19,6 @@
               https://open.er-api.com
               https://query1.finance.yahoo.com
               https://query2.finance.yahoo.com
-              https://api.coingecko.com
               blob:;
   img-src 'self' data: blob: https:;
   worker-src blob:;
@@ -1669,7 +1668,7 @@ h1{opacity:1 !important;}
             style="flex-shrink:0;width:90px;background:var(--surface);border:1px solid var(--border2);color:var(--text);
                    padding:12px 10px;font-family:'DM Mono',monospace;font-size:12px;outline:none;
                    border-radius:8px;cursor:pointer;"
-            onchange="calcP2pPayout()"
+            onchange="onP2pTokenChange()"
           >
             <option>USDT</option>
             <option>USDC</option>
@@ -1756,16 +1755,17 @@ h1{opacity:1 !important;}
 <script>
 // ── P2P widget ─────────────────────────────────────────────────
 (function() {
-  var _p2pRate    = null;   // raw USD/NGN market rate
-  var _tokenPrices = {};    // token → USD price cache
+  var _p2pRate     = null;
+  var _tokenPrices = {};
 
+  // Sensible default amounts per token so calc works out of the box
+  var TOKEN_DEFAULTS = { USDT:100, USDC:100, BTC:0.002, ETH:0.05, BNB:1, SOL:3 };
   // CoinGecko IDs for fallback
-  var GECKO_IDS = { BTC: 'bitcoin', ETH: 'ethereum', BNB: 'binancecoin', SOL: 'solana' };
+  var GECKO_IDS = { BTC:'bitcoin', ETH:'ethereum', BNB:'binancecoin', SOL:'solana' };
 
-  // Fetch token price — Binance first, CoinGecko fallback
+  // ── Token price fetch (Binance → CoinGecko fallback) ──────────
   function fetchTokenPrice(token, cb) {
     if (token === 'USDT' || token === 'USDC') { cb(1.0); return; }
-    // Try Binance
     fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + token + 'USDT')
       .then(function(r){ return r.json(); })
       .then(function(d){
@@ -1776,7 +1776,6 @@ h1{opacity:1 !important;}
       .catch(function(){ fetchTokenFallback(token, cb); });
   }
 
-  // CoinGecko fallback
   function fetchTokenFallback(token, cb) {
     var id = GECKO_IDS[token];
     if (!id) { cb(null); return; }
@@ -1790,19 +1789,19 @@ h1{opacity:1 !important;}
       .catch(function(){ cb(null); });
   }
 
+  // ── USD/NGN rate fetch ────────────────────────────────────────
   function fetchP2PRate() {
-    // Primary: ExchangeRate API
     fetch('https://open.er-api.com/v6/latest/USD')
       .then(function(r){ return r.json(); })
       .then(function(data){
         var ngn = data && data.rates && data.rates.NGN;
         if (ngn && ngn > 100) {
           _p2pRate = ngn;
-          var marg = ngn * 0.90;   // after 10% margin
+          var marg = ngn * 0.90;
           var el   = document.getElementById('p2p-rate-display');
           var sub  = document.getElementById('p2p-rate-sub');
-          if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
-          if (sub) sub.textContent = 'Market rate: ₦' + Math.round(ngn).toLocaleString() + ' · updates every 5 min';
+          if (el)  el.textContent  = '\u20a6' + Math.round(marg).toLocaleString() + ' per $1';
+          if (sub) sub.textContent = 'Market rate: \u20a6' + Math.round(ngn).toLocaleString() + ' \u00b7 updates every 5 min';
           calcP2pPayout();
         } else { fetchP2PRateFallback(); }
       })
@@ -1810,7 +1809,6 @@ h1{opacity:1 !important;}
   }
 
   function fetchP2PRateFallback() {
-    // Fallback: use Binance USDTNGN if available, otherwise show bot message
     fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTNGN')
       .then(function(r){ return r.json(); })
       .then(function(d){
@@ -1820,8 +1818,8 @@ h1{opacity:1 !important;}
           var marg = ngn * 0.90;
           var el   = document.getElementById('p2p-rate-display');
           var sub  = document.getElementById('p2p-rate-sub');
-          if (el)  el.textContent  = '₦' + Math.round(marg).toLocaleString() + ' per $1';
-          if (sub) sub.textContent = 'Market rate: ₦' + Math.round(ngn).toLocaleString() + ' · updates every 5 min';
+          if (el)  el.textContent  = '\u20a6' + Math.round(marg).toLocaleString() + ' per $1';
+          if (sub) sub.textContent = 'Market rate: \u20a6' + Math.round(ngn).toLocaleString() + ' \u00b7 updates every 5 min';
           calcP2pPayout();
         } else { showBotRateMsg(); }
       })
@@ -1831,10 +1829,22 @@ h1{opacity:1 !important;}
   function showBotRateMsg() {
     var el  = document.getElementById('p2p-rate-display');
     var sub = document.getElementById('p2p-rate-sub');
-    if (el) { el.innerHTML = '<a href="https://t.me/Thirtyxtechresearchp2pbot" target="_blank" style="color:var(--gold);text-decoration:none;font-size:16px;">Check bot for live rate ↗</a>'; }
+    if (el) { el.innerHTML = '<a href="https://t.me/Thirtyxtechresearchp2pbot" target="_blank" style="color:var(--gold);text-decoration:none;font-size:16px;">Check bot for live rate \u2197</a>'; }
     if (sub) sub.textContent = 'Tap to open @Thirtyxtechresearchp2pbot';
   }
 
+  // ── When token changes, set a smart default amount ────────────
+  window.onP2pTokenChange = function() {
+    var tokenEl  = document.getElementById('p2p-calc-token');
+    var amountEl = document.getElementById('p2p-calc-amount');
+    if (!tokenEl || !amountEl) return;
+    var token = tokenEl.value;
+    amountEl.value = TOKEN_DEFAULTS[token] || 100;
+    amountEl.placeholder = TOKEN_DEFAULTS[token] || 100;
+    calcP2pPayout();
+  };
+
+  // ── Main calculator ───────────────────────────────────────────
   window.calcP2pPayout = function() {
     var amountEl = document.getElementById('p2p-calc-amount');
     var tokenEl  = document.getElementById('p2p-calc-token');
@@ -1845,33 +1855,52 @@ h1{opacity:1 !important;}
     var token  = tokenEl.value;
 
     if (!amount || amount <= 0) {
-      resultEl.innerHTML = 'Enter an amount above to see your NGN payout';
+      resultEl.innerHTML = 'Enter an amount to see your NGN payout';
       resultEl.style.color = 'var(--muted)';
       return;
     }
 
-    // Get token price, then compute
     function compute(tokenPriceUsd) {
       if (!tokenPriceUsd) {
-        resultEl.innerHTML = 'Could not fetch ' + token + ' price. Try the bot directly.';
+        resultEl.innerHTML = '\u26a0\ufe0f Could not fetch ' + token + ' price. <a href="https://t.me/Thirtyxtechresearchp2pbot" target="_blank" style="color:var(--gold)">Try the bot \u2197</a>';
         resultEl.style.color = 'var(--muted)';
         return;
       }
       if (!_p2pRate) {
-        resultEl.innerHTML = 'Fetching rates...';
+        resultEl.innerHTML = 'Fetching exchange rate\u2026';
         resultEl.style.color = 'var(--muted)';
         return;
       }
 
       var amountUsd = amount * tokenPriceUsd;
+      var usdStr    = '$' + amountUsd.toFixed(2);
+
       if (amountUsd < 10) {
-        resultEl.innerHTML = 'Minimum is $10 USD (you entered ~$' + amountUsd.toFixed(2) + ')';
-        resultEl.style.color = 'var(--red, #e74c3c)';
+        resultEl.innerHTML =
+          '<span style="color:var(--red,#e74c3c)">Below minimum</span><br>' +
+          '<span style="font-size:11px;color:var(--muted)">' + amount + ' ' + token +
+          ' \u2248 ' + usdStr + ' &mdash; minimum is $10 USD</span>';
+        resultEl.style.color = 'var(--text)';
         return;
       }
+
       if (amountUsd > 625) {
-        resultEl.innerHTML = 'Max $625 per trade (verified). Unverified max: $31. Use the bot to verify your account.';
-        resultEl.style.color = 'var(--muted)';
+        // Show how much they CAN sell and suggest a valid amount
+        var maxAmount = (625 / tokenPriceUsd);
+        var suggestion = maxAmount < 1
+          ? maxAmount.toFixed(6)
+          : maxAmount < 10
+          ? maxAmount.toFixed(4)
+          : maxAmount.toFixed(2);
+        resultEl.innerHTML =
+          '<span style="color:var(--gold)">Amount too large</span><br>' +
+          '<span style="font-size:11px;color:var(--muted)">' +
+          amount + ' ' + token + ' \u2248 ' + usdStr +
+          '. Max per trade is $625 (verified). ' +
+          'Try <b style="color:var(--text);cursor:pointer" onclick="document.getElementById(\'p2p-calc-amount\').value=\'' + suggestion + '\';calcP2pPayout()">' +
+          suggestion + ' ' + token + '</b> instead.' +
+          '</span>';
+        resultEl.style.color = 'var(--text)';
         return;
       }
 
@@ -1888,29 +1917,28 @@ h1{opacity:1 !important;}
         return;
       }
 
-      var rateStr = '₦' + Math.round(yourRate).toLocaleString();
+      var rateStr = '\u20a6' + Math.round(yourRate).toLocaleString();
       resultEl.innerHTML =
-        'You receive &nbsp;<strong style="color:var(--gold);font-size:18px;">₦' +
-        Math.round(netNgn).toLocaleString() +
-        '</strong>' +
-        '<br><span style="font-size:10px;color:var(--muted);">' +
-        amount + ' ' + token + ' × ' + rateStr +
-        (stamp ? ' − ₦50 stamp duty' : '') +
-        ' − ₦50 fee' +
-        '</span>';
+        'You receive &nbsp;<strong style="color:var(--gold);font-size:18px;">\u20a6' +
+        Math.round(netNgn).toLocaleString() + '</strong>' +
+        '<br><span style="font-size:10px;color:var(--muted)">' +
+        amount + ' ' + token + ' (' + usdStr + ') \u00d7 ' + rateStr +
+        (stamp ? ' \u2212 \u20a650 stamp duty' : '') +
+        ' \u2212 \u20a650 fee</span>';
       resultEl.style.color = 'var(--text)';
     }
 
-    // Use cache or fetch
+    // Use cache or fetch fresh
     if (_tokenPrices[token]) {
       compute(_tokenPrices[token]);
     } else {
-      resultEl.innerHTML = 'Getting ' + token + ' price...';
+      resultEl.innerHTML = 'Getting ' + token + ' price\u2026';
       fetchTokenPrice(token, compute);
     }
   };
 
-  // Init — pre-warm all token prices so calculator responds instantly
+  // ── Init ──────────────────────────────────────────────────────
+  // Pre-warm all token prices
   ['BTC','ETH','BNB','SOL'].forEach(function(t){ fetchTokenPrice(t, function(){}); });
   fetchP2PRate();
   setInterval(fetchP2PRate, 5 * 60 * 1000);
