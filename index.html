@@ -1759,26 +1759,26 @@ h1{opacity:1 !important;}
   var _p2pRate    = null;   // raw USD/NGN market rate
   var _tokenPrices = {};    // token → USD price cache
 
-  // CoinGecko token IDs mapping
-  var COINGECKO_IDS = { BTC: 'bitcoin', ETH: 'ethereum', BNB: 'binancecoin', SOL: 'solana' };
+  // CoinGecko IDs for fallback
+  var GECKO_IDS = { BTC: 'bitcoin', ETH: 'ethereum', BNB: 'binancecoin', SOL: 'solana' };
 
   // Fetch token price — Binance first, CoinGecko fallback
   function fetchTokenPrice(token, cb) {
     if (token === 'USDT' || token === 'USDC') { cb(1.0); return; }
-    // Try Binance first
+    // Try Binance
     fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + token + 'USDT')
       .then(function(r){ return r.json(); })
       .then(function(d){
         var p = parseFloat(d.price);
         if (p > 0) { _tokenPrices[token] = p; cb(p); }
-        else { fetchTokenPriceFallback(token, cb); }
+        else fetchTokenFallback(token, cb);
       })
-      .catch(function(){ fetchTokenPriceFallback(token, cb); });
+      .catch(function(){ fetchTokenFallback(token, cb); });
   }
 
   // CoinGecko fallback
-  function fetchTokenPriceFallback(token, cb) {
-    var id = COINGECKO_IDS[token];
+  function fetchTokenFallback(token, cb) {
+    var id = GECKO_IDS[token];
     if (!id) { cb(null); return; }
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + id + '&vs_currencies=usd')
       .then(function(r){ return r.json(); })
@@ -1910,13 +1910,12 @@ h1{opacity:1 !important;}
     }
   };
 
-  // Init — pre-warm token price cache so calc works instantly
-  ['BTC','ETH','BNB','SOL'].forEach(function(t) { fetchTokenPrice(t, function(){}); });
+  // Init — pre-warm all token prices so calculator responds instantly
+  ['BTC','ETH','BNB','SOL'].forEach(function(t){ fetchTokenPrice(t, function(){}); });
   fetchP2PRate();
   setInterval(fetchP2PRate, 5 * 60 * 1000);
-  // Refresh token prices every 5 min too
-  setInterval(function() {
-    ['BTC','ETH','BNB','SOL'].forEach(function(t) { fetchTokenPrice(t, function(){}); });
+  setInterval(function(){
+    ['BTC','ETH','BNB','SOL'].forEach(function(t){ fetchTokenPrice(t, function(){}); });
   }, 5 * 60 * 1000);
 })();
 </script>
