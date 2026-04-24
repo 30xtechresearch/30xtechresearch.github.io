@@ -428,7 +428,7 @@ h1{opacity:1 !important;}
 .ai-send-btn{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;font-weight:700;padding:0 14px;flex-shrink:0;cursor:pointer;transition:opacity 0.2s;}
 .ai-send-btn:hover{opacity:0.85;}
 .ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.ai-claude-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:2px 6px;border:1px solid var(--border);border-radius:2px;margin-left:4px;}
+.ai-claude-badge{display:none;}
 
 /* ── PWA Install Banner ── */
 #pwa-banner{
@@ -998,7 +998,7 @@ h1{opacity:1 !important;}
   <button id="hamburger" aria-label="Menu">&#9776;</button>
 </nav>
 
-<div id="mobile-menu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:#04070d;flex-direction:column;padding:80px 24px 40px;gap:0;overflow-y:auto;">
+<div id="mobile-menu" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1002;background:#04070d;flex-direction:column;padding:80px 24px 40px;gap:0;overflow-y:auto;">
   <a href="#hero" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Home</a>
   <a href="#services" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Pricing</a>
   <a href="#signal-sample" onclick="closeMenu();" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);">Signals</a>
@@ -2003,10 +2003,47 @@ h1{opacity:1 !important;}
 </footer>
 
 <script>
-var _open=false,_btn=document.getElementById('hamburger'),_menu=document.getElementById('mobile-menu');
-function closeMenu(){_open=false;document.getElementById('mobile-menu').style.display='none';document.getElementById('hamburger').innerHTML='&#9776;';document.body.style.overflow='';}
-if(_btn&&_menu){_btn.addEventListener('click',function(){_open=!_open;_menu.style.display=_open?'flex':'none';_btn.innerHTML=_open?'&#10005;':'&#9776;';document.body.style.overflow=_open?'hidden':'';});}
-window.addEventListener('resize',function(){if(window.innerWidth>900&&_open){_open=false;_menu.style.display='none';_btn.innerHTML='&#9776;';document.body.style.overflow='';}});
+function closeMenu(){
+  var m=document.getElementById('mobile-menu');
+  var b=document.getElementById('hamburger');
+  if(m) m.style.display='none';
+  if(b) b.innerHTML='&#9776;';
+  document.body.style.overflow='';
+  _open=false;
+}
+var _open=false;
+var _btn=document.getElementById('hamburger');
+var _menu=document.getElementById('mobile-menu');
+
+// Inject a close button at the top-right of the mobile menu
+if(_menu){
+  var _closeBtn=document.createElement('button');
+  _closeBtn.innerHTML='&#10005;';
+  _closeBtn.setAttribute('aria-label','Close menu');
+  _closeBtn.style.cssText='position:absolute;top:14px;right:14px;background:none;border:1px solid #1e3248;color:#f0c040;font-size:20px;padding:8px 14px;cursor:pointer;line-height:1;z-index:1003;';
+  _closeBtn.addEventListener('click', closeMenu);
+  _menu.style.position='fixed';
+  _menu.appendChild(_closeBtn);
+}
+
+if(_btn&&_menu){
+  _btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    _open=!_open;
+    _menu.style.display=_open?'flex':'none';
+    _btn.innerHTML=_open?'&#10005;':'&#9776;';
+    document.body.style.overflow=_open?'hidden':'';
+  });
+}
+window.addEventListener('resize',function(){
+  if(window.innerWidth>900&&_open){closeMenu();}
+});
+// Close on outside tap (backdrop)
+document.addEventListener('click',function(e){
+  if(_open&&_menu&&!_menu.contains(e.target)&&e.target!==_btn){
+    closeMenu();
+  }
+});
 var revEls=document.querySelectorAll('.rev');
 if('IntersectionObserver' in window){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.08});revEls.forEach(function(el){obs.observe(el);});}
 function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));document.getElementById('plan-'+plan).classList.add('active');btn.classList.add('active');}
@@ -4393,7 +4430,6 @@ function openAppPortal(){
   if(window._initAuthOnOpen)window._initAuthOnOpen();
   var mm=document.getElementById("mobile-menu");if(mm)mm.style.display="none";
   var hb=document.getElementById("hamburger");if(hb)hb.innerHTML="&#9776;";
-  if(typeof _open!=="undefined")_open=false;
   document.body.style.overflow="hidden";
   document.getElementById("app-portal").classList.add("open");
   history.pushState({appPortal:true},"",window.location.href);
@@ -4489,7 +4525,7 @@ document.addEventListener('visibilitychange', function() {
     <div class="ai-chat-header-left">
       <div class="ai-dot"></div>
       <div>
-        <div class="ai-chat-title">30X AI Assistant <span class="ai-claude-badge">Claude</span></div>
+        <div class="ai-chat-title">30X AI Assistant</div>
         <div class="ai-chat-sub">Ask about signals, products &amp; trading</div>
       </div>
     </div>
