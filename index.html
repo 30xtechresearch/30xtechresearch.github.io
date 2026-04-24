@@ -428,7 +428,7 @@ h1{opacity:1 !important;}
 .ai-send-btn{background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;font-weight:700;padding:0 14px;flex-shrink:0;cursor:pointer;transition:opacity 0.2s;}
 .ai-send-btn:hover{opacity:0.85;}
 .ai-send-btn:disabled{opacity:0.4;cursor:not-allowed;}
-
+.ai-claude-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);padding:2px 6px;border:1px solid var(--border);border-radius:2px;margin-left:4px;}
 
 /* ── PWA Install Banner ── */
 #pwa-banner{
@@ -2003,8 +2003,8 @@ h1{opacity:1 !important;}
 </footer>
 
 <script>
-function closeMenu(){document.getElementById('mobile-menu').style.display='none';document.getElementById('hamburger').innerHTML='&#9776;';document.body.style.overflow='';}
 var _open=false,_btn=document.getElementById('hamburger'),_menu=document.getElementById('mobile-menu');
+function closeMenu(){_open=false;document.getElementById('mobile-menu').style.display='none';document.getElementById('hamburger').innerHTML='&#9776;';document.body.style.overflow='';}
 if(_btn&&_menu){_btn.addEventListener('click',function(){_open=!_open;_menu.style.display=_open?'flex':'none';_btn.innerHTML=_open?'&#10005;':'&#9776;';document.body.style.overflow=_open?'hidden':'';});}
 window.addEventListener('resize',function(){if(window.innerWidth>900&&_open){_open=false;_menu.style.display='none';_btn.innerHTML='&#9776;';document.body.style.overflow='';}});
 var revEls=document.querySelectorAll('.rev');
@@ -4393,6 +4393,7 @@ function openAppPortal(){
   if(window._initAuthOnOpen)window._initAuthOnOpen();
   var mm=document.getElementById("mobile-menu");if(mm)mm.style.display="none";
   var hb=document.getElementById("hamburger");if(hb)hb.innerHTML="&#9776;";
+  if(typeof _open!=="undefined")_open=false;
   document.body.style.overflow="hidden";
   document.getElementById("app-portal").classList.add("open");
   history.pushState({appPortal:true},"",window.location.href);
@@ -4488,7 +4489,7 @@ document.addEventListener('visibilitychange', function() {
     <div class="ai-chat-header-left">
       <div class="ai-dot"></div>
       <div>
-        <div class="ai-chat-title">30X AI Assistant</div>
+        <div class="ai-chat-title">30X AI Assistant <span class="ai-claude-badge">Claude</span></div>
         <div class="ai-chat-sub">Ask about signals, products &amp; trading</div>
       </div>
     </div>
