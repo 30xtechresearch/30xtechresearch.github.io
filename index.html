@@ -8,7 +8,7 @@
 <!-- ── Content Security Policy ── -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self' https:;
-  script-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://oauth.telegram.org https://telegram.org;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
   font-src https://fonts.gstatic.com;
   connect-src https://x-dashboard-b1098-default-rtdb.europe-west1.firebasedatabase.app
@@ -2110,7 +2110,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
         <div id="step-signin">
           <div class="auth-info">
             Sign in with your <strong>Telegram Chat ID</strong> and your account password.<br>
-            Find your ID by messaging <strong>@userinfobot</strong> on Telegram.
+            Find your ID by messaging <strong>@GetMyChatID_Bot</strong> on Telegram.
           </div>
           <div class="input-wrap mt-12">
             <label class="input-label">Telegram Chat ID</label>
@@ -2147,7 +2147,7 @@ function switchPlan(plan,btn){document.querySelectorAll('.plan-panel').forEach(p
         <div id="step-register" style="display:none;">
           <div class="auth-info">
             Create your account using your Telegram Chat ID. You must already be a subscriber — your ID must be registered by the admin.<br>
-            Find your ID by messaging <strong>@userinfobot</strong> on Telegram.
+            Find your ID by messaging <strong>@GetMyChatID_Bot</strong> on Telegram.
           </div>
           <div class="input-wrap mt-12">
             <label class="input-label">Telegram Chat ID</label>
@@ -3132,8 +3132,11 @@ function startTelegramLogin() {
   }
 
   // Desktop: Open OAuth popup
-  const origin   = encodeURIComponent(window.location.origin || 'https://hresearchapp.github.io');
-  const authUrl  = `https://oauth.telegram.org/auth?bot_id=${BOT2_TOKEN.split(':')[0]}&origin=${origin}&embed=1&request_access=write&return_to=${origin}`;
+  // IMPORTANT: The domain of this page must be whitelisted in @BotFather → /setdomain
+  // for @Thirtyxpremiumsignalsbot, otherwise Telegram will close the popup without returning data.
+  const pageOrigin = window.location.origin || 'https://hresearchapp.github.io';
+  const botId      = BOT2_TOKEN.split(':')[0];
+  const authUrl    = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(pageOrigin)}&embed=1&request_access=write&return_to=${encodeURIComponent(pageOrigin)}`;
 
   const w = 550, h = 470;
   const left = Math.round(screen.width  / 2 - w / 2);
@@ -3142,10 +3145,10 @@ function startTelegramLogin() {
     `width=${w},height=${h},left=${left},top=${top},scrollbars=no,status=no`
   );
 
-  // Fallback: if popup blocked, use manual sign-in message
+  // Fallback: if popup blocked, show clear instructions
   if (!_tgLoginWindow) {
     if (btn) { btn.disabled = false; btn.innerHTML = _TG_SVG + ' Continue with Telegram'; }
-    showAuthError('Popup was blocked. Please allow popups for this site, or use manual sign-in below.');
+    showAuthError('Popup was blocked. Please allow popups for this site and try again, or use the manual sign-in below.');
     return;
   }
 
@@ -3159,15 +3162,18 @@ function startTelegramLogin() {
 }
 
 // ── Mobile: Poll Firebase for nonce-based login result ──────────
+// Requires 30x.py to handle /start login_{nonce} and write to tg_login_nonces/{nonce}
 let _noncePollTimer = null;
 function _pollTelegramNonce(nonce) {
   let attempts = 0;
-  const MAX = 60; // poll for up to 60 seconds
+  const MAX = 120; // poll for up to 120 seconds (2 min — gives user time to open bot)
   _noncePollTimer = setInterval(async () => {
     attempts++;
     if (attempts > MAX) {
       clearInterval(_noncePollTimer);
-      showAuthError('Login timed out. Please try again or use manual sign-in below.');
+      showAuthError('Login timed out. Please try again or use the manual sign-in below.');
+      const btn = document.getElementById('tg-login-btn');
+      if (btn) { btn.disabled = false; btn.innerHTML = _TG_SVG + ' Continue with Telegram'; }
       return;
     }
     try {
@@ -3183,6 +3189,7 @@ function _pollTelegramNonce(nonce) {
           first_name: result.first_name || 'User',
           last_name:  result.last_name  || '',
           username:   result.username   || '',
+          photo_url:  result.photo_url  || '',
           auth_date:  Math.floor(Date.now() / 1000),
           hash:       '__mobile_skip__'  // hash verification skipped for mobile nonce flow
         };
@@ -3193,7 +3200,13 @@ function _pollTelegramNonce(nonce) {
         document.getElementById('tg-name').textContent       = _Sanitise.display(name);
         document.getElementById('tg-handle').textContent     = fakeData.username ? '@' + fakeData.username : 'No username';
         document.getElementById('tg-id-display').textContent = 'ID: ' + fakeData.id;
-        document.getElementById('tg-avatar').textContent     = name.charAt(0).toUpperCase();
+        // Avatar
+        const avatar = document.getElementById('tg-avatar');
+        if (fakeData.photo_url) {
+          avatar.innerHTML = `<img src="${fakeData.photo_url}" alt="avatar" onerror="this.parentNode.textContent='${name.charAt(0).toUpperCase()}'">`;
+        } else {
+          avatar.textContent = name.charAt(0).toUpperCase();
+        }
         document.getElementById('step-tg-login').style.display   = 'none';
         document.getElementById('step-tg-confirm').style.display = '';
       }
@@ -3203,6 +3216,8 @@ function _pollTelegramNonce(nonce) {
 
 // Listen for postMessage from Telegram popup
 window.addEventListener('message', function(e) {
+  // Only accept messages from Telegram's OAuth domain
+  if (e.origin !== 'https://oauth.telegram.org' && e.origin !== 'https://telegram.org') return;
   if (!e.data || typeof e.data !== 'object') return;
   if (e.data.event !== 'auth_result') return;
   if (_tgLoginWindow) { try { _tgLoginWindow.close(); } catch(x){} }
