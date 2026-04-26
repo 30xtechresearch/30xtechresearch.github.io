@@ -1908,7 +1908,7 @@ h1{opacity:1 !important;}
       var yourRate = _p2pRate * (1 - margin);
       var grossNgn = amountUsd * yourRate;
       var stamp    = grossNgn >= 10000 ? 50 : 0;
-      var fee      = 50;
+      var fee      = Math.min(grossNgn * 0.015 + 100, 2000);
       var netNgn   = grossNgn - stamp - fee;
 
       if (netNgn <= 0) {
@@ -1924,7 +1924,7 @@ h1{opacity:1 !important;}
         '<br><span style="font-size:10px;color:var(--muted)">' +
         amount + ' ' + token + ' (' + usdStr + ') \u00d7 ' + rateStr +
         (stamp ? ' \u2212 \u20a650 stamp duty' : '') +
-        ' \u2212 \u20a650 fee</span>';
+        ' \u2212 \u20a6' + Math.round(fee) + ' Paystack fee</span>';
       resultEl.style.color = 'var(--text)';
     }
 
