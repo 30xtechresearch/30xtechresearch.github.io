@@ -1948,7 +1948,6 @@ h1{opacity:1 !important;}
 })();
 </script>
 
-
 <footer>
   <div class="foot-top">
     <div>
@@ -1999,6 +1998,19 @@ h1{opacity:1 !important;}
   <div class="foot-bot">
     <p>&copy; 2025 <span>30×Tech Research</span> &middot; All rights reserved &middot; Not financial advice</p>
     <p>Powered by <span>30×Tech Research</span> Bot Dashboard</p>
+  </div>
+
+  <!-- DATA PROTECTION NOTICE -->
+  <div style="border-top:1px solid var(--border);padding:28px 24px;background:var(--bg);">
+    <div style="max-width:860px;margin:0 auto;">
+      <div style="font-family:'DM Mono','Courier New',Courier,monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Data Protection &amp; Privacy</div>
+      <div style="font-family:'DM Mono','Courier New',Courier,monospace;font-size:10px;color:var(--grey);line-height:2;max-width:760px;">
+        <p style="margin-bottom:8px;">30xTech Research operates under the Nigeria Data Protection Act (NDPA) 2023. This platform processes user data including Telegram identifiers, behavioral interaction data, and IP address information solely for the purpose of delivering our signal services, fraud prevention, and rate-limiting.</p>
+        <p style="margin-bottom:8px;">User data is stored securely and is not sold or shared with third parties except where required by Nigerian law. Users may request access to, correction of, or deletion of their personal data by contacting <a href="https://t.me/ThirtyxSaas" target="_blank" style="color:var(--gold);text-decoration:none;">@ThirtyxSaas on Telegram</a>.</p>
+        <p style="margin-bottom:8px;">Security monitoring and IP logging are conducted under our legitimate interest in protecting platform integrity. Threat scores and rate-limit records are retained for a maximum of 24 hours from last interaction. No biometric data or government identity numbers are collected by this platform.</p>
+        <p>For P2P Exchange transactions, separate data handling terms apply in accordance with the NDPA 2023 and the Investments and Securities Act (ISA) 2025. Contact us for the full P2P data processing notice.</p>
+      </div>
+    </div>
   </div>
 </footer>
 
@@ -2803,7 +2815,7 @@ const _Sanitise = {
     if (raw.length < 8)   throw new Error('PW_SHORT');
     if (raw.length > 128) throw new Error('PW_LONG');
     // Block null bytes and common injection chars
-    if (/[ ]/.test(raw)) throw new Error('INVALID_PW');
+    if (/[]/.test(raw)) throw new Error('INVALID_PW');
     return raw;
   },
 
